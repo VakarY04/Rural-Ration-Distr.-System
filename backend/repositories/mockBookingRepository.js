@@ -1,0 +1,40 @@
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const seedsPath = path.join(__dirname, '../data/seeds.json');
+
+// Load initial static families into memory
+let families = JSON.parse(fs.readFileSync(seedsPath, 'utf8'));
+// In-memory runtime database for active slot reservations
+let appointments = [];
+
+export const mockBookingRepository = {
+  // Find a specific family by their card ID
+  findFamilyById: async (familyId) => {
+    return families.find(f => f.familyId === familyId) || null;
+  },
+
+  // Count how many families have already booked a specific date and time slot
+  countBookingsInSlot: async (date, timeSlot) => {
+    return appointments.filter(a => a.date === date && a.timeSlot === timeSlot).length;
+  },
+
+  // Save a new slot booking to memory
+  createBooking: async (bookingData) => {
+    const newBooking = {
+      id: `BK-${Math.floor(1000 + Math.random() * 9000)}`,
+      ...bookingData,
+      createdAt: new Date(),
+      isServed: false
+    };
+    appointments.push(newBooking);
+    return newBooking;
+  },
+
+  // Get all active allocations mapped by delivery date (for the distributor manifest)
+  getAllBookings: async () => {
+    return appointments;
+  }
+};
