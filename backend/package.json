@@ -1,0 +1,26 @@
+{
+  "name": "backend",
+  "version": "1.0.0",
+  "description": "Rural Ration Distribution System Backend",
+  "main": "server.js",
+  "type": "module",
+  "scripts": {
+    "start": "cross-env DATA_SOURCE=MOCK node server.js",
+    "dev": "cross-env DATA_SOURCE=MOCK nodemon server.js",
+    "prod": "cross-env DATA_SOURCE=MONGO node server.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@google/generative-ai": "^0.24.1",
+    "cors": "^2.8.6",
+    "dotenv": "^17.4.2",
+    "express": "^5.2.1",
+    "mongoose": "^9.8.0"
+  },
+  "devDependencies": {
+    "cross-env": "^10.1.0",
+    "nodemon": "^3.1.14"
+  }
+}

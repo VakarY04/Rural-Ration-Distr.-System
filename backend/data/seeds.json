@@ -1,0 +1,47 @@
+[
+  {
+    "familyId": "FAM-001",
+    "rationCardNumber": "RC-9920112831",
+    "headOfFamily": "Ram Charan",
+    "totalMembers": 5,
+    "members": [
+      { "name": "Ram Charan", "age": 48, "role": "Head" },
+      { "name": "Sita Devi", "age": 43, "role": "Spouse" },
+      { "name": "Rajesh Kumar", "age": 22, "role": "Son" },
+      { "name": "Pooja Kumari", "age": 19, "role": "Daughter" },
+      { "name": "Amit Kumar", "age": 14, "role": "Son" }
+    ],
+    "mockAadhaarToken": "auth_token_hash_881a2f",
+    "photoUrl": "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=150"
+  },
+  {
+    "familyId": "FAM-002",
+    "rationCardNumber": "RC-4482019234",
+    "headOfFamily": "Ganga Bahadur",
+    "totalMembers": 2,
+    "members": [
+      { "name": "Ganga Bahadur", "age": 67, "role": "Head" },
+      { "name": "Laxmi Thapa", "age": 62, "role": "Spouse" }
+    ],
+    "mockAadhaarToken": "auth_token_hash_332b9c",
+    "photoUrl": "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=150"
+  },
+  {
+    "familyId": "FAM-003",
+    "rationCardNumber": "RC-1102938475",
+    "headOfFamily": "Vikram Singh",
+    "totalMembers": 8,
+    "members": [
+      { "name": "Vikram Singh", "age": 52, "role": "Head" },
+      { "name": "Preeti Singh", "age": 47, "role": "Spouse" },
+      { "name": "Harish Singh", "age": 26, "role": "Son" },
+      { "name": "Kavita Singh", "age": 24, "role": "Daughter-in-law" },
+      { "name": "Rahul Singh", "age": 21, "role": "Son" },
+      { "name": "Anjali Singh", "age": 16, "role": "Daughter" },
+      { "name": "Arjun Singh", "age": 4, "role": "Grandson" },
+      { "name": "Suman Singh", "age": 2, "role": "Granddaughter" }
+    ],
+    "mockAadhaarToken": "auth_token_hash_994d8e",
+    "photoUrl": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150"
+  }
+]
