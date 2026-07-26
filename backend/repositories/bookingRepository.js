@@ -12,3 +12,14 @@ export const bookingRepository = dataSource === 'MONGO'
   : mockBookingRepository;
 
 console.log(`[Repository Manager] Operating with data strategy instance: ${dataSource}`);
+
+// Save a brand new family into our in-memory array database
+  createFamily: async (familyData) => {
+    const newFamily = {
+      familyId: `FAM-${Math.floor(100 + Math.random() * 900)}`,
+      ...familyData,
+      mockAadhaarToken: `auth_token_hash_${Math.random().toString(16).substring(2, 8)}`
+    };
+    families.push(newFamily);
+    return newFamily;
+  }
