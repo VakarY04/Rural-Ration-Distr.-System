@@ -1,122 +1,54 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from './assets/vite.svg'
-import heroImg from './assets/hero.png'
-import './App.css'
+import React, { useState } from 'react';
+import LandingPage from './pages/LandingPage';
+import AuthPage from './pages/AuthPage';
+import CitizenDashboard from './pages/CitizenDashboard';
 
-function App() {
-  const [count, setCount] = useState(0)
+export default function App() {
+  const [currentPage, setCurrentPage] = useState('landing'); // 'landing', 'auth-login', 'auth-register', 'dashboard'
+  const [authenticatedFamilyId, setAuthenticatedFamilyId] = useState('');
+
+  const handleNavigation = (targetView) => {
+    setCurrentPage(targetView);
+  };
+
+  const handleAuthenticationSuccess = (assignedFamilyId) => {
+    setAuthenticatedFamilyId(assignedFamilyId);
+    setCurrentPage('dashboard');
+  };
+
+  const handleLogoutSequence = () => {
+    setAuthenticatedFamilyId('');
+    setCurrentPage('landing');
+  };
 
   return (
-    <>
-      <section id="center">
-        <div className="hero">
-          <img src={heroImg} className="base" width="170" height="179" alt="" />
-          <img src={reactLogo} className="framework" alt="React logo" />
-          <img src={viteLogo} className="vite" alt="Vite logo" />
+    <div className="min-h-screen bg-[#F4F6F9]">
+      {currentPage === 'landing' && (
+        <LandingPage onNavigate={handleNavigation} />
+      )}
+      
+      {(currentPage === 'auth-login' || currentPage === 'auth-register') && (
+        <div className="relative">
+          {/* Top Back-To-Home Utility Button */}
+          <button 
+            onClick={() => setCurrentPage('landing')}
+            className="absolute top-4 left-4 text-xs font-bold text-slate-600 bg-white border border-slate-200 px-3 py-1.5 rounded-lg hover:bg-slate-50 transition shadow-sm"
+          >
+            ← Return to Hub
+          </button>
+          <AuthPage 
+            initialMode={currentPage === 'auth-login' ? 'login' : 'register'} 
+            onAuthSuccess={handleAuthenticationSuccess} 
+          />
         </div>
-        <div>
-          <h1>Get started</h1>
-          <p>
-            Edit <code>src/App.jsx</code> and save to test <code>HMR</code>
-          </p>
-        </div>
-        <button
-          type="button"
-          className="counter"
-          onClick={() => setCount((count) => count + 1)}
-        >
-          Count is {count}
-        </button>
-      </section>
+      )}
 
-      <div className="ticks"></div>
-
-      <section id="next-steps">
-        <div id="docs">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#documentation-icon"></use>
-          </svg>
-          <h2>Documentation</h2>
-          <p>Your questions, answered</p>
-          <ul>
-            <li>
-              <a href="https://vite.dev/" target="_blank">
-                <img className="logo" src={viteLogo} alt="" />
-                Explore Vite
-              </a>
-            </li>
-            <li>
-              <a href="https://react.dev/" target="_blank">
-                <img className="button-icon" src={reactLogo} alt="" />
-                Learn more
-              </a>
-            </li>
-          </ul>
-        </div>
-        <div id="social">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#social-icon"></use>
-          </svg>
-          <h2>Connect with us</h2>
-          <p>Join the Vite community</p>
-          <ul>
-            <li>
-              <a href="https://github.com/vitejs/vite" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#github-icon"></use>
-                </svg>
-                GitHub
-              </a>
-            </li>
-            <li>
-              <a href="https://chat.vite.dev/" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#discord-icon"></use>
-                </svg>
-                Discord
-              </a>
-            </li>
-            <li>
-              <a href="https://x.com/vite_js" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#x-icon"></use>
-                </svg>
-                X.com
-              </a>
-            </li>
-            <li>
-              <a href="https://bsky.app/profile/vite.dev" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#bluesky-icon"></use>
-                </svg>
-                Bluesky
-              </a>
-            </li>
-          </ul>
-        </div>
-      </section>
-
-      <div className="ticks"></div>
-      <section id="spacer"></section>
-    </>
-  )
+      {currentPage === 'dashboard' && (
+        <CitizenDashboard 
+          familyId={authenticatedFamilyId} 
+          onLogout={handleLogoutSequence} 
+        />
+      )}
+    </div>
+  );
 }
-
-export default App
