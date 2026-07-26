@@ -1,81 +1,72 @@
-import { allocationService } from '../services/allocationService.js';
+import { Booking } from '../models/Booking.js';
+import { Family } from '../models/Family.js';
+
+const MAX_FAMILIES_PER_SLOT = 6;
 
 export const bookingController = {
-  /**
-   * Captures citizen slot selections, runs validation rules, and commits bookings.
-   */
   createBooking: async (req, res) => {
     try {
-      const { familyId, date, timeSlot } = req.body;
+      const { date, timeSlot } = req.body;
 
-      // Validate basic incoming payload parameters
-      if (!familyId || !date || !timeSlot) {
+      if (!date || !timeSlot) {
+        return res.status(400).json({ error: 'Date and time slot parameters are strictly required.' });
+      }
+
+      // 1. Verify that the user has filled out their family profile first
+      const family = await Family.findOne({ userId: req.user.id });
+      if (!family) {
         return res.status(400).json({ 
-          error: 'Bad Request: familyId, date, and timeSlot fields are strictly required.' 
+          error: 'Profile Core Missing: Please register your family details profile before attempting to schedule a slot.' 
         });
       }
 
-      // Execute validation and generation sequence inside business engine
-      const confirmedBooking = await allocationService.createSlotBooking(familyId, date, timeSlot);
+      // 2. Enforce the government guideline ceiling (Strictly max 6 families per vector)
+      const existingBookingsCount = await Booking.countDocuments({ date, timeSlot });
+      if (existingBookingsCount >= MAX_FAMILIES_PER_SLOT) {
+        return res.status(400).json({
+          error: `Slot Capacity Attained: The ${timeSlot} distribution window on ${date} has reached its limit of ${MAX_FAMILIES_PER_SLOT} families.`
+        });
+      }
+
+      // 3. Prevent a citizen from booking multiple slots for the same date cycle
+      const alreadyBooked = await Booking.findOne({ userId: req.user.id, date });
+      if (alreadyBooked) {
+        return res.status(400).json({ 
+          error: `Schedule Violation: You have already secured an allocation pickup slot (${alreadyBooked.timeSlot}) for ${date}.` 
+        });
+      }
+
+      // 4. Record the final transaction manifest entry
+      const booking = await Booking.create({
+        userId: req.user.id,
+        familyId: family._id,
+        rationCardNumber: family.rationCardNumber,
+        headOfFamily: family.headOfFamily,
+        allocatedWeightKg: family.allocatedWeightKg,
+        date,
+        timeSlot
+      });
 
       return res.status(201).json({
         success: true,
-        message: 'Slot allocation successfully secured and logged.',
-        data: confirmedBooking
+        message: 'Ration collection slot successfully locked down.',
+        data: booking
       });
-    } catch (error) {
-      // Gracefully return a 400 error block if capacity ceilings or ID validations trigger an exception
-      return res.status(400).json({ 
-        success: false, 
-        error: error.message 
-      });
+    } catch (err) {
+      return res.status(500).json({ error: err.message });
     }
   },
 
-  /**
-   * Retrieves structural manifests tracking commodity packaging constraints for the distributor dashboard.
-   */
-  getManifest: async (req, res) => {
+  getActiveBooking: async (req, res) => {
     try {
-      const prePackingManifest = await allocationService.getDistributorPrePackingManifest();
-      return res.status(200).json({
-        success: true,
-        data: prePackingManifest
-      });
-    } catch (error) {
-      return res.status(500).json({ 
-        success: false, 
-        error: 'Internal Server Error encountered while generating distributor logistics summaries.' 
-      });
+      // Fetch the most recent booking made by this authenticated user
+      const booking = await Booking.findOne({ userId: req.user.id }).sort({ createdAt: -1 });
+      if (!booking) {
+        return res.status(200).json({ success: true, data: null, message: 'No active scheduling entries found.' });
+      }
+      return res.status(200).json({ success: true, data: booking });
+    } catch (err) {
+      return res.status(500).json({ error: err.message });
     }
   }
 };
-
-/**
-   * Registers a incoming family profile, storing members array metrics.
-   */
-  registerFamily: async (req, res) => {
-    try {
-      const { rationCardNumber, headOfFamily, totalMembers, members, photoUrl } = req.body;
-
-      if (!rationCardNumber || !headOfFamily || !members || members.length === 0) {
-        return res.status(400).json({ error: 'Missing mandatory registration layout parameters.' });
-      }
-
-      const newFamily = await bookingRepository.createFamily({
-        rationCardNumber,
-        headOfFamily,
-        totalMembers: parseInt(totalMembers),
-        members,
-        photoUrl: photoUrl || 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=150'
-      });
-
-      return res.status(201).json({
-        success: true,
-        message: 'Family profile securely registered under state guidelines.',
-        data: newFamily
-      });
-    } catch (error) {
-      return res.status(500).json({ success: false, error: error.message });
-    }
-  };
