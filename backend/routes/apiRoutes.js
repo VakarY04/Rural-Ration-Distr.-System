@@ -1,7 +1,8 @@
 import express from 'express';
 import { authController } from '../controllers/authController.js';
 import { familyController } from '../controllers/familyController.js';
-import { bookingController } from '../controllers/bookingController.js'; // IMPORT NEW CONTROLLER
+import { bookingController } from '../controllers/bookingController.js';
+import { aiController } from '../controllers/aiController.js'; // IMPORT NEW CONTROLLER
 import { protect } from '../middleware/authMiddleware.js';
 
 const router = express.Router();
@@ -19,5 +20,8 @@ router.get('/family/profile', protect, familyController.getProfile);
 // Protected Slot Scheduling Endpoints
 router.post('/bookings', protect, bookingController.createBooking);
 router.get('/bookings/active', protect, bookingController.getActiveBooking);
+
+// Protected Gemini AI Processing Engine Endpoint
+router.post('/ai/grievance', protect, aiController.processGrievance);
 
 export default router;
