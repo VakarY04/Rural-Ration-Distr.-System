@@ -5,14 +5,15 @@ import DashboardShell from './components/DashboardShell';
 import DashboardHome from './pages/DashboardHome';
 import ProfilePage from './pages/ProfilePage';
 import BookingPage from './pages/BookingPage';
-import ResetPasswordPage from './pages/ResetPasswordPage'; // IMPORT NEW PAGE
+import AiSupportPage from './pages/AiSupportPage';
+import ResetPasswordPage from './pages/ResetPasswordPage';
 import { citizenService } from './api';
 
 export default function App() {
-  const [currentPage, setCurrentPage] = useState('landing'); 
-  const [currentSubPage, setCurrentSubPage] = useState('home'); 
-  const [resetToken, setResetToken] = useState(''); // TRACK RESET PARAMETERS
-  
+  const [currentPage, setCurrentPage] = useState('landing');
+  const [currentSubPage, setCurrentSubPage] = useState('home');
+  const [resetToken, setResetToken] = useState('');
+
   const [profile, setProfile] = useState(null);
   const [booking, setBooking] = useState(null);
 
@@ -24,11 +25,11 @@ export default function App() {
       if (token) {
         setResetToken(token);
         setCurrentPage('reset-password');
-        return; // Halt regular session checks
+        return;
       }
     }
 
-    // 2. Regular persistent session monitoring
+    // 2. Persistent session monitoring
     const savedToken = localStorage.getItem('ration_user_token');
     if (savedToken) {
       setCurrentPage('dashboard');
@@ -44,7 +45,7 @@ export default function App() {
       const bookingRes = await citizenService.getActiveBooking();
       if (bookingRes.data) setBooking(bookingRes.data);
     } catch (err) {
-      console.log('Sync sequence completed.');
+      console.log('Synchronization completed cleanly.');
     }
   };
 
@@ -64,37 +65,36 @@ export default function App() {
       {currentPage === 'landing' && (
         <LandingPage onNavigate={setCurrentPage} />
       )}
-      
+
       {(currentPage === 'auth-login' || currentPage === 'auth-register') && (
         <div className="relative">
-          <button 
+          <button
             onClick={() => setCurrentPage('landing')}
             className="absolute top-4 left-4 text-xs font-bold text-slate-600 bg-white border border-slate-200 px-3 py-1.5 rounded-lg hover:bg-slate-50 transition shadow-sm z-50"
           >
             ← Return to Hub
           </button>
-          <AuthPage 
-            initialMode={currentPage === 'auth-login' ? 'login' : 'register'} 
-            onAuthSuccess={handleAuthSuccess} 
+          <AuthPage
+            initialMode={currentPage === 'auth-login' ? 'login' : 'register'}
+            onAuthSuccess={handleAuthSuccess}
           />
         </div>
       )}
 
       {currentPage === 'reset-password' && (
-        <ResetPasswordPage 
-          token={resetToken} 
+        <ResetPasswordPage
+          token={resetToken}
           onResetSuccess={() => {
-            // Clean out reset path token parameters to prevent back-button loops
             window.history.pushState({}, document.title, "/");
             setCurrentPage('auth-login');
-          }} 
+          }}
         />
       )}
 
       {currentPage === 'dashboard' && (
-        <DashboardShell 
-          currentSubPage={currentSubPage} 
-          onSubPageChange={setCurrentSubPage} 
+        <DashboardShell
+          currentSubPage={currentSubPage}
+          onSubPageChange={setCurrentSubPage}
           onLogout={handleLogout}
         >
           {currentSubPage === 'home' && (
@@ -105,6 +105,9 @@ export default function App() {
           )}
           {currentSubPage === 'booking' && (
             <BookingPage activeBooking={booking} profile={profile} onBookingSuccess={setBooking} />
+          )}
+          {currentSubPage === 'ai-support' && (
+            <AiSupportPage />
           )}
         </DashboardShell>
       )}
