@@ -1,74 +1,160 @@
 import React, { useState } from 'react';
-import { authService } from '../api';
-import { Lock, CheckCircle, AlertCircle } from 'lucide-react';
+import { ShieldCheck, Lock, Eye, EyeOff } from 'lucide-react';
+import logoAsset from '../images/E-RATION Logo.png';
 
 export default function ResetPasswordPage({ token, onResetSuccess }) {
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
-  const [status, setStatus] = useState({ type: '', message: '' });
+  const [showPassword, setShowPassword] = useState(false);
+  const [error, setError] = useState('');
+  const [success, setSuccess] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setStatus({ type: '', message: '' });
+    setError('');
 
-    if (password !== confirmPassword) {
-      setStatus({ type: 'error', message: 'Passwords do not match.' });
+    if (password.length < 6) {
+      setError('Password must be at least 6 characters long.');
       return;
     }
 
+    if (password !== confirmPassword) {
+      setError('Passwords do not match.');
+      return;
+    }
+
+    setLoading(true);
     try {
-      await authService.resetPassword(token, password);
-      setStatus({ type: 'success', message: 'Password updated successfully! Redirecting to sign in hub...' });
-      setTimeout(() => {
-        onResetSuccess();
-      }, 2200);
+      const response = await fetch(`http://localhost:5000/api/auth/reset-password/${token}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ password }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        setSuccess(true);
+        setTimeout(() => {
+          if (onResetSuccess) onResetSuccess();
+        }, 2500);
+      } else {
+        setError(data.message || 'Authorization verification failed, token expired.');
+      }
     } catch (err) {
-      setStatus({ type: 'error', message: err });
+      setError('Could not establish connection to security verification server.');
+      console.error(err);
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
-    <div className="min-h-screen bg-[#F4F6F9] flex flex-col items-center justify-center p-4 font-sans">
-      <div className="w-full max-w-md bg-white rounded-2xl shadow-xl border border-slate-200 overflow-hidden">
-        <div className="bg-[#1A365D] text-white p-6 text-center">
-          <h2 className="text-xl font-bold">Credential Recovery Portal</h2>
-          <p className="text-xs text-slate-300 mt-1">Establish your new platform access parameters securely</p>
+    <div className="relative min-h-screen font-sans flex items-center justify-center p-6 text-white overflow-hidden bg-slate-950">
+      
+      {/* FIXED BACKGROUND VIDEO LAYER */}
+      <video
+        autoPlay
+        loop
+        muted
+        playsInline
+        preload="auto"
+        className="fixed inset-0 w-full h-full object-cover z-0 pointer-events-none"
+      >
+        <source src="/videos/wallpaper.mp4" type="video/mp4" />
+      </video>
+
+      {/* Subtle background overlay */}
+      <div className="fixed inset-0 bg-slate-950/30 z-10 pointer-events-none" />
+
+      {/* CARD SHELL - Transparent with zero blur */}
+      <div className="relative z-20 w-full max-w-md bg-slate-900/70 backdrop-blur-none border border-white/15 p-8 rounded-3xl shadow-2xl space-y-5">
+        
+        {/* Branding Header */}
+        <div className="flex flex-col items-center text-center space-y-2">
+          <img 
+            src={logoAsset} 
+            alt="E-Ration Brand Logo" 
+            className="w-14 h-14 object-contain rounded-2xl shadow-lg border border-white/10 bg-slate-900/40 p-1"
+          />
+          <div>
+            <h2 className="text-xl font-black uppercase tracking-tight">Update Credentials</h2>
+            <p className="text-xs text-slate-300 font-medium mt-0.5">Establish a new security access password for your registry</p>
+          </div>
         </div>
 
-        <form onSubmit={handleSubmit} className="p-6 space-y-4">
-          <div>
-            <label className="block text-xs font-bold text-slate-700 uppercase mb-1 flex items-center gap-1">
-              <Lock size={12} /> Type New Password
-            </label>
-            <input 
-              type="password" value={password} onChange={(e) => setPassword(e.target.value)} required
-              className="w-full px-3 py-2 border border-slate-200 rounded-xl text-sm outline-none focus:ring-2 focus:ring-blue-600"
-              placeholder="••••••••"
-            />
+        {/* Dynamic Alert Status Banners */}
+        {error && (
+          <div className="bg-red-500/10 border border-red-500/30 p-3 rounded-xl text-center">
+            <p className="text-xs font-bold text-red-400">{error}</p>
           </div>
+        )}
 
-          <div>
-            <label className="block text-xs font-bold text-slate-700 uppercase mb-1 flex items-center gap-1">
-              <Lock size={12} /> Confirm New Password
-            </label>
-            <input 
-              type="password" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} required
-              className="w-full px-3 py-2 border border-slate-200 rounded-xl text-sm outline-none focus:ring-2 focus:ring-blue-600"
-              placeholder="••••••••"
-            />
+        {success && (
+          <div className="bg-emerald-500/10 border border-emerald-500/30 p-3 rounded-xl text-center">
+            <p className="text-xs font-bold text-emerald-400">Security credentials updated cleanly!</p>
+            <p className="text-[10px] text-slate-300 mt-0.5">Redirecting to terminal access interface...</p>
           </div>
+        )}
 
-          {status.message && (
-            <div className={`p-3 rounded-xl text-xs font-semibold flex items-start gap-2 ${status.type === 'success' ? 'bg-green-50 text-green-800' : 'bg-red-50 text-red-800'}`}>
-              {status.type === 'success' ? <CheckCircle size={14} className="shrink-0" /> : <AlertCircle size={14} className="shrink-0" />}
-              <span>{status.message}</span>
+        {/* Password Reset Form Fields */}
+        {!success && (
+          <form onSubmit={handleSubmit} className="space-y-3.5 text-slate-900">
+            <div className="space-y-1">
+              <label className="text-[11px] font-bold uppercase tracking-wider text-slate-200">New Security Password</label>
+              <div className="relative flex items-center">
+                <Lock className="absolute left-3.5 text-slate-400" size={16} />
+                <input 
+                  type={showPassword ? 'text' : 'password'} 
+                  required
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  placeholder="••••••••••••"
+                  className="w-full bg-white/95 text-xs font-bold pl-11 pr-10 py-3 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500 shadow-sm"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-3.5 text-slate-400 hover:text-slate-600 cursor-pointer"
+                >
+                  {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+                </button>
+              </div>
             </div>
-          )}
 
-          <button type="submit" className="w-full py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl text-sm transition shadow-md shadow-emerald-100">
-            Confirm Credential Update
-          </button>
-        </form>
+            <div className="space-y-1">
+              <label className="text-[11px] font-bold uppercase tracking-wider text-slate-200">Confirm New Password</label>
+              <div className="relative flex items-center">
+                <Lock className="absolute left-3.5 text-slate-400" size={16} />
+                <input 
+                  type={showPassword ? 'text' : 'password'} 
+                  required
+                  value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
+                  placeholder="••••••••••••"
+                  className="w-full bg-white/95 text-xs font-bold pl-11 pr-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500 shadow-sm"
+                />
+              </div>
+            </div>
+
+            <button 
+              type="submit"
+              disabled={loading}
+              className={`w-full bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold py-3.5 rounded-xl transition duration-200 shadow-lg mt-2 uppercase tracking-wider cursor-pointer ${loading ? 'opacity-50 cursor-not-allowed' : ''}`}
+            >
+              {loading ? 'Processing Registry Update...' : 'Commit New Password'}
+            </button>
+          </form>
+        )}
+
+        <div className="flex items-center justify-center gap-2 pt-2 text-[10px] font-bold text-slate-300 uppercase tracking-wider text-center border-t border-white/15">
+          <ShieldCheck size={13} className="text-emerald-400" />
+          <span>Encrypted Password Overwrite Terminal Active</span>
+        </div>
+
       </div>
     </div>
   );

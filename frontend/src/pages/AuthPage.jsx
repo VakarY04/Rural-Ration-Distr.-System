@@ -12,12 +12,6 @@ export default function AuthPage({ onAuthSuccess, onNavigate }) {
     if (onAuthSuccess) onAuthSuccess();
   };
 
-  const handleNavigation = (destination) => {
-    if (onNavigate) {
-      onNavigate(destination);
-    }
-  };
-
   return (
     <div className="relative min-h-screen font-sans flex items-center justify-center p-6 text-white overflow-hidden bg-slate-950">
       
@@ -33,13 +27,13 @@ export default function AuthPage({ onAuthSuccess, onNavigate }) {
         <source src="/videos/wallpaper.mp4" type="video/mp4" />
       </video>
 
-      {/* Subtle tint overlay */}
+      {/* Subtle background overlay */}
       <div className="fixed inset-0 bg-slate-950/30 z-10 pointer-events-none" />
 
-      {/* AUTH CARD SHELL */}
+      {/* AUTH CARD SHELL - Transparent with zero blur */}
       <div className="relative z-20 w-full max-w-md bg-slate-900/70 backdrop-blur-none border border-white/15 p-8 rounded-3xl shadow-2xl space-y-5">
         
-        {/* Branding Hub Section */}
+        {/* Branding Section */}
         <div className="flex flex-col items-center text-center space-y-2">
           <img 
             src={logoAsset} 
@@ -53,7 +47,7 @@ export default function AuthPage({ onAuthSuccess, onNavigate }) {
         </div>
 
         {/* Input Form Fields Box */}
-        <form onSubmit={handleSubmit} className="space-y-3.5">
+        <form onSubmit={handleSubmit} className="space-y-3.5 text-slate-900">
           <div className="space-y-1">
             <label className="text-[11px] font-bold uppercase tracking-wider text-slate-200">Registered Email Address</label>
             <div className="relative flex items-center">
@@ -64,7 +58,7 @@ export default function AuthPage({ onAuthSuccess, onNavigate }) {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="citizen@workspace.com"
-                className="w-full bg-white/95 text-slate-900 text-xs font-bold pl-11 pr-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500 shadow-sm"
+                className="w-full bg-white/95 text-xs font-bold pl-11 pr-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500 shadow-sm"
               />
             </div>
           </div>
@@ -79,12 +73,11 @@ export default function AuthPage({ onAuthSuccess, onNavigate }) {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="••••••••••••"
-                className="w-full bg-white/95 text-slate-900 text-xs font-bold pl-11 pr-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500 shadow-sm"
+                className="w-full bg-white/95 text-xs font-bold pl-11 pr-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500 shadow-sm"
               />
             </div>
           </div>
 
-          {/* Login Button */}
           <button 
             type="submit"
             className="w-full bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold py-3.5 rounded-xl transition duration-200 shadow-lg mt-2 uppercase tracking-wider cursor-pointer"
@@ -93,11 +86,11 @@ export default function AuthPage({ onAuthSuccess, onNavigate }) {
           </button>
         </form>
 
-        {/* Create Account (Left) & Forgot Password (Right) Row */}
+        {/* Navigation Triggers Row */}
         <div className="flex items-center justify-between pt-1 px-1">
           <button 
             type="button" 
-            onClick={() => handleNavigation('register')}
+            onClick={() => onNavigate && onNavigate('auth-register')}
             className="text-xs font-bold text-blue-400 hover:text-blue-300 transition-colors underline cursor-pointer"
           >
             Create Account
@@ -105,7 +98,7 @@ export default function AuthPage({ onAuthSuccess, onNavigate }) {
 
           <button 
             type="button" 
-            onClick={() => handleNavigation('forgot-password')}
+            onClick={() => onNavigate && onNavigate('auth-forgot')}
             className="text-xs font-bold text-blue-400 hover:text-blue-300 transition-colors underline cursor-pointer"
           >
             Forgot Password?
