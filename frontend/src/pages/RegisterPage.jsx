@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ShieldCheck, Lock, Mail, User, KeyRound } from 'lucide-react';
+import { ShieldCheck, Lock, Mail, User, KeyRound, ArrowLeft } from 'lucide-react';
 import logoAsset from '../images/E-RATION Logo.png';
 
 export default function RegisterPage({ onNavigate }) {
@@ -23,12 +23,9 @@ export default function RegisterPage({ onNavigate }) {
 
     setLoading(true);
     try {
-      // LIVE BACKEND HANDSHAKE: Posts input criteria directly to MongoDB via Express
       const response = await fetch('http://localhost:5000/api/auth/register', {
         method: 'POST',
-        headers: { 
-          'Content-Type': 'application/json' 
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ 
           name, 
           email: email.trim().toLowerCase(), 
@@ -39,18 +36,14 @@ export default function RegisterPage({ onNavigate }) {
       const data = await response.json();
 
       if (response.ok) {
-        // FIXED FLOW: Triggers the success banner instead of auto-logging into the dashboard
         setSuccess(true);
-        
-        // Wipe local form inputs cleanly
         setName('');
         setEmail('');
         setPassword('');
         setConfirmPassword('');
 
-        // FIXED FLOW: Holds for 3 seconds so the user reads the notice, then redirects to login terminal
         setTimeout(() => {
-          onNavigate('auth-login');
+          onNavigate('auth-selection');
         }, 3000);
       } else {
         setError(data.message || 'Error establishing citizen registry footprint.');
@@ -66,13 +59,21 @@ export default function RegisterPage({ onNavigate }) {
   return (
     <div className="relative min-h-screen font-sans flex items-center justify-center p-6 text-white overflow-hidden bg-slate-950">
       
-      {/* BACKGROUND VIDEO LAYER */}
+      {/* Top-Left Fixed Back Button */}
+      <button 
+        type="button"
+        onClick={() => onNavigate && onNavigate('auth-selection')}
+        className="fixed top-6 left-6 z-30 flex items-center gap-2 text-xs font-bold text-white bg-slate-900/80 hover:bg-slate-800 border border-white/20 px-4 py-2.5 rounded-2xl backdrop-blur-md shadow-2xl transition-all cursor-pointer hover:scale-105"
+      >
+        <ArrowLeft size={16} />
+        <span>Back</span>
+      </button>
+
       <video autoPlay loop muted playsInline preload="auto" className="fixed inset-0 w-full h-full object-cover z-0 pointer-events-none">
         <source src="/videos/wallpaper.mp4" type="video/mp4" />
       </video>
       <div className="fixed inset-0 bg-slate-950/30 z-10 pointer-events-none" />
 
-      {/* REGISTRATION TERMINAL SHELL */}
       <div className="relative z-20 w-full max-w-md bg-slate-900/70 backdrop-blur-none border border-white/15 p-8 rounded-3xl shadow-2xl space-y-5">
         
         <div className="flex flex-col items-center text-center space-y-2">
@@ -83,23 +84,20 @@ export default function RegisterPage({ onNavigate }) {
           </div>
         </div>
 
-        {/* Dynamic Error Status Banner */}
         {error && (
           <div className="bg-red-500/10 border border-red-500/30 p-3 rounded-xl text-center">
             <p className="text-xs font-bold text-red-400">{error}</p>
           </div>
         )}
 
-        {/* FIXED: Dynamic Success Confirmation Banner */}
         {success && (
           <div className="bg-emerald-500/10 border border-emerald-500/30 p-4 rounded-xl text-center space-y-1">
             <p className="text-xs font-bold text-emerald-400">Account Created Successfully!</p>
             <p className="text-[11px] text-slate-300">Your footprint has been successfully registered to MongoDB.</p>
-            <p className="text-[10px] text-blue-400 font-medium animate-pulse pt-1">Redirecting to login portal...</p>
+            <p className="text-[10px] text-blue-400 font-medium animate-pulse pt-1">Redirecting to authorization hub...</p>
           </div>
         )}
 
-        {/* Hide Form Fields Upon Success Execution */}
         {!success && (
           <form onSubmit={handleSubmit} className="space-y-3.5 text-slate-900">
             <div className="space-y-1">
@@ -154,14 +152,6 @@ export default function RegisterPage({ onNavigate }) {
               {loading ? 'Processing Registry Footprint...' : 'Register Account'}
             </button>
           </form>
-        )}
-
-        {!success && (
-          <div className="text-center pt-1">
-            <button type="button" onClick={() => onNavigate && onNavigate('auth-login')} className="text-xs font-bold text-blue-400 hover:text-blue-300 transition-colors underline cursor-pointer bg-transparent border-none outline-none">
-              Already have an active registry? Login here
-            </button>
-          </div>
         )}
 
         <div className="flex items-center justify-center gap-2 pt-2 text-[10px] font-bold text-slate-300 uppercase tracking-wider text-center border-t border-white/15">

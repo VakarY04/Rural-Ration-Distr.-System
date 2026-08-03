@@ -5,24 +5,32 @@ const userSchema = new mongoose.Schema(
   {
     name: {
       type: String,
-      required: [true, 'Please provide a full name'],
       trim: true,
+      default: 'Citizen User',
     },
     email: {
       type: String,
-      required: [true, 'Please provide an email address'],
       unique: true,
+      sparse: true, // Allows phone-only users without throwing duplicate/missing field errors
       trim: true,
       lowercase: true,
-      match: [
-        /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/,
-        'Please provide a valid email address',
-      ],
     },
     password: {
+      type: String, // Optional for phone OTP users
+    },
+    phone: {
       type: String,
-      required: [true, 'Please provide a security password'],
-      minlength: [6, 'Password must be at least 6 characters long'],
+      unique: true,
+      sparse: true,
+      trim: true,
+    },
+    otp: {
+      type: String,
+      default: undefined,
+    },
+    otpExpire: {
+      type: Date,
+      default: undefined,
     },
     resetPasswordToken: {
       type: String,
@@ -38,23 +46,22 @@ const userSchema = new mongoose.Schema(
   }
 );
 
-// --- FIXED PRE-SAVE HOOK (Removed 'next' parameter and calls) ---
+// Pre-save hook to hash password if present and modified
 userSchema.pre('save', async function () {
-  // Only hash the password if it has been modified (or is new)
-  if (!this.isModified('password')) {
-    return; // Just return to let Mongoose proceed automatically
+  if (!this.isModified('password') || !this.password) {
+    return;
   }
-
   try {
     const salt = await bcrypt.genSalt(10);
     this.password = await bcrypt.hash(this.password, salt);
   } catch (error) {
-    throw error; // Throwing an error inside an async hook correctly passes it down to the catch block
+    throw error;
   }
 });
 
-// Instance method to check entered password against hashed password in database
+// Instance method to check password match
 userSchema.methods.matchPassword = async function (enteredPassword) {
+  if (!this.password) return false;
   return await bcrypt.compare(enteredPassword, this.password);
 };
 
