@@ -1,79 +1,246 @@
-import React, { useState } from 'react';
-import { citizenService } from '../api';
-import { Users, Plus, Trash2, CheckCircle, AlertCircle } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { User, Shield, Plus, Trash2, Save, CheckCircle, AlertCircle } from 'lucide-react';
 
-export default function ProfilePage({ initialProfile, onProfileUpdate }) {
-  const [rationCardNumber, setRationCardNumber] = useState(initialProfile?.rationCardNumber || '');
-  const [headOfFamily, setHeadOfFamily] = useState(initialProfile?.headOfFamily || '');
-  const [members, setMembers] = useState(initialProfile?.members || [{ name: '', age: '', role: 'Head' }]);
-  const [status, setStatus] = useState({ type: '', message: '' });
+export default function ProfilePage() {
+  const [rationCardNumber, setRationCardNumber] = useState('');
+  const [headOfFamily, setHeadOfFamily] = useState('');
+  const [members, setMembers] = useState([
+    { name: '', age: '', relation: 'Head' }
+  ]);
 
-  const handleSave = async (e) => {
-    e.preventDefault();
-    setStatus({ type: '', message: '' });
-    try {
-      const res = await citizenService.saveProfile({ rationCardNumber, headOfFamily, members });
-      onProfileUpdate(res.data);
-      setStatus({ type: 'success', message: 'Household profile securely updated in MongoDB.' });
-    } catch (err) {
-      setStatus({ type: 'error', message: err });
-    }
-  };
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
+  const [success, setSuccess] = useState('');
 
-  const updateMember = (idx, field, val) => {
+  // Fetch Existing Profile on Mount
+  useEffect(() => {
+    const fetchProfile = async () => {
+      try {
+        const token = localStorage.getItem('ration_user_token');
+        if (!token) return;
+
+        const response = await fetch('http://localhost:5000/api/family/profile', {
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          if (data.rationCardNumber) setRationCardNumber(data.rationCardNumber);
+          if (data.headOfFamily) setHeadOfFamily(data.headOfFamily);
+          if (Array.isArray(data.members) && data.members.length > 0) {
+            setMembers(data.members.map(m => ({
+              name: m.name || '',
+              age: m.age || '',
+              relation: m.relation || m.role || m.relationship || 'Head'
+            })));
+          }
+        }
+      } catch (err) {
+        console.error('Fetch profile error:', err);
+      }
+    };
+
+    fetchProfile();
+  }, []);
+
+  // Handle Dynamic Member Inputs
+  const handleMemberChange = (index, field, value) => {
     const updated = [...members];
-    updated[idx][field] = val;
+    updated[index][field] = value;
     setMembers(updated);
   };
 
+  const addMemberRow = () => {
+    setMembers([...members, { name: '', age: '', relation: 'Dependent' }]);
+  };
+
+  const removeMemberRow = (index) => {
+    if (members.length === 1) return;
+    setMembers(members.filter((_, i) => i !== index));
+  };
+
+  // Submit Handler
+  const handleSaveProfile = async (e) => {
+    e.preventDefault();
+    setError('');
+    setSuccess('');
+    setLoading(true);
+
+    try {
+      const token = localStorage.getItem('ration_user_token');
+
+      // ✅ SANITIZE MEMBERS PAYLOAD TO MATCH MONGOOSE SCHEMA EXACTLY
+      const sanitizedMembers = members.map(m => ({
+        name: m.name.trim(),
+        age: Number(m.age) || 0,
+        relation: m.relation || m.role || m.relationship || 'Head'
+      }));
+
+      const profileData = {
+        rationCardNumber: rationCardNumber.trim(),
+        headOfFamily: headOfFamily.trim(),
+        members: sanitizedMembers
+      };
+
+      const response = await fetch('http://localhost:5000/api/family/profile', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify(profileData)
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        setSuccess('Profile changes saved successfully!');
+      } else {
+        setError(data.message || 'Failed to save family profile.');
+      }
+    } catch (err) {
+      console.error('Save Profile Error:', err);
+      setError(err.message || 'Could not connect to the server.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
-    <form onSubmit={handleSave} className="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 space-y-6">
-      <div className="border-b border-slate-100 pb-3">
-        <h2 className="text-base font-bold text-[#1A365D]">Manage Family Information</h2>
-        <p className="text-xs text-slate-500">Provide accurate identity references to automatically evaluate distribution limits.</p>
-      </div>
-
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+    <div className="max-w-4xl mx-auto p-4 space-y-6">
+      <div className="bg-white rounded-3xl p-8 border border-slate-200/80 shadow-sm space-y-6">
+        
         <div>
-          <label className="block text-xs font-bold text-slate-700 uppercase mb-1">Ration Card Document ID</label>
-          <input type="text" value={rationCardNumber} onChange={(e) => setRationCardNumber(e.target.value)} required className="w-full px-3 py-2 border border-slate-200 rounded-xl text-xs outline-none focus:ring-2 focus:ring-blue-600" placeholder="e.g., RC-991823" />
-        </div>
-        <div>
-          <label className="block text-xs font-bold text-slate-700 uppercase mb-1">Head of Family Representative</label>
-          <input type="text" value={headOfFamily} onChange={(e) => { setHeadOfFamily(e.target.value); updateMember(0, 'name', e.target.value); }} required className="w-full px-3 py-2 border border-slate-200 rounded-xl text-xs outline-none focus:ring-2 focus:ring-blue-600" placeholder="e.g., Ram Charan" />
-        </div>
-      </div>
-
-      <div className="space-y-3">
-        <div className="flex justify-between items-center border-b border-slate-100 pb-2">
-          <label className="text-xs font-bold uppercase text-slate-700 flex items-center gap-1"><Users size={14} /> Dependents Registry Grid</label>
-          <button type="button" onClick={() => setMembers([...members, { name: '', age: '', role: 'Member' }])} className="text-[10px] font-bold bg-blue-50 text-blue-700 px-2 py-1 rounded hover:bg-blue-100 flex items-center gap-0.5"><Plus size={10}/> Add Member Row</button>
+          <h2 className="text-xl font-black text-slate-800 tracking-tight">Manage Family Information</h2>
+          <p className="text-xs text-slate-500 font-medium mt-1">
+            Provide accurate identity references to automatically evaluate distribution limits.
+          </p>
         </div>
 
-        {members.map((m, idx) => (
-          <div key={idx} className="flex gap-2 items-center bg-slate-50 p-2 rounded-xl border border-slate-100">
-            <input type="text" placeholder="Full Name" value={m.name} required onChange={(e) => updateMember(idx, 'name', e.target.value)} className="flex-1 p-1.5 border border-slate-200 bg-white rounded-lg text-xs outline-none focus:ring-1 focus:ring-blue-600" />
-            <input type="number" placeholder="Age" value={m.age} required onChange={(e) => updateMember(idx, 'age', e.target.value)} className="w-16 p-1.5 border border-slate-200 bg-white rounded-lg text-xs outline-none focus:ring-1 focus:ring-blue-600" />
-            <select value={m.role} onChange={(e) => updateMember(idx, 'role', e.target.value)} className="w-24 p-1.5 border border-slate-200 bg-white rounded-lg text-xs outline-none text-slate-600">
-              <option value="Head">Head</option>
-              <option value="Spouse">Spouse</option>
-              <option value="Son">Son</option>
-              <option value="Daughter">Daughter</option>
-              <option value="Member">Member</option>
-            </select>
-            {idx > 0 && <button type="button" onClick={() => setMembers(members.filter((_, i) => i !== idx))} className="text-red-500 p-1 hover:bg-red-50 rounded-lg"><Trash2 size={14}/></button>}
+        {/* Dynamic Alerts */}
+        {error && (
+          <div className="bg-red-50 border border-red-200 text-red-600 p-3.5 rounded-2xl text-xs font-bold flex items-center gap-2">
+            <AlertCircle size={16} />
+            <span>{typeof error === 'string' ? error : 'An unexpected error occurred'}</span>
           </div>
-        ))}
+        )}
+
+        {success && (
+          <div className="bg-emerald-50 border border-emerald-200 text-emerald-600 p-3.5 rounded-2xl text-xs font-bold flex items-center gap-2">
+            <CheckCircle size={16} />
+            <span>{success}</span>
+          </div>
+        )}
+
+        <form onSubmit={handleSaveProfile} className="space-y-6">
+          
+          {/* Main Card Inputs */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="space-y-1.5">
+              <label className="text-[11px] font-bold text-slate-600 uppercase tracking-wider">
+                Ration Card Document ID
+              </label>
+              <input 
+                type="text" 
+                required 
+                value={rationCardNumber} 
+                onChange={(e) => setRationCardNumber(e.target.value)} 
+                placeholder="e.g. RC-991823"
+                className="w-full bg-slate-50 border border-slate-200 rounded-2xl px-4 py-3 text-xs font-bold text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              />
+            </div>
+
+            <div className="space-y-1.5">
+              <label className="text-[11px] font-bold text-slate-600 uppercase tracking-wider">
+                Head of Family Representative
+              </label>
+              <input 
+                type="text" 
+                required 
+                value={headOfFamily} 
+                onChange={(e) => setHeadOfFamily(e.target.value)} 
+                placeholder="e.g. Ramesh Kumar"
+                className="w-full bg-slate-50 border border-slate-200 rounded-2xl px-4 py-3 text-xs font-bold text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              />
+            </div>
+          </div>
+
+          {/* Members Registry Grid */}
+          <div className="space-y-3 pt-2">
+            <div className="flex items-center justify-between">
+              <label className="text-[11px] font-bold text-slate-600 uppercase tracking-wider flex items-center gap-1.5">
+                <User size={14} />
+                <span>Dependents Registry Grid</span>
+              </label>
+              <button 
+                type="button" 
+                onClick={addMemberRow}
+                className="flex items-center gap-1 text-xs font-bold text-blue-600 hover:text-blue-700 bg-blue-50 hover:bg-blue-100 px-3 py-1.5 rounded-xl transition-colors cursor-pointer"
+              >
+                <Plus size={14} />
+                <span>Add Member Row</span>
+              </button>
+            </div>
+
+            <div className="space-y-2">
+              {members.map((member, index) => (
+                <div key={index} className="flex items-center gap-2 bg-slate-50 p-2.5 rounded-2xl border border-slate-200/80">
+                  <input 
+                    type="text" 
+                    required 
+                    placeholder="Member Name" 
+                    value={member.name} 
+                    onChange={(e) => handleMemberChange(index, 'name', e.target.value)}
+                    className="flex-1 bg-white border border-slate-200 rounded-xl px-3 py-2 text-xs font-bold text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  />
+
+                  <input 
+                    type="number" 
+                    required 
+                    placeholder="Age" 
+                    value={member.age} 
+                    onChange={(e) => handleMemberChange(index, 'age', e.target.value)}
+                    className="w-20 bg-white border border-slate-200 rounded-xl px-3 py-2 text-xs font-bold text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  />
+
+                  <select 
+                    value={member.relation} 
+                    onChange={(e) => handleMemberChange(index, 'relation', e.target.value)}
+                    className="w-32 bg-white border border-slate-200 rounded-xl px-3 py-2 text-xs font-bold text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  >
+                    <option value="Head">Head</option>
+                    <option value="Spouse">Spouse</option>
+                    <option value="Child">Child</option>
+                    <option value="Parent">Parent</option>
+                    <option value="Other">Other</option>
+                  </select>
+
+                  {members.length > 1 && (
+                    <button 
+                      type="button" 
+                      onClick={() => removeMemberRow(index)}
+                      className="p-2 text-red-500 hover:bg-red-50 rounded-xl transition-colors cursor-pointer"
+                    >
+                      <Trash2 size={16} />
+                    </button>
+                  )}
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Submit Button */}
+          <button 
+            type="submit" 
+            disabled={loading}
+            className={`w-full bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold py-4 rounded-2xl transition duration-200 shadow-lg uppercase tracking-wider cursor-pointer flex items-center justify-center gap-2 ${loading ? 'opacity-50 cursor-not-allowed' : ''}`}
+          >
+            <Save size={16} />
+            <span>{loading ? 'Saving Changes...' : 'Save Profiles Changes'}</span>
+          </button>
+
+        </form>
       </div>
-
-      {status.message && (
-        <div className={`p-4 rounded-xl text-xs font-semibold flex items-center gap-2 border ${status.type === 'success' ? 'bg-green-50 border-green-200 text-green-800' : 'bg-red-50 border-red-200 text-red-800'}`}>
-          {status.type === 'success' ? <CheckCircle size={14} /> : <AlertCircle size={14} />}
-          <span>{status.message}</span>
-        </div>
-      )}
-
-      <button type="submit" className="w-full py-3 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl text-xs transition uppercase shadow-md shadow-emerald-50">Save Profiles Changes</button>
-    </form>
+    </div>
   );
 }

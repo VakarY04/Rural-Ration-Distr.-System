@@ -176,13 +176,17 @@ export const sendOtp = async (req, res) => {
     user.otpExpire = otpExpire;
     await user.save();
 
-    // TODO: Send SMS via provider (e.g., Twilio / Fast2SMS / Msg91)
-    // For local testing, we log the OTP directly to the terminal console:
-    console.log(`\n===================================`);
-    console.log(`📱 [DEVELOPMENT OTP CODE]`);
-    console.log(`Phone: ${phone}`);
-    console.log(`OTP: ${otp}`);
-    console.log(`===================================\n`);
+    // Inside sendOtp controller:
+    if (process.env.NODE_ENV === 'production') {
+      // 🚀 PRODUCTION: Send actual SMS text message via Fast2SMS / Twilio
+      // await sendRealSms(phone, otp);
+    } else {
+      // 💻 LOCAL DEV: Log cleanly to terminal
+      console.log(`\n===================================`);
+      console.log(`📱 [DEVELOPMENT OTP CODE]`);
+      console.log(`Phone: ${phone} | OTP: ${otp}`);
+      console.log(`===================================\n`);
+    }
 
     res.status(200).json({ message: "OTP successfully sent to your mobile number." });
   } catch (error) {

@@ -1,5 +1,5 @@
 import { Booking } from '../models/Booking.js';
-import { Family } from '../models/Family.js';
+import Family from '../models/Family.js';
 
 const MAX_FAMILIES_PER_SLOT = 6;
 
