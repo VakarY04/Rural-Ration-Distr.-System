@@ -152,3 +152,78 @@ export const resetPassword = async (req, res) => {
     res.status(500).json({ message: "Error updating authentication parameters." });
   }
 };
+
+// 5. Send OTP Controller
+export const sendOtp = async (req, res) => {
+  const { phone } = req.body;
+
+  if (!phone || phone.length < 10) {
+    return res.status(400).json({ message: "Please provide a valid phone number." });
+  }
+
+  try {
+    // Generate a secure 6-digit OTP
+    const otp = Math.floor(100000 + Math.random() * 900000).toString();
+    const otpExpire = Date.now() + 5 * 60 * 1000; // Active for 5 minutes
+
+    // Find existing user or create a new footprint
+    let user = await User.findOne({ phone });
+    if (!user) {
+      user = new User({ phone });
+    }
+
+    user.otp = otp;
+    user.otpExpire = otpExpire;
+    await user.save();
+
+    // TODO: Send SMS via provider (e.g., Twilio / Fast2SMS / Msg91)
+    // For local testing, we log the OTP directly to the terminal console:
+    console.log(`\n===================================`);
+    console.log(`📱 [DEVELOPMENT OTP CODE]`);
+    console.log(`Phone: ${phone}`);
+    console.log(`OTP: ${otp}`);
+    console.log(`===================================\n`);
+
+    res.status(200).json({ message: "OTP successfully sent to your mobile number." });
+  } catch (error) {
+    console.error("Send OTP Error:", error);
+    res.status(500).json({ message: "Failed to dispatch OTP verification code." });
+  }
+};
+
+// 6. Verify OTP Controller
+export const verifyOtp = async (req, res) => {
+  const { phone, otp } = req.body;
+
+  try {
+    const user = await User.findOne({
+      phone,
+      otp,
+      otpExpire: { $gt: Date.now() } // Must not be expired
+    });
+
+    if (!user) {
+      return res.status(400).json({ message: "Invalid or expired OTP code." });
+    }
+
+    // Clear OTP fields once verified
+    user.otp = undefined;
+    user.otpExpire = undefined;
+    await user.save();
+
+    // Generate JWT Session Token
+    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: '30d' });
+
+    res.status(200).json({
+      token,
+      data: {
+        id: user._id,
+        phone: user.phone,
+        name: user.name || 'Citizen User',
+      }
+    });
+  } catch (error) {
+    console.error("Verify OTP Error:", error);
+    res.status(500).json({ message: "Internal server error during verification." });
+  }
+};

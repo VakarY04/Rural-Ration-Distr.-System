@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import LandingPage from './pages/LandingPage';
-import AuthPage from './pages/AuthPage';
+import AuthPage from './pages/AuthPage'; // Selector Hub
+import EmailAuthPage from './pages/EmailAuthPage';
+import PhoneAuthPage from './pages/PhoneAuthPage';
 import RegisterPage from './pages/RegisterPage';
-import ForgotPasswordPage from './pages/ForgotPasswordPage'; // FIXED: Make sure this is imported!
+import ForgotPasswordPage from './pages/ForgotPasswordPage';
 import ResetPasswordPage from './pages/ResetPasswordPage';
 import DashboardShell from './components/DashboardShell';
 import DashboardHome from './pages/DashboardHome';
@@ -29,28 +31,57 @@ export default function App() {
 
   return (
     <div className="min-h-screen bg-[#F4F6F9]">
-      {currentPage === 'landing' && <LandingPage onNavigate={setCurrentPage} />}
+      {/* 1. Landing Page */}
+      {currentPage === 'landing' && (
+        <LandingPage onNavigate={setCurrentPage} />
+      )}
       
-      {currentPage === 'auth-login' && (
-        <AuthPage onAuthSuccess={() => setCurrentPage('dashboard')} onNavigate={setCurrentPage} />
+      {/* 2. Selection Hub (Handles legacy 'auth' and 'auth-login' calls safely) */}
+      {(currentPage === 'auth-selection' || currentPage === 'auth-login' || currentPage === 'auth') && (
+        <AuthPage onNavigate={setCurrentPage} />
       )}
 
+      {/* 3. Dedicated Email Authentication Page */}
+      {currentPage === 'auth-email' && (
+        <EmailAuthPage 
+          onAuthSuccess={() => setCurrentPage('dashboard')} 
+          onNavigate={setCurrentPage} 
+        />
+      )}
+
+      {/* 4. Dedicated Phone OTP Authentication Page */}
+      {currentPage === 'auth-phone' && (
+        <PhoneAuthPage 
+          onAuthSuccess={() => setCurrentPage('dashboard')} 
+          onNavigate={setCurrentPage} 
+        />
+      )}
+
+      {/* 5. Registration Page */}
       {currentPage === 'auth-register' && (
-        <RegisterPage onAuthSuccess={() => setCurrentPage('dashboard')} onNavigate={setCurrentPage} />
+        <RegisterPage onNavigate={setCurrentPage} />
       )}
 
-      {/* FIXED ROUTING: Connects to the email sending engine page */}
+      {/* 6. Password Recovery Requests */}
       {currentPage === 'auth-forgot' && (
         <ForgotPasswordPage onNavigate={setCurrentPage} />
       )}
 
-      {/* FIXED ROUTING: Connects to the password input modification form */}
+      {/* 7. Password Reset Verification Form */}
       {currentPage === 'reset-password' && (
-        <ResetPasswordPage token={resetToken} onResetSuccess={() => setCurrentPage('auth-login')} />
+        <ResetPasswordPage 
+          token={resetToken} 
+          onResetSuccess={() => setCurrentPage('auth-email')} 
+        />
       )}
 
+      {/* 8. Main Dashboard Application Shell */}
       {currentPage === 'dashboard' && (
-        <DashboardShell currentSubPage={currentSubPage} onSubPageChange={setCurrentSubPage} onLogout={() => setCurrentPage('landing')}>
+        <DashboardShell 
+          currentSubPage={currentSubPage} 
+          onSubPageChange={setCurrentSubPage} 
+          onLogout={() => setCurrentPage('landing')}
+        >
           {currentSubPage === 'home' && <DashboardHome onNavigate={setCurrentSubPage} />}
           {currentSubPage === 'profile' && <ProfilePage />}
           {currentSubPage === 'booking' && <BookingPage />}

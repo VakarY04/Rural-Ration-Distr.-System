@@ -14,6 +14,10 @@ router.post('/auth/register', authController.register);
 router.post('/auth/forgot-password', authController.forgotPassword);
 router.post('/auth/reset-password/:token', authController.resetPassword);
 
+// --- OTP AUTHENTICATION ENDPOINTS ---
+router.post('/auth/send-otp', authController.sendOtp);
+router.post('/auth/verify-otp', authController.verifyOtp);
+
 // Protected Family Storage Endpoints
 router.post('/family/profile', protect, familyController.saveProfile);
 router.get('/family/profile', protect, familyController.getProfile);
