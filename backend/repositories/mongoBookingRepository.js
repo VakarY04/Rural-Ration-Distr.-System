@@ -33,5 +33,11 @@ export const mongoBookingRepository = {
 
   getAllBookings: async () => {
     return await BookingModel.find({});
+  },
+
+  createFamily: async (familyData) => {
+    // Future production lookup step:
+    // return await FamilyModel.create(familyData);
+    return null;
   }
 };
