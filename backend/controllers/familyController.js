@@ -12,7 +12,7 @@ export const getFamilyProfile = async (req, res) => {
     const profile = await Family.findOne({ user: userId });
 
     if (!profile) {
-      return res.status(404).json({ message: 'No family profile found for this user.' });
+      return res.status(200).json(null); // no profile yet — not an error
     }
 
     return res.status(200).json(profile);
