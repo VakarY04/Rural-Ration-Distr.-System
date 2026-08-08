@@ -38,6 +38,14 @@ const familySchema = new mongoose.Schema(
       required: [true, 'Head of Family representative name is required'],
       trim: true,
     },
+    address: {
+      village: { type: String, required: [true, 'Village/town is required'], trim: true },
+      block: { type: String, trim: true },
+      district: { type: String, required: [true, 'District is required'], trim: true },
+      state: { type: String, required: [true, 'State is required'], trim: true },
+      pincode: { type: String, trim: true },
+    },
+
     members: [memberSchema],
   },
   {

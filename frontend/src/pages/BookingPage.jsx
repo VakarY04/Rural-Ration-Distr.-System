@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Calendar, Clock, ShoppingBag, CheckCircle, AlertCircle, RefreshCw, ShieldCheck, UserCheck } from 'lucide-react';
+import { computeAllocatedItems } from '../utils/ration';
 
 export default function BookingPage() {
   const [profile, setProfile] = useState(null);
@@ -75,12 +76,7 @@ export default function BookingPage() {
         headOfFamily: profile?.headOfFamily,
         distributionDate: selectedDate,
         timeSlot: selectedSlot,
-        allocatedItems: [
-          { name: 'Rice', quantity: `${memberCount * 5} kg` },
-          { name: 'Wheat Flour', quantity: `${memberCount * 5} kg` },
-          { name: 'Sugar', quantity: `${memberCount * 1} kg` },
-          { name: 'Refined Oil', quantity: '1 Liter' }
-        ]
+        allocatedItems: computeAllocatedItems(memberCount)
       };
 
       const response = await fetch('http://localhost:5000/api/bookings', {
