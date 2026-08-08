@@ -1,27 +1,33 @@
 import React from 'react';
-import { LayoutDashboard, Users, Calendar, Bot, LogOut, ShieldCheck } from 'lucide-react';
+import { LayoutDashboard, Users, Calendar, MessageCircle, LogOut } from 'lucide-react';
 import logoAsset from '../images/E-RATION Logo.png';
 
 export default function DashboardShell({ children, currentSubPage, onSubPageChange, onLogout }) {
   const navItems = [
-    { id: 'home', label: 'Terminal Hub', icon: LayoutDashboard },
-    { id: 'profile', label: 'Family Profiles', icon: Users },
-    { id: 'booking', label: 'Ration Bookings', icon: Calendar },
-    { id: 'ai-support', label: 'Gemini AI Help', icon: Bot },
+    { id: 'home', label: 'Terminal hub', icon: LayoutDashboard },
+    { id: 'profile', label: 'Family profile', icon: Users },
+    { id: 'booking', label: 'Ration bookings', icon: Calendar },
+    { id: 'ai-support', label: 'AI help desk', icon: MessageCircle },
   ];
 
   return (
-    <div className="flex min-h-screen bg-slate-100 font-sans">
+    <div className="flex min-h-screen bg-slate-50 font-sans">
       {/* Sidebar Navigation */}
       <aside className="w-64 bg-slate-900 text-white flex flex-col justify-between p-5 border-r border-slate-800 shrink-0">
-        <div className="space-y-6">
-          <div className="flex items-center gap-3 px-2">
-            <img src={logoAsset} alt="E-Ration" className="w-10 h-10 object-contain rounded-xl bg-slate-800 p-1" />
+        <div>
+          <div className="flex items-center gap-3 px-1 mb-4">
+            <img src={logoAsset} alt="E-Ration" className="w-11 h-11 object-contain rounded-xl bg-slate-800 p-1" />
             <div>
-              <h1 className="text-sm font-black uppercase tracking-wider text-white">E-Distribution</h1>
-              <p className="text-[10px] text-slate-400 font-medium">Citizen Workspace</p>
+              <h1 className="text-sm font-bold text-white leading-tight">E-ration portal</h1>
+              <p className="text-[11px] text-slate-400 font-medium">Citizen workspace</p>
             </div>
           </div>
+
+          {/* Tricolor signature hairline, echoing the landing page accent */}
+          <div
+            className="h-[3px] w-full rounded-full mb-5"
+            style={{ background: 'linear-gradient(90deg, #F59E0B 0%, #E2E8F0 50%, #10B981 100%)' }}
+          />
 
           <nav className="space-y-1">
             {navItems.map((item) => {
@@ -31,8 +37,11 @@ export default function DashboardShell({ children, currentSubPage, onSubPageChan
                 <button
                   key={item.id}
                   onClick={() => onSubPageChange(item.id)}
-                  className={`w-full flex items-center gap-3 px-4 py-3 rounded-2xl text-xs font-bold transition-all cursor-pointer ${
-                    active ? 'bg-blue-600 text-white shadow-lg' : 'text-slate-400 hover:text-white hover:bg-slate-800'
+                  aria-current={active ? 'page' : undefined}
+                  className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold transition-all cursor-pointer focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-amber-400 ${
+                    active
+                      ? 'bg-blue-600 text-white shadow-md'
+                      : 'text-slate-300 hover:text-white hover:bg-slate-800'
                   }`}
                 >
                   <Icon size={18} />
@@ -45,10 +54,10 @@ export default function DashboardShell({ children, currentSubPage, onSubPageChan
 
         <button
           onClick={onLogout}
-          className="w-full flex items-center justify-center gap-2 bg-red-500/10 hover:bg-red-500/20 text-red-400 border border-red-500/30 py-3 rounded-2xl text-xs font-bold transition-colors cursor-pointer"
+          className="w-full flex items-center justify-center gap-2 border border-slate-700 hover:border-slate-600 hover:bg-slate-800 text-slate-300 hover:text-white py-3 rounded-xl text-sm font-semibold transition-colors cursor-pointer focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-amber-400"
         >
           <LogOut size={16} />
-          <span>Terminate Session</span>
+          <span>Log out</span>
         </button>
       </aside>
 

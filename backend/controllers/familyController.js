@@ -12,7 +12,7 @@ export const getFamilyProfile = async (req, res) => {
     const profile = await Family.findOne({ user: userId });
 
     if (!profile) {
-      return res.status(200).json(null); // no profile yet — not an error
+      return res.status(404).json({ message: 'No family profile found for this user.' });
     }
 
     return res.status(200).json(profile);
@@ -25,17 +25,17 @@ export const getFamilyProfile = async (req, res) => {
 // Create or Update Family Profile
 export const updateFamilyProfile = async (req, res) => {
   try {
-    const userId = req.user?.id || req.user?._id;
-
-    if (!userId) {
-      return res.status(401).json({ message: 'Unauthorized access token.' });
-    }
-
-    const { rationCardNumber, headOfFamily, members } = req.body;
+    const { rationCardNumber, headOfFamily, address, members } = req.body;
 
     if (!rationCardNumber || !headOfFamily) {
       return res.status(400).json({
         message: 'Please provide both Ration Card Document ID and Head of Family representative name.',
+      });
+    }
+
+    if (!address?.village || !address?.district || !address?.state) {
+      return res.status(400).json({
+        message: 'Please provide your village/town, district, and state so we can assign your local distributor.',
       });
     }
 

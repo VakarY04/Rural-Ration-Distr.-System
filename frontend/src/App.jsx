@@ -48,6 +48,7 @@ export default function App() {
   // ✅ 4. Clean logout handler
   const handleLogout = () => {
     localStorage.removeItem('ration_user_token');
+    localStorage.removeItem('ration_user_name');
     localStorage.removeItem('active_page');
     localStorage.removeItem('active_sub_page');
     handleNavigate('landing');

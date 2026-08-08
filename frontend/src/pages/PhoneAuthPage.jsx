@@ -93,6 +93,7 @@ export default function PhoneAuthPage({ onAuthSuccess, onNavigate }) {
 
       if (response.ok) {
         localStorage.setItem('ration_user_token', data.token);
+        localStorage.setItem('ration_user_name', data.data?.name || 'Citizen');
         if (onAuthSuccess) onAuthSuccess();
       } else {
         setError(data.message || 'Invalid or expired OTP verification code.');

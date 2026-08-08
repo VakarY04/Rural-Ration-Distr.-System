@@ -231,3 +231,54 @@ export const verifyOtp = async (req, res) => {
     res.status(500).json({ message: "Internal server error during verification." });
   }
 };
+
+// Get the logged-in citizen's own account details (name, phone, email)
+export const getMe = async (req, res) => {
+  try {
+    const userId = req.user?.id || req.user?._id;
+    const user = await User.findById(userId).select(
+      '-password -otp -otpExpire -resetPasswordToken -resetPasswordExpire'
+    );
+    if (!user) {
+      return res.status(404).json({ message: 'Account not found.' });
+    }
+    res.status(200).json({
+      name: user.name,
+      phone: user.phone || null,
+      email: user.email || null,
+    });
+  } catch (error) {
+    console.error('Get Account Details Error:', error);
+    res.status(500).json({ message: 'Failed to load account details.' });
+  }
+};
+
+// Update the logged-in citizen's own name.
+// Phone/email are intentionally left read-only here since they're tied to
+// how the account is logged into (OTP phone match / email+password login).
+export const updateMe = async (req, res) => {
+  try {
+    const userId = req.user?.id || req.user?._id;
+    const { name } = req.body;
+
+    if (!name || !name.trim()) {
+      return res.status(400).json({ message: 'Please provide your name.' });
+    }
+
+    const user = await User.findByIdAndUpdate(
+      userId,
+      { name: name.trim() },
+      { new: true, runValidators: true }
+    );
+
+    res.status(200).json({
+      message: 'Account details updated.',
+      name: user.name,
+      phone: user.phone || null,
+      email: user.email || null,
+    });
+  } catch (error) {
+    console.error('Update Account Details Error:', error);
+    res.status(400).json({ message: error.message || 'Failed to update account details.' });
+  }
+};
