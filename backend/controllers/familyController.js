@@ -25,6 +25,12 @@ export const getFamilyProfile = async (req, res) => {
 // Create or Update Family Profile
 export const updateFamilyProfile = async (req, res) => {
   try {
+    const userId = req.user?.id || req.user?._id;
+
+    if (!userId) {
+      return res.status(401).json({ message: 'Unauthorized access token.' });
+    }
+
     const { rationCardNumber, headOfFamily, address, members } = req.body;
 
     if (!rationCardNumber || !headOfFamily) {
@@ -48,12 +54,18 @@ export const updateFamilyProfile = async (req, res) => {
         }))
       : [];
 
-    // Modern Mongoose update options using returnDocument: 'after'
     const updatedProfile = await Family.findOneAndUpdate(
       { user: userId },
       {
         rationCardNumber: rationCardNumber.trim(),
         headOfFamily: headOfFamily.trim(),
+        address: {
+          village: address.village.trim(),
+          block: address.block?.trim() || '',
+          district: address.district.trim(),
+          state: address.state.trim(),
+          pincode: address.pincode?.trim() || '',
+        },
         members: sanitizedMembers,
       },
       { returnDocument: 'after', upsert: true, runValidators: true }

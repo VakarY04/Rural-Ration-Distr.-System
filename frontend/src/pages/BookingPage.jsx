@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Calendar, Clock, ShoppingBag, CheckCircle, AlertCircle, RefreshCw, ShieldCheck, UserCheck } from 'lucide-react';
-import { computeAllocatedItems } from '../utils/ration';
+import { computeAllocatedItems, computeTotalQuotaKg } from '../utils/ration';
 
 export default function BookingPage() {
   const [profile, setProfile] = useState(null);
@@ -133,7 +133,7 @@ export default function BookingPage() {
     );
   }
 
-  const memberCount = profile.members?.length || 1;
+  const memberCount = (profile.members?.length || 0) + 1; // +1 for head of family
 
   return (
     <div className="max-w-4xl mx-auto p-4 space-y-6">
@@ -181,22 +181,10 @@ export default function BookingPage() {
             <ShoppingBag size={16} className="text-blue-600" />
             <span>Monthly Quota Allocation ({memberCount} Registered Member{memberCount > 1 ? 's' : ''})</span>
           </div>
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-center">
-            <div className="bg-white border border-slate-200/80 p-3 rounded-xl shadow-2xs">
-              <span className="text-[10px] font-bold uppercase text-slate-400 block">Rice</span>
-              <span className="text-sm font-black text-slate-800">{memberCount * 5} kg</span>
-            </div>
-            <div className="bg-white border border-slate-200/80 p-3 rounded-xl shadow-2xs">
-              <span className="text-[10px] font-bold uppercase text-slate-400 block">Wheat Flour</span>
-              <span className="text-sm font-black text-slate-800">{memberCount * 5} kg</span>
-            </div>
-            <div className="bg-white border border-slate-200/80 p-3 rounded-xl shadow-2xs">
-              <span className="text-[10px] font-bold uppercase text-slate-400 block">Sugar</span>
-              <span className="text-sm font-black text-slate-800">{memberCount * 1} kg</span>
-            </div>
-            <div className="bg-white border border-slate-200/80 p-3 rounded-xl shadow-2xs">
-              <span className="text-[10px] font-bold uppercase text-slate-400 block">Refined Oil</span>
-              <span className="text-sm font-black text-slate-800">1 Liter</span>
+          <div className="grid grid-cols-1 gap-3 text-center">
+            <div className="bg-white border border-slate-200/80 p-4 rounded-xl shadow-2xs">
+              <span className="text-[10px] font-bold uppercase text-slate-400 block">Food grains (rice / wheat / coarse grains)</span>
+              <span className="text-lg font-black text-slate-800">{computeTotalQuotaKg(memberCount)} kg</span>
             </div>
           </div>
         </div>

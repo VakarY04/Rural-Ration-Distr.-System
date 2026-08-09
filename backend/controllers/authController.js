@@ -268,7 +268,7 @@ export const updateMe = async (req, res) => {
     const user = await User.findByIdAndUpdate(
       userId,
       { name: name.trim() },
-      { new: true, runValidators: true }
+      { returnDocument: 'after', runValidators: true }
     );
 
     res.status(200).json({

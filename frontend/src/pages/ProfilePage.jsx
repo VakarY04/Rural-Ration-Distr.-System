@@ -5,12 +5,8 @@ import {
 
 const RELATION_OPTIONS = ['Spouse', 'Child', 'Parent', 'Sibling', 'Grandparent', 'Other'];
 
-const [address, setAddress] = useState({ village: '', block: '', district: '', state: '', pincode: '' });
-
-// Mirrors backend/services/rationCalculator.js — used here only to show a
-// live preview as the household size changes. The backend figure (shown on
-// the Terminal Hub) is always the source of truth.
-const PER_MEMBER_RATES = { rice: 5, grains: 3, pulses: 1.5, oil: 0.5 };
+const GRAIN_PER_MEMBER_KG = 5;
+const MIN_HOUSEHOLD_GRAIN_KG = 35;
 
 const emptyMember = () => ({ name: '', age: '', relation: 'Child' });
 
@@ -25,6 +21,7 @@ export default function ProfilePage() {
   // Ration card / household details
   const [card, setCard] = useState('');
   const [head, setHead] = useState('');
+  const [address, setAddress] = useState({ village: '', block: '', district: '', state: '', pincode: '' });
   const [members, setMembers] = useState([emptyMember()]);
 
   const [saving, setSaving] = useState(false);
@@ -134,13 +131,8 @@ export default function ProfilePage() {
     }
   };
 
-  const totalMembers = members.filter((m) => m.name?.trim()).length + 1; // +1 for head of family
-  const estimatedQuota = {
-    rice: (PER_MEMBER_RATES.rice * totalMembers).toFixed(1),
-    grains: (PER_MEMBER_RATES.grains * totalMembers).toFixed(1),
-    pulses: (PER_MEMBER_RATES.pulses * totalMembers).toFixed(1),
-    oil: (PER_MEMBER_RATES.oil * totalMembers).toFixed(1),
-  };
+  const totalMembers = members.filter((m) => m.name?.trim()).length + 1;
+  const estimatedGrainsKg = Math.max(MIN_HOUSEHOLD_GRAIN_KG, GRAIN_PER_MEMBER_KG * totalMembers);
 
   if (loading) {
     return (
@@ -247,7 +239,7 @@ export default function ProfilePage() {
             <h2 className="text-xs font-bold uppercase tracking-wide text-slate-400">Address / location</h2>
           </div>
           <p className="text-xs text-slate-500 -mt-2">
-            Your ration is distributed from the depot serving this area, so please keep it accurate.
+            This determines your local distributor — where you'll collect your ration from.
           </p>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -407,22 +399,10 @@ export default function ProfilePage() {
           <p className="text-xs font-bold uppercase tracking-wide text-slate-400 mb-3">
             Estimated monthly ration ({totalMembers} member{totalMembers === 1 ? '' : 's'})
           </p>
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-            <div className="bg-white rounded-xl border border-slate-200 p-3 text-center">
-              <p className="text-lg font-bold text-slate-900">{estimatedQuota.rice} kg</p>
-              <p className="text-[11px] text-slate-400">Rice</p>
-            </div>
-            <div className="bg-white rounded-xl border border-slate-200 p-3 text-center">
-              <p className="text-lg font-bold text-slate-900">{estimatedQuota.grains} kg</p>
-              <p className="text-[11px] text-slate-400">Grains</p>
-            </div>
-            <div className="bg-white rounded-xl border border-slate-200 p-3 text-center">
-              <p className="text-lg font-bold text-slate-900">{estimatedQuota.pulses} kg</p>
-              <p className="text-[11px] text-slate-400">Pulses</p>
-            </div>
-            <div className="bg-white rounded-xl border border-slate-200 p-3 text-center">
-              <p className="text-lg font-bold text-slate-900">{estimatedQuota.oil} L</p>
-              <p className="text-[11px] text-slate-400">Oil</p>
+          <div className="grid grid-cols-1">
+            <div className="bg-white rounded-xl border border-slate-200 p-4 text-center">
+              <p className="text-2xl font-bold text-slate-900">{estimatedGrainsKg} kg</p>
+              <p className="text-[11px] text-slate-400">Food grains (rice / wheat / coarse grains)</p>
             </div>
           </div>
           <p className="text-[11px] text-slate-400 mt-3">
