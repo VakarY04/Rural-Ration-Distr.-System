@@ -1,18 +1,21 @@
 import React from 'react';
-import { LayoutDashboard, Users, Calendar, MessageCircle, LogOut } from 'lucide-react';
 import logoAsset from '../images/E-RATION Logo.png';
+import terminalHubIcon from '../images/nav/terminal-hub.png';
+import familyProfileIcon from '../images/nav/family-profile.png';
+import rationBookingsIcon from '../images/nav/ration-bookings.png';
+import aiHelpDeskIcon from '../images/nav/ai-help-desk.png';
+import logoutIcon from '../images/nav/logout.png';
 
 export default function DashboardShell({ children, currentSubPage, onSubPageChange, onLogout }) {
   const navItems = [
-    { id: 'home', label: 'Terminal hub', icon: LayoutDashboard },
-    { id: 'profile', label: 'Family profile', icon: Users },
-    { id: 'booking', label: 'Ration bookings', icon: Calendar },
-    { id: 'ai-support', label: 'AI help desk', icon: MessageCircle },
+    { id: 'home', label: 'Terminal hub', icon: terminalHubIcon },
+    { id: 'profile', label: 'Family profile', icon: familyProfileIcon },
+    { id: 'booking', label: 'Ration bookings', icon: rationBookingsIcon },
+    { id: 'ai-support', label: 'AI help desk', icon: aiHelpDeskIcon },
   ];
 
   return (
-    <div className="flex min-h-screen bg-slate-50 font-sans">
-      {/* Sidebar Navigation */}
+    <div className="flex h-screen overflow-hidden bg-slate-50 font-sans">
       <aside className="w-64 bg-slate-900 text-white flex flex-col justify-between p-5 border-r border-slate-800 shrink-0">
         <div>
           <div className="flex items-center gap-3 px-1 mb-4">
@@ -23,7 +26,6 @@ export default function DashboardShell({ children, currentSubPage, onSubPageChan
             </div>
           </div>
 
-          {/* Tricolor signature hairline, echoing the landing page accent */}
           <div
             className="h-[3px] w-full rounded-full mb-5"
             style={{ background: 'linear-gradient(90deg, #F59E0B 0%, #E2E8F0 50%, #10B981 100%)' }}
@@ -31,7 +33,6 @@ export default function DashboardShell({ children, currentSubPage, onSubPageChan
 
           <nav className="space-y-1">
             {navItems.map((item) => {
-              const Icon = item.icon;
               const active = currentSubPage === item.id;
               return (
                 <button
@@ -39,12 +40,10 @@ export default function DashboardShell({ children, currentSubPage, onSubPageChan
                   onClick={() => onSubPageChange(item.id)}
                   aria-current={active ? 'page' : undefined}
                   className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold transition-all cursor-pointer focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-amber-400 ${
-                    active
-                      ? 'bg-blue-600 text-white shadow-md'
-                      : 'text-slate-300 hover:text-white hover:bg-slate-800'
+                    active ? 'bg-blue-600 text-white shadow-md' : 'text-slate-300 hover:text-white hover:bg-slate-800'
                   }`}
                 >
-                  <Icon size={18} />
+                  <img src={item.icon} alt="" className="w-5 h-5 object-contain shrink-0" />
                   <span>{item.label}</span>
                 </button>
               );
@@ -56,12 +55,11 @@ export default function DashboardShell({ children, currentSubPage, onSubPageChan
           onClick={onLogout}
           className="w-full flex items-center justify-center gap-2 border border-slate-700 hover:border-slate-600 hover:bg-slate-800 text-slate-300 hover:text-white py-3 rounded-xl text-sm font-semibold transition-colors cursor-pointer focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-amber-400"
         >
-          <LogOut size={16} />
+          <img src={logoutIcon} alt="" className="w-4 h-4 object-contain" />
           <span>Log out</span>
         </button>
       </aside>
 
-      {/* Main Workspace Area */}
       <main className="flex-1 p-8 overflow-y-auto">{children}</main>
     </div>
   );
