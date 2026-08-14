@@ -4,3 +4,30 @@ html, body, #root {
   height: 100%;
   margin: 0;
 }
+
+/* On-Scroll Typography Animation Styles */
+.split-parent {
+  overflow: hidden;
+}
+
+.char {
+  display: inline-block;
+  will-change: transform, opacity;
+  transform-style: preserve-3d;
+}
+
+.word {
+  display: inline-block;
+  white-space: nowrap;
+  will-change: transform, opacity;
+}
+
+.line {
+  display: block;
+  overflow: hidden;
+  will-change: transform, opacity;
+}
+
+.perspective-text {
+  perspective: 1000px;
+}
