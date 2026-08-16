@@ -1,8 +1,55 @@
 @import "tailwindcss";
 
+/* Cabinet Grotesk — self-hosted, served from /public/fonts */
+@font-face {
+  font-family: 'Cabinet Grotesk';
+  src: url('/fonts/CabinetGrotesk-Regular.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Cabinet Grotesk';
+  src: url('/fonts/CabinetGrotesk-Medium.woff2') format('woff2');
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Cabinet Grotesk';
+  src: url('/fonts/CabinetGrotesk-Bold.woff2') format('woff2');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Cabinet Grotesk';
+  src: url('/fonts/CabinetGrotesk-Extrabold.woff2') format('woff2');
+  font-weight: 800;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Cabinet Grotesk';
+  src: url('/fonts/CabinetGrotesk-Black.woff2') format('woff2');
+  font-weight: 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* Make Tailwind's font-sans utility (used across the whole app) resolve to
+   Cabinet Grotesk, so no per-component className changes are needed. */
+@theme {
+  --font-sans: 'Cabinet Grotesk', ui-sans-serif, system-ui, -apple-system, sans-serif;
+}
+
 html, body, #root {
   height: 100%;
   margin: 0;
+}
+
+body {
+  font-family: 'Cabinet Grotesk', ui-sans-serif, system-ui, -apple-system, sans-serif;
 }
 
 /* On-Scroll Typography Animation Styles */
@@ -30,4 +77,4 @@ html, body, #root {
 
 .perspective-text {
   perspective: 1000px;
-}
+}

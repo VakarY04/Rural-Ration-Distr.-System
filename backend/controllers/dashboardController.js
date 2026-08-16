@@ -31,8 +31,8 @@ export const getDashboardSummary = async (req, res) => {
       Booking.findOne({ user: userId }).sort({ createdAt: -1 }),
     ]);
 
-    // members[] holds dependents only, so the head of family adds one more.
-    const totalMembers = profile ? (profile.members?.length || 0) + 1 : 0;
+    // Total members is derived strictly from the registered family members section
+    const totalMembers = profile?.members?.length ? profile.members.length : (profile ? 1 : 0);
     const ration = computeRationBreakdown(totalMembers);
 
     const distributor = profile?.address ? findDistributorForDistrict(profile.address.district) : null;

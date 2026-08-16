@@ -244,6 +244,7 @@ export const getMe = async (req, res) => {
     }
     res.status(200).json({
       name: user.name,
+      avatar: user.avatar || null,
       phone: user.phone || null,
       email: user.email || null,
     });
@@ -259,21 +260,30 @@ export const getMe = async (req, res) => {
 export const updateMe = async (req, res) => {
   try {
     const userId = req.user?.id || req.user?._id;
-    const { name } = req.body;
+    const { name, avatar } = req.body;
 
     if (!name || !name.trim()) {
       return res.status(400).json({ message: 'Please provide your name.' });
     }
 
-    const user = await User.findByIdAndUpdate(
-      userId,
-      { name: name.trim() },
-      { returnDocument: 'after', runValidators: true }
-    );
+    // Guard against oversized uploads landing in MongoDB (~2MB cap on the
+    // base64 string, comfortably covers a small compressed profile photo).
+    if (avatar && avatar.length > 2_000_000) {
+      return res.status(400).json({ message: 'Profile picture is too large. Please use a smaller image.' });
+    }
+
+    const update = { name: name.trim() };
+    if (avatar !== undefined) update.avatar = avatar || null;
+
+    const user = await User.findByIdAndUpdate(userId, update, {
+      returnDocument: 'after',
+      runValidators: true,
+    });
 
     res.status(200).json({
       message: 'Account details updated.',
       name: user.name,
+      avatar: user.avatar || null,
       phone: user.phone || null,
       email: user.email || null,
     });
