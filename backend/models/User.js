@@ -8,6 +8,10 @@ const userSchema = new mongoose.Schema(
       trim: true,
       default: 'Citizen User',
     },
+    avatar: {
+      type: String, // base64 data URL of a small profile picture
+      default: null,
+    },
     email: {
       type: String,
       unique: true,

@@ -15,5 +15,8 @@ export function computeTotalQuotaKg(memberCount) {
 }
 
 export function computeAllocatedItems(memberCount) {
-  return [{ name: 'Food grains (rice / wheat / coarse grains)', quantity: `${computeTotalQuotaKg(memberCount)} kg` }];
+  const total = computeTotalQuotaKg(memberCount);
+  return [
+    { name: 'Food grains (rice / wheat / coarse grains)', quantity: `${total} kg` },
+  ];
 }

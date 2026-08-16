@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import {
   ShieldCheck, AlertCircle, ArrowRight, Calendar, Clock, Bell,
-  ShoppingBag, MapPin, Home, Building2, Wheat, ChevronDown, CircleUserRound,
+  ShoppingBag, MapPin, Home, Building2, Wheat,
 } from 'lucide-react';
 import DeliveryRouteMap from '../components/DeliveryRouteMap';
 
@@ -62,27 +62,14 @@ export default function DashboardHome({ onNavigate }) {
   return (
     <div className="max-w-7xl mx-auto space-y-6 font-sans">
       {/* Header */}
-      <div className="flex items-start justify-between gap-4">
-        <div>
-          <p className="text-sm text-slate-500 font-medium mb-1">Namaste, {name} 👋</p>
-          <h1 className="text-3xl font-extrabold text-slate-900 tracking-tight">Terminal Hub</h1>
-          <p className="text-sm text-slate-500 mt-1">
-            {hasProfile
-              ? `Ration card ${profile.rationCardNumber} · Household of ${profile.totalMembers} member${profile.totalMembers === 1 ? '' : 's'}`
-              : 'No household profile on file yet'}
-          </p>
-        </div>
-
-        {hasProfile && (
-          <div className="hidden sm:flex items-center gap-3 bg-white border border-slate-200 rounded-2xl px-4 py-2.5 shrink-0">
-            <CircleUserRound size={32} className="text-slate-400" />
-            <div className="text-left">
-              <p className="text-sm font-bold text-slate-900 leading-tight">{name}</p>
-              <p className="text-xs text-slate-400">Ration card: {profile.rationCardNumber}</p>
-            </div>
-            <ChevronDown size={16} className="text-slate-400" />
-          </div>
-        )}
+      <div>
+        <p className="text-sm text-slate-500 font-medium mb-1">Namaste, {name} 👋</p>
+        <h1 className="text-3xl font-extrabold text-slate-900 tracking-tight">Terminal Hub</h1>
+        <p className="text-sm text-slate-500 mt-1">
+          {hasProfile
+            ? `Ration card ${profile.rationCardNumber} · Household of ${profile.totalMembers} member${profile.totalMembers === 1 ? '' : 's'}`
+            : 'No household profile on file yet'}
+        </p>
       </div>
 
       {/* Metric cards */}
@@ -196,8 +183,8 @@ export default function DashboardHome({ onNavigate }) {
                 <span className="font-semibold text-slate-800">{profile.headOfFamily}</span>
               </div>
               <div className="flex justify-between py-1.5 border-b border-emerald-100/70">
-                <span className="text-slate-500">Registered dependents</span>
-                <span className="font-semibold text-slate-800">{profile.dependentCount} member(s)</span>
+                <span className="text-slate-500">Registered family members</span>
+                <span className="font-semibold text-slate-800">{profile.totalMembers || 1} member(s)</span>
               </div>
               <div className="flex justify-between items-center py-1.5">
                 <span className="text-slate-500">Record status</span>

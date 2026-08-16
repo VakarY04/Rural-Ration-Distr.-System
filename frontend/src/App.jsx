@@ -7,6 +7,7 @@ import RegisterPage from './pages/RegisterPage';
 import ForgotPasswordPage from './pages/ForgotPasswordPage';
 import ResetPasswordPage from './pages/ResetPasswordPage';
 import DashboardShell from './components/DashboardShell';
+import { AccountProvider } from './context/AccountContext';
 import DashboardHome from './pages/DashboardHome';
 import ProfilePage from './pages/ProfilePage';
 import BookingPage from './pages/BookingPage';
@@ -113,16 +114,18 @@ export default function App() {
 
       {/* 8. Main Dashboard Application Shell */}
       {currentPage === 'dashboard' && (
-        <DashboardShell 
-          currentSubPage={currentSubPage} 
-          onSubPageChange={handleSubPageChange} 
-          onLogout={handleLogout}
-        >
-          {currentSubPage === 'home' && <DashboardHome onNavigate={handleSubPageChange} />}
-          {currentSubPage === 'profile' && <ProfilePage />}
-          {currentSubPage === 'booking' && <BookingPage />}
-          {currentSubPage === 'ai-support' && <AiSupportPage />}
-        </DashboardShell>
+        <AccountProvider>
+          <DashboardShell
+            currentSubPage={currentSubPage}
+            onSubPageChange={handleSubPageChange}
+            onLogout={handleLogout}
+          >
+            {currentSubPage === 'home' && <DashboardHome onNavigate={handleSubPageChange} />}
+            {currentSubPage === 'profile' && <ProfilePage />}
+            {currentSubPage === 'booking' && <BookingPage />}
+            {currentSubPage === 'ai-support' && <AiSupportPage />}
+          </DashboardShell>
+        </AccountProvider>
       )}
     </div>
   );
