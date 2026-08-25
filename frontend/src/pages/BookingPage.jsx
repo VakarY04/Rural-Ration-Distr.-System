@@ -232,7 +232,7 @@ export default function BookingPage() {
               </div>
               <div>
                 <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400">Household Allocation Rate</p>
-                <p className="text-xs font-bold text-slate-700 mt-0.5">5 kg / member (min 35 kg)</p>
+                <p className="text-xs font-bold text-slate-700 mt-0.5">10 kg / member (min 35 kg)</p>
               </div>
             </div>
           </div>

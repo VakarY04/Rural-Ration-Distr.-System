@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { ShieldCheck, Lock, Eye, EyeOff } from 'lucide-react';
 import logoAsset from '../images/E-RATION Logo.png';
+import heroBackdrop from '../images/india-republic-day-celebration-digital-art-with-flag.jpg';
 import { API_URL } from '../services/api';
 
 export default function ResetPasswordPage({ token, onResetSuccess }) {
@@ -52,9 +53,7 @@ export default function ResetPasswordPage({ token, onResetSuccess }) {
 
   return (
     <div className="relative min-h-screen font-sans flex items-center justify-center p-6 text-white overflow-hidden bg-slate-950">
-      <video autoPlay loop muted playsInline preload="auto" className="fixed inset-0 w-full h-full object-cover z-0 pointer-events-none">
-        <source src="/videos/wallpaper.mp4" type="video/mp4" />
-      </video>
+      <img src={heroBackdrop} alt="" aria-hidden="true" className="fixed inset-0 w-full h-full object-cover z-0 pointer-events-none" />
       <div className="fixed inset-0 bg-slate-950/30 z-10 pointer-events-none" />
 
       <div className="relative z-20 w-full max-w-md bg-slate-900/70 backdrop-blur-none border border-white/15 p-8 rounded-3xl shadow-2xl space-y-5">
