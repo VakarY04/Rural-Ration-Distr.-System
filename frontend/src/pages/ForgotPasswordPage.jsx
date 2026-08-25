@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { ShieldCheck, Mail, ArrowLeft } from 'lucide-react';
 import logoAsset from '../images/E-RATION Logo.png';
+import { API_URL } from '../services/api';
 
 export default function ForgotPasswordPage({ onNavigate }) {
   const [forgotEmail, setForgotEmail] = useState('');
@@ -14,7 +15,7 @@ export default function ForgotPasswordPage({ onNavigate }) {
     setLoading(true);
     
     try {
-      const response = await fetch('http://localhost:5000/api/auth/forgot-password', {
+      const response = await fetch(API_URL + '/auth/forgot-password', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email: forgotEmail })

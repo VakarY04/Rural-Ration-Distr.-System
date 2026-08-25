@@ -4,6 +4,7 @@ import {
   ShoppingBag, MapPin, Home, Building2, Wheat,
 } from 'lucide-react';
 import DeliveryRouteMap from '../components/DeliveryRouteMap';
+import { API_URL } from '../services/api';
 
 function IconChip({ icon: Icon, color }) {
   const palette = {
@@ -31,7 +32,7 @@ export default function DashboardHome({ onNavigate }) {
       return;
     }
 
-    fetch('http://localhost:5000/api/dashboard/summary', {
+    fetch(API_URL + '/dashboard/summary', {
       headers: { Authorization: `Bearer ${token}` },
     })
       .then((r) => (r.ok ? r.json() : Promise.reject(new Error('Failed to load'))))

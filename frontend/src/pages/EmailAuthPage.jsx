@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { ShieldCheck, Lock, Mail, ArrowLeft } from 'lucide-react';
 import logoAsset from '../images/E-RATION Logo.png';
+import { API_URL } from '../services/api';
 
 export default function EmailAuthPage({ onAuthSuccess, onNavigate }) {
   const [email, setEmail] = useState('');
@@ -14,7 +15,7 @@ export default function EmailAuthPage({ onAuthSuccess, onNavigate }) {
     setLoading(true);
 
     try {
-      const response = await fetch('http://localhost:5000/api/auth/login', {
+      const response = await fetch(API_URL + '/auth/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email: email.trim().toLowerCase(), password })

@@ -69,9 +69,15 @@ npm install
 npm run dev
 ```
 
-Both need a `.env` file in `backend/` with `MONGO_URI`, `JWT_SECRET`, `GEMINI_API_KEY`, and email credentials for OTP delivery.
+Both need a `.env` file in `backend/` with `MONGO_URI`, `JWT_SECRET`, `GEMINI_API_KEY`, and email credentials for OTP delivery. The frontend reads an optional `VITE_API_URL`; see the root `.env.example` for every variable and what it does.
+
+> **Note:** Never commit `.env` files — they hold database credentials and API keys.
 
 ## Known Limitations (current scope)
 
 - The regional warehouse and local distributor locations are placeholder data (one test district configured) rather than live, admin-managed data
 - Profile pictures are stored as base64 in MongoDB rather than a dedicated file storage service — fine for a prototype, not recommended at scale
+
+# Next is admin side
+
+- In the login page

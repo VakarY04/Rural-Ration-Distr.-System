@@ -16,6 +16,7 @@ import {
   FileText,
 } from 'lucide-react';
 import { useAccount } from '../context/AccountContext';
+import { API_URL } from '../services/api';
 
 export default function AiSupportPage() {
   const { account } = useAccount();
@@ -32,7 +33,7 @@ export default function AiSupportPage() {
     if (account?.rationCardNumber) {
       setCardId(account.rationCardNumber);
     } else if (token) {
-      fetch('http://localhost:5000/api/family/profile', {
+      fetch(API_URL + '/family/profile', {
         headers: { Authorization: `Bearer ${token}` }
       })
         .then((r) => (r.ok ? r.json() : null))
@@ -54,7 +55,7 @@ export default function AiSupportPage() {
 
     try {
       const token = localStorage.getItem('ration_user_token');
-      const res = await fetch('http://localhost:5000/api/ai/grievance', {
+      const res = await fetch(API_URL + '/ai/grievance', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

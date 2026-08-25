@@ -1,18 +1,20 @@
 import { bookingRepository } from '../repositories/bookingRepository.js';
+import { computeRationBreakdown } from './rationCalculator.js';
 
 // Administrative rule constraints mapping to rural distribution guidelines
-const BASE_QUOTA_PER_MEMBER = 10; // Allocates 10kg per individual family member
 const MAX_FAMILIES_PER_SLOT = 6;  // Hard ceiling to prevent overcrowding at the center
 
 export const allocationService = {
   /**
-   * Calculates the target commodity weight dynamically based on family scale metrics.
-   * e.g., A family of 5 receives 50kg, a family of 10 receives 100kg.
-   * @param {number} totalMembers 
+   * Calculates the target commodity weight following the official PDS
+   * food-grain rule: max(35, 5 x members) kg per household per month.
+   * Uses computeRationBreakdown as the single source of truth so this
+   * always matches the Terminal Hub, Family Profile, and Booking page.
+   * @param {number} totalMembers
    * @returns {number} Total allocation weight in kilograms
    */
   calculateRationWeight: (totalMembers) => {
-    return totalMembers * BASE_QUOTA_PER_MEMBER;
+    return computeRationBreakdown(totalMembers).totalKg;
   },
 
   /**

@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
+import { API_URL } from '../services/api';
 
 const AccountContext = createContext(null);
 
@@ -18,8 +19,8 @@ export function AccountProvider({ children }) {
     const headers = { Authorization: `Bearer ${token}` };
     try {
       const [accountRes, profileRes] = await Promise.all([
-        fetch('http://localhost:5000/api/auth/me', { headers }),
-        fetch('http://localhost:5000/api/family/profile', { headers }),
+        fetch(API_URL + '/auth/me', { headers }),
+        fetch(API_URL + '/family/profile', { headers }),
       ]);
       const accountData = accountRes.ok ? await accountRes.json() : null;
       const profileData = profileRes.ok ? await profileRes.json() : null;

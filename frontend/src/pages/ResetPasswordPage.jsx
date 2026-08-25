@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { ShieldCheck, Lock, Eye, EyeOff } from 'lucide-react';
 import logoAsset from '../images/E-RATION Logo.png';
+import { API_URL } from '../services/api';
 
 export default function ResetPasswordPage({ token, onResetSuccess }) {
   const [password, setPassword] = useState('');
@@ -26,7 +27,7 @@ export default function ResetPasswordPage({ token, onResetSuccess }) {
 
     setLoading(true);
     try {
-      const response = await fetch(`http://localhost:5000/api/auth/reset-password/${token}`, {
+      const response = await fetch(`${API_URL}/auth/reset-password/${token}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ password }),

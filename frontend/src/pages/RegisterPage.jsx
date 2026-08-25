@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { ShieldCheck, Lock, Mail, User, KeyRound, ArrowLeft } from 'lucide-react';
 import logoAsset from '../images/E-RATION Logo.png';
+import { API_URL } from '../services/api';
 
 export default function RegisterPage({ onNavigate }) {
   const [name, setName] = useState('');
@@ -23,7 +24,7 @@ export default function RegisterPage({ onNavigate }) {
 
     setLoading(true);
     try {
-      const response = await fetch('http://localhost:5000/api/auth/register', {
+      const response = await fetch(API_URL + '/auth/register', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ 
