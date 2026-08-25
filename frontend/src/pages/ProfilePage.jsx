@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import {
   User, Users, IdCard, Plus, Trash2, Pencil, CheckCircle2, AlertCircle, Info, Loader2,
-  MapPin, Camera, Save,
+  MapPin, Camera, Save, Phone, Mail, ShieldAlert,
 } from 'lucide-react';
 import { Button } from '../components/ui/button';
 import { Card, CardHeader, CardTitle, CardContent } from '../components/ui/card';
@@ -11,13 +11,11 @@ import { Badge, colorForText } from '../components/ui/badge';
 import { Avatar } from '../components/ui/avatar';
 import { useAccount } from '../context/AccountContext';
 import { API_URL } from '../services/api';
-
-const GRAIN_PER_MEMBER_KG = 5;
-const MIN_HOUSEHOLD_GRAIN_KG = 35;
+import { computeTotalQuotaKg } from '../utils/ration';
 
 const emptyMember = () => ({ name: '', age: '', relation: '' });
 
-export default function ProfilePage() {
+export default function ProfilePage({ onAccountDeleted }) {
   const { refresh: refreshAccount } = useAccount();
   const fileInputRef = useRef(null);
 
@@ -26,8 +24,12 @@ export default function ProfilePage() {
   // Account details (the person who owns this login)
   const [accountName, setAccountName] = useState('');
   const [avatar, setAvatar] = useState(null);
-  const [phone, setPhone] = useState(null);
+  const [phone, setPhone] = useState('');
   const [email, setEmail] = useState(null);
+
+  const [saving, setSaving] = useState(false);
+  const [msg, setMsg] = useState({ error: '', success: '' });
+  const [rowErrors, setRowErrors] = useState({});
 
   // Ration card / household details
   const [card, setCard] = useState('');
@@ -35,10 +37,6 @@ export default function ProfilePage() {
   const [address, setAddress] = useState({ village: '', block: '', district: '', state: '', pincode: '' });
   const [members, setMembers] = useState([emptyMember()]);
   const [editingIndex, setEditingIndex] = useState(null);
-
-  const [saving, setSaving] = useState(false);
-  const [msg, setMsg] = useState({ error: '', success: '' });
-  const [rowErrors, setRowErrors] = useState({});
 
   useEffect(() => {
     const token = localStorage.getItem('ration_user_token');
@@ -56,7 +54,7 @@ export default function ProfilePage() {
         if (account) {
           setAccountName(account.name || '');
           setAvatar(account.avatar || null);
-          setPhone(account.phone);
+          setPhone(account.phone || '');
           setEmail(account.email);
         }
         if (profile) {
@@ -132,7 +130,7 @@ export default function ProfilePage() {
         fetch(API_URL + '/auth/me', {
           method: 'PUT',
           headers,
-          body: JSON.stringify({ name: accountName, avatar }),
+          body: JSON.stringify({ name: accountName, avatar, phone: phone.replace(/\s+/g, '') }),
         }),
         fetch(API_URL + '/family/profile', {
           method: 'POST',
@@ -162,10 +160,40 @@ export default function ProfilePage() {
     }
   };
 
+  // Permanently deletes the account. The UI signs out INSTANTLY (optimistic)
+  // while the delete request runs in the background — no waiting on the
+  // network round-trip.
+  const handleDeleteAccount = async () => {
+    if (!window.confirm('Are you sure? Your account and profile will be permanently deleted.')) {
+      return;
+    }
+
+    // Sign out first so the user sees an immediate response
+    onAccountDeleted && onAccountDeleted();
+
+    // Fire-and-forget deletion; aborted if the server hangs
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 8000);
+    try {
+      const token = localStorage.getItem('ration_user_token');
+      await fetch(API_URL + '/auth/me', {
+        method: 'DELETE',
+        headers: { Authorization: `Bearer ${token}` },
+        signal: controller.signal,
+      });
+    } catch {
+      // Account cleanup failed server-side — nothing sensible to show the
+      // user here since they are already signed out.
+    } finally {
+      clearTimeout(timeout);
+    }
+  };
+
   // Strictly consider only the total members mentioned in the Family Members section
   const validMembersCount = members.filter((m) => m.name?.trim()).length;
   const totalMembers = validMembersCount > 0 ? validMembersCount : 1;
-  const estimatedGrainsKg = Math.max(MIN_HOUSEHOLD_GRAIN_KG, GRAIN_PER_MEMBER_KG * totalMembers);
+  // Shared rule: max(35 kg floor, 10 kg per member)
+  const estimatedGrainsKg = computeTotalQuotaKg(totalMembers);
 
   if (loading) {
     return (
@@ -246,8 +274,27 @@ export default function ProfilePage() {
                 />
               </div>
               <div>
-                <Label>{phone ? 'Registered Phone' : 'Registered Email'}</Label>
-                <Input className="mt-1 bg-slate-100 text-slate-500" value={phone || email || 'Not set'} disabled />
+                <Label htmlFor="accountPhone">
+                  <span className="flex items-center gap-1.5"><Phone size={12} /> Phone Number</span>
+                </Label>
+                <Input
+                  id="accountPhone"
+                  className="mt-1"
+                  type="tel"
+                  maxLength={12}
+                  value={phone}
+                  onChange={(e) => setPhone(e.target.value)}
+                  placeholder="e.g. 98765 43210"
+                />
+                <p className="text-[11px] text-slate-400 mt-1.5 flex items-center gap-1">
+                  <CheckCircle2 size={11} /> Link your mobile number to enable OTP login for this account.
+                </p>
+              </div>
+              <div>
+                <Label>
+                  <span className="flex items-center gap-1.5"><Mail size={12} /> Registered Email</span>
+                </Label>
+                <Input className="mt-1 bg-slate-100 text-slate-500" value={email || 'Not set'} disabled />
                 <p className="text-[11px] text-slate-400 mt-1.5 flex items-center gap-1">
                   <CheckCircle2 size={11} /> This is tied to how you log in and can't be changed here.
                 </p>
@@ -430,6 +477,25 @@ export default function ProfilePage() {
           {saving ? 'Saving…' : 'Save Changes'}
         </Button>
       </form>
+
+      {/* Danger zone — permanent account removal */}
+      <Card className="border-red-200">
+        <CardHeader>
+          <ShieldAlert size={16} className="text-red-600" />
+          <div>
+            <CardTitle className="text-red-700">Danger Zone</CardTitle>
+            <p className="text-[11px] text-slate-400 mt-0.5">
+              Deleting your account removes your login and profile permanently. This cannot be undone.
+            </p>
+          </div>
+        </CardHeader>
+        <CardContent>
+          <Button type="button" variant="destructive" onClick={handleDeleteAccount} className="h-10 px-4 text-xs">
+            <Trash2 size={14} />
+            Delete My Account
+          </Button>
+        </CardContent>
+      </Card>
 
       {/* Footer */}
       <footer className="flex flex-col sm:flex-row items-center justify-between gap-2 text-xs text-slate-400 border-t border-slate-200 pt-6 pb-2">

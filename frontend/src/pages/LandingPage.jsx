@@ -11,6 +11,7 @@ import {
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import SplitType from 'split-type';
+import heroBackdrop from '../images/india-republic-day-celebration-digital-art-with-flag.jpg';
 
 // Logo Asset Import
 import logoAsset from '../images/E-RATION Logo.png';
@@ -345,17 +346,13 @@ export default function LandingPage({ onNavigate }) {
   return (
     <div ref={mainContainerRef} className="relative min-h-screen font-sans antialiased text-white selection:bg-blue-500/30 overflow-x-hidden bg-slate-950">
       
-      {/* 1. FIXED BACKGROUND VIDEO LAYER (Completely Unchanged) */}
-      <video
-        autoPlay
-        loop
-        muted
-        playsInline
-        preload="auto"
+      {/* 1. FIXED BACKGROUND IMAGE LAYER */}
+      <img
+        src={heroBackdrop}
+        alt=""
+        aria-hidden="true"
         className="fixed inset-0 w-full h-full object-cover z-0 pointer-events-none"
-      >
-        <source src="/videos/wallpaper.mp4" type="video/mp4" />
-      </video>
+      />
 
       {/* Subtle tint overlay to guarantee clean text separation */}
       <div className="fixed inset-0 bg-slate-950/20 z-10 pointer-events-none" />
@@ -363,7 +360,7 @@ export default function LandingPage({ onNavigate }) {
       {/* 2. FIXED POSITION SIGN-IN BUTTON (Unchanged) */}
       <div className="fixed top-5 right-6 z-50">
         <button
-          onClick={() => onNavigate('auth-login')}
+          onClick={() => onNavigate('admin-login')}
           type="button"
           className="flex items-center gap-2 px-6 py-3 text-xs font-bold text-white bg-slate-950/60 backdrop-blur-md border border-white/20 rounded-xl hover:bg-slate-900/80 hover:border-white/40 transition-all duration-300 shadow-2xl"
         >
@@ -475,7 +472,7 @@ export default function LandingPage({ onNavigate }) {
                   </div>
                 </div>
                 <button 
-                  onClick={() => onNavigate('auth-login')}
+                  onClick={() => onNavigate('admin-login')}
                   type="button" 
                   className="mt-8 flex items-center justify-center gap-1.5 text-sm font-black text-blue-400 hover:text-blue-300 transition-colors mx-auto"
                 >
@@ -499,7 +496,7 @@ export default function LandingPage({ onNavigate }) {
                   </div>
                 </div>
                 <button 
-                  onClick={() => onNavigate('auth-login')}
+                  onClick={() => onNavigate('admin-login')}
                   type="button" 
                   className="mt-8 flex items-center justify-center gap-1.5 text-sm font-black text-green-400 hover:text-green-300 transition-colors mx-auto"
                 >
@@ -523,7 +520,7 @@ export default function LandingPage({ onNavigate }) {
                   </div>
                 </div>
                 <button 
-                  onClick={() => onNavigate('auth-login')}
+                  onClick={() => onNavigate('admin-login')}
                   type="button" 
                   className="mt-8 flex items-center justify-center gap-1.5 text-sm font-black text-purple-400 hover:text-purple-300 transition-colors mx-auto"
                 >

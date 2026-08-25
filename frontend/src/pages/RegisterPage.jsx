@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
-import { ShieldCheck, Lock, Mail, User, KeyRound, ArrowLeft } from 'lucide-react';
+import { ShieldCheck, Lock, Mail, User, Phone, KeyRound, ArrowLeft } from 'lucide-react';
 import logoAsset from '../images/E-RATION Logo.png';
+import heroBackdrop from '../images/india-republic-day-celebration-digital-art-with-flag.jpg';
 import { API_URL } from '../services/api';
 
 export default function RegisterPage({ onNavigate }) {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
+  const [phone, setPhone] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [error, setError] = useState('');
@@ -22,15 +24,22 @@ export default function RegisterPage({ onNavigate }) {
       return;
     }
 
+    const digits = phone.replace(/\D/g, '');
+    if (digits.length < 10) {
+      setError('Please enter a valid 10-digit mobile number.');
+      return;
+    }
+
     setLoading(true);
     try {
       const response = await fetch(API_URL + '/auth/register', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ 
-          name, 
-          email: email.trim().toLowerCase(), 
-          password 
+        body: JSON.stringify({
+          name,
+          email: email.trim().toLowerCase(),
+          phone: digits,
+          password
         })
       });
 
@@ -40,14 +49,15 @@ export default function RegisterPage({ onNavigate }) {
         setSuccess(true);
         setName('');
         setEmail('');
+        setPhone('');
         setPassword('');
         setConfirmPassword('');
 
         setTimeout(() => {
-          onNavigate('auth-selection');
+          onNavigate('admin-login');
         }, 3000);
       } else {
-        setError(data.message || 'Error establishing citizen registry footprint.');
+        setError(data.message || 'Error establishing registry footprint.');
       }
     } catch (err) {
       setError('Could not connect to the authentication server.');
@@ -63,17 +73,16 @@ export default function RegisterPage({ onNavigate }) {
       {/* Top-Left Fixed Back Button */}
       <button 
         type="button"
-        onClick={() => onNavigate && onNavigate('auth-selection')}
+        onClick={() => onNavigate && onNavigate('admin-login')}
         className="fixed top-6 left-6 z-30 flex items-center gap-2 text-xs font-bold text-white bg-slate-900/80 hover:bg-slate-800 border border-white/20 px-4 py-2.5 rounded-2xl backdrop-blur-md shadow-2xl transition-all cursor-pointer hover:scale-105"
       >
         <ArrowLeft size={16} />
         <span>Back</span>
       </button>
 
-      <video autoPlay loop muted playsInline preload="auto" className="fixed inset-0 w-full h-full object-cover z-0 pointer-events-none">
-        <source src="/videos/wallpaper.mp4" type="video/mp4" />
-      </video>
-      <div className="fixed inset-0 bg-slate-950/30 z-10 pointer-events-none" />
+      {/* Heavily blurred + dimmed backdrop (~65%) so the form stays the focus */}
+      <img src={heroBackdrop} alt="" aria-hidden="true" className="fixed inset-0 w-full h-full object-cover z-0 pointer-events-none blur-[6px] scale-110" />
+      <div className="fixed inset-0 bg-slate-950/65 z-10 pointer-events-none" />
 
       <div className="relative z-20 w-full max-w-md bg-slate-900/70 backdrop-blur-none border border-white/15 p-8 rounded-3xl shadow-2xl space-y-5">
         
@@ -118,6 +127,18 @@ export default function RegisterPage({ onNavigate }) {
                 <Mail className="absolute left-3.5 text-slate-400" size={16} />
                 <input 
                   type="email" required value={email} onChange={(e) => setEmail(e.target.value)} placeholder="citizen@workspace.com"
+                  className="w-full bg-white/95 text-xs font-bold pl-11 pr-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500 shadow-sm"
+                />
+              </div>
+            </div>
+
+            <div className="space-y-1">
+              <label className="text-[11px] font-bold uppercase tracking-wider text-slate-200">Mobile Number</label>
+              <div className="relative flex items-center">
+                <Phone className="absolute left-3.5 text-slate-400" size={16} />
+                <input
+                  type="tel" required value={phone} onChange={(e) => setPhone(e.target.value)} placeholder="98765 43210"
+                  maxLength={12}
                   className="w-full bg-white/95 text-xs font-bold pl-11 pr-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500 shadow-sm"
                 />
               </div>

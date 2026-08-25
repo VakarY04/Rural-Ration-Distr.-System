@@ -1,10 +1,11 @@
-// Computes the ration entitlement for a household, following the actual
-// PDS food-grain rule: 5 kg per person per month, with a fixed household
-// minimum of 35 kg regardless of family size (so a 1-3 member household
-// still gets the full 35 kg floor). Government PDS only guarantees food
-// grains (rice, wheat, or coarse grains, per depot stock) — there is no
-// separate pulses/sugar/oil entitlement, so only one item is returned.
-const GRAIN_PER_MEMBER_KG = 5;
+// Computes the ration entitlement for a household, following the PDS
+// food-grain rule: a fixed household minimum of 35 kg regardless of family
+// size, scaling up at 10 kg per person once the family grows past that
+// floor (i.e. entitlement = max(35, 10 x members)). Government PDS only
+// guarantees food grains (rice, wheat, or coarse grains, per depot stock) —
+// there is no separate pulses/sugar/oil entitlement, so only one item is
+// returned.
+const GRAIN_PER_MEMBER_KG = 10;
 const MIN_HOUSEHOLD_GRAIN_KG = 35;
 
 export const computeRationBreakdown = (totalMembers) => {

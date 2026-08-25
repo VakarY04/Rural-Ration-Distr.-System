@@ -28,6 +28,11 @@ const userSchema = new mongoose.Schema(
       sparse: true,
       trim: true,
     },
+    role: {
+      type: String,
+      enum: ['citizen', 'distributor', 'admin'],
+      default: 'citizen',
+    },
     otp: {
       type: String,
       default: undefined,
