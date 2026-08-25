@@ -15,6 +15,7 @@ import {
   Info,
 } from 'lucide-react';
 import { computeAllocatedItems, computeTotalQuotaKg } from '../utils/ration';
+import { API_URL } from '../services/api';
 
 export default function BookingPage() {
   const [profile, setProfile] = useState(null);
@@ -49,8 +50,8 @@ export default function BookingPage() {
       const headers = { Authorization: `Bearer ${token}` };
 
       const [profileRes, bookingRes] = await Promise.all([
-        fetch('http://localhost:5000/api/family/profile', { headers }).then((r) => (r.ok ? r.json() : null)),
-        fetch('http://localhost:5000/api/bookings/active', { headers }).then((r) => (r.ok ? r.json() : null)).catch(() => null),
+        fetch(API_URL + '/family/profile', { headers }).then((r) => (r.ok ? r.json() : null)),
+        fetch(API_URL + '/bookings/active', { headers }).then((r) => (r.ok ? r.json() : null)).catch(() => null),
       ]);
 
       if (profileRes) {
@@ -100,7 +101,7 @@ export default function BookingPage() {
         allocatedItems: computeAllocatedItems(memberCount)
       };
 
-      const response = await fetch('http://localhost:5000/api/bookings', {
+      const response = await fetch(API_URL + '/bookings', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

@@ -10,6 +10,7 @@ import { Label } from '../components/ui/label';
 import { Badge, colorForText } from '../components/ui/badge';
 import { Avatar } from '../components/ui/avatar';
 import { useAccount } from '../context/AccountContext';
+import { API_URL } from '../services/api';
 
 const GRAIN_PER_MEMBER_KG = 5;
 const MIN_HOUSEHOLD_GRAIN_KG = 35;
@@ -48,8 +49,8 @@ export default function ProfilePage() {
     const headers = { Authorization: `Bearer ${token}` };
 
     Promise.all([
-      fetch('http://localhost:5000/api/auth/me', { headers }).then((r) => (r.ok ? r.json() : null)),
-      fetch('http://localhost:5000/api/family/profile', { headers }).then((r) => (r.ok ? r.json() : null)),
+      fetch(API_URL + '/auth/me', { headers }).then((r) => (r.ok ? r.json() : null)),
+      fetch(API_URL + '/family/profile', { headers }).then((r) => (r.ok ? r.json() : null)),
     ])
       .then(([account, profile]) => {
         if (account) {
@@ -128,12 +129,12 @@ export default function ProfilePage() {
       const headers = { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` };
 
       const [accountRes, familyRes] = await Promise.all([
-        fetch('http://localhost:5000/api/auth/me', {
+        fetch(API_URL + '/auth/me', {
           method: 'PUT',
           headers,
           body: JSON.stringify({ name: accountName, avatar }),
         }),
-        fetch('http://localhost:5000/api/family/profile', {
+        fetch(API_URL + '/family/profile', {
           method: 'POST',
           headers,
           body: JSON.stringify({

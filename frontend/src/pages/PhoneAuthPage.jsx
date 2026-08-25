@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { ShieldCheck, Phone, KeyRound, ArrowLeft, RefreshCw } from 'lucide-react';
 import logoAsset from '../images/E-RATION Logo.png';
+import { API_URL } from '../services/api';
 
 export default function PhoneAuthPage({ onAuthSuccess, onNavigate }) {
   const [phone, setPhone] = useState('');
@@ -44,7 +45,7 @@ export default function PhoneAuthPage({ onAuthSuccess, onNavigate }) {
     setLoading(true);
 
     try {
-      const response = await fetch('http://localhost:5000/api/auth/send-otp', {
+      const response = await fetch(API_URL + '/auth/send-otp', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ phone: phone.trim() })
@@ -83,7 +84,7 @@ export default function PhoneAuthPage({ onAuthSuccess, onNavigate }) {
     setLoading(true);
 
     try {
-      const response = await fetch('http://localhost:5000/api/auth/verify-otp', {
+      const response = await fetch(API_URL + '/auth/verify-otp', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ phone: phone.trim(), otp: otp.trim() })
