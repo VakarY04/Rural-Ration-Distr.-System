@@ -1,4 +1,3 @@
-import React from 'react';
 import { ChevronDown } from 'lucide-react';
 import logoAsset from '../images/E-RATION Logo.png';
 import terminalHubIcon from '../images/nav/terminal-hub.png';
@@ -8,6 +7,10 @@ import aiHelpDeskIcon from '../images/nav/ai-help-desk.png';
 import logoutIcon from '../images/nav/logout.png';
 import { useAccount } from '../context/AccountContext';
 import { Avatar } from './ui/avatar';
+import { swiss, TricolorStrip } from './ui/swiss';
+
+const FOCUS =
+  'focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-orange-500';
 
 export default function DashboardShell({ children, currentSubPage, onSubPageChange, onLogout }) {
   const { account } = useAccount();
@@ -19,23 +22,18 @@ export default function DashboardShell({ children, currentSubPage, onSubPageChan
   ];
 
   return (
-    <div className="flex h-screen overflow-hidden bg-slate-50 font-sans">
-      {/* Sidebar Navigation */}
+    <div className={`flex h-screen overflow-hidden font-sans ${swiss.page}`}>
       <aside className="w-64 bg-slate-900 text-white flex flex-col justify-between p-5 border-r border-slate-800 shrink-0">
         <div>
           <div className="flex items-center gap-3 px-1 mb-4">
-            <img src={logoAsset} alt="E-Ration" className="w-11 h-11 object-contain rounded-xl bg-slate-800 p-1" />
+            <img src={logoAsset} alt="E-Ration" className="w-11 h-11 object-contain bg-slate-800 p-1" />
             <div>
-              <h1 className="text-sm font-bold text-white leading-tight">E-ration portal</h1>
-              <p className="text-[11px] text-slate-400 font-medium">Citizen workspace</p>
+              <h1 className="text-sm font-bold uppercase tracking-[0.08em] text-white leading-tight">E-ration portal</h1>
+              <p className="text-[10px] font-bold uppercase tracking-[0.14em] text-slate-400">Citizen workspace</p>
             </div>
           </div>
 
-          {/* Tricolor signature hairline, echoing the landing page accent */}
-          <div
-            className="h-[3px] w-full rounded-full mb-5"
-            style={{ background: 'linear-gradient(90deg, #F59E0B 0%, #E2E8F0 50%, #10B981 100%)' }}
-          />
+          <TricolorStrip className="h-[3px] mb-5" />
 
           <nav className="space-y-1">
             {navItems.map((item) => {
@@ -45,12 +43,16 @@ export default function DashboardShell({ children, currentSubPage, onSubPageChan
                   key={item.id}
                   onClick={() => onSubPageChange(item.id)}
                   aria-current={active ? 'page' : undefined}
-                  className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold transition-all cursor-pointer focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-amber-400 ${
+                  className={`relative w-full flex items-center gap-3 px-4 py-3 text-sm font-semibold transition-colors cursor-pointer ${FOCUS} ${
                     active
-                      ? 'bg-blue-600 text-white shadow-md'
+                      ? 'bg-slate-950 text-white'
                       : 'text-slate-300 hover:text-white hover:bg-slate-800'
                   }`}
                 >
+                  <span
+                    aria-hidden="true"
+                    className={`absolute left-0 top-0 h-full w-1 ${active ? 'bg-orange-500' : 'bg-transparent'}`}
+                  />
                   <img src={item.icon} alt="" className="w-7 h-7 object-contain shrink-0" />
                   <span>{item.label}</span>
                 </button>
@@ -61,22 +63,26 @@ export default function DashboardShell({ children, currentSubPage, onSubPageChan
 
         <button
           onClick={onLogout}
-          className="w-full flex items-center justify-center gap-2 border border-slate-700 hover:border-slate-600 hover:bg-slate-800 text-slate-300 hover:text-white py-3 rounded-xl text-sm font-semibold transition-colors cursor-pointer focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-amber-400"
+          className={`w-full flex items-center justify-center gap-2 border border-slate-700 hover:border-slate-600 hover:bg-slate-800 text-slate-300 hover:text-white py-3 text-sm font-semibold transition-colors cursor-pointer ${FOCUS}`}
         >
           <img src={logoutIcon} alt="" className="w-5 h-5 object-contain" />
           <span>Log out</span>
         </button>
       </aside>
 
-      {/* Main Workspace Area */}
       <main className="flex-1 overflow-y-auto">
         {account?.rationCardNumber && (
-          <div className="flex justify-end px-8 pt-6">
-            <div className="flex items-center gap-3 bg-white border border-slate-200 rounded-2xl px-4 py-2.5 shadow-sm">
+          <div className="flex items-center justify-between px-8 pt-6">
+            <p className="text-[10px] font-bold uppercase tracking-[0.14em] text-slate-400">
+              Public Distribution System
+            </p>
+            <div className="flex items-center gap-3 bg-white border border-slate-200 px-4 py-2.5">
               <Avatar src={account.avatar} name={account.name} size={32} />
               <div className="text-left">
                 <p className="text-sm font-bold text-slate-900 leading-tight">{account.name}</p>
-                <p className="text-xs text-slate-400">Ration card: {account.rationCardNumber}</p>
+                <p className="text-[10px] font-bold uppercase tracking-[0.14em] text-slate-400">
+                  Ration card: {account.rationCardNumber}
+                </p>
               </div>
               <ChevronDown size={16} className="text-slate-400" />
             </div>

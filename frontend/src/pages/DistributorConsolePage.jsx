@@ -1,87 +1,158 @@
-import { Calendar, ClipboardList, MapPin, LogOut, MessageSquare, Wheat, BadgeCheck } from 'lucide-react';
+import { useState, useEffect, useCallback } from 'react';
+import { LogOut, BadgeCheck } from 'lucide-react';
 import logoAsset from '../images/E-RATION Logo.png';
-import heroBackdrop from '../images/india-republic-day-celebration-digital-art-with-flag.jpg';
+import { api } from '../services/api';
+import DeliveryRouteMap from '../components/DeliveryRouteMap';
+import StatBlocks from '../components/distributor/StatBlocks';
+import BookingsTable from '../components/distributor/BookingsTable';
+import DeliveryDetailsEditor from '../components/distributor/DeliveryDetailsEditor';
+import RationItemsEditor from '../components/distributor/RationItemsEditor';
 
-// Modules planned for the distributor console (built in upcoming phases).
-const UPCOMING_MODULES = [
-  { icon: Calendar, title: 'Slot Oversight', description: 'Review and manage citizen collection appointments across every time window.' },
-  { icon: Wheat, title: 'Stock Ledger', description: 'Track depot inventory of rice, wheat and coarse grains in real time.' },
-  { icon: ClipboardList, title: 'Pre-Packing Manifest', description: 'Daily supply checklists aggregated from confirmed booking queues.' },
-  { icon: MapPin, title: 'Route Management', description: 'Configure warehouse-to-shop delivery routes shown on citizen maps.' },
-  { icon: MessageSquare, title: 'Grievance Review', description: 'Triage AI-routed citizen complaints and mark resolution status.' },
-];
-
-// Landing console shown right after a distributor/admin signs in.
-// Placeholder for the admin modules arriving next; proves the full
-// role-aware login loop end to end.
+// Distributor / Admin console — Swiss-grid dashboard showing booking demand
+// and the two citizen-facing configurations an admin can edit.
 export default function DistributorConsolePage({ onLogout }) {
   const name = localStorage.getItem('ration_user_name') || 'Distributor';
+  const [summary, setSummary] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(false);
+
+  const loadSummary = useCallback(() => {
+    return api('/distributor/summary')
+      .then((data) => {
+        setSummary(data);
+        setError(false);
+      })
+      .catch(() => setError(true));
+  }, []);
+
+  useEffect(() => {
+    let active = true;
+    loadSummary().finally(() => {
+      if (active) setLoading(false);
+    });
+    return () => {
+      active = false;
+    };
+  }, [loadSummary]);
 
   return (
-    <div className="relative min-h-screen font-sans bg-slate-950 text-white overflow-hidden">
-      <img
-        src={heroBackdrop}
-        alt=""
-        aria-hidden="true"
-        className="fixed inset-0 w-full h-full object-cover opacity-20 pointer-events-none"
-      />
-      <div className="fixed inset-0 bg-gradient-to-b from-slate-950/60 via-slate-950/80 to-slate-950 pointer-events-none" />
-
-      {/* Top bar */}
-      <header className="relative z-10 flex items-center justify-between px-6 md:px-10 py-5 border-b border-white/10">
-        <div className="flex items-center gap-3">
-          <img src={logoAsset} alt="E-Ration" className="w-10 h-10 object-contain rounded-xl bg-slate-900/60 p-1" />
-          <div>
-            <p className="text-sm font-black uppercase tracking-tight">Distributor Console</p>
-            <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">E-Ration Staff Portal</p>
-          </div>
-        </div>
-        <div className="flex items-center gap-3">
-          <span className="hidden sm:flex items-center gap-1.5 bg-amber-500/10 border border-amber-400/30 text-amber-300 px-3 py-1.5 rounded-full text-[10px] font-black uppercase tracking-wider">
-            <BadgeCheck size={13} />
-            Authorized Staff
-          </span>
-          <button
-            type="button"
-            onClick={onLogout}
-            className="flex items-center gap-2 text-xs font-bold text-white bg-slate-900/80 hover:bg-red-600/80 border border-white/20 px-4 py-2.5 rounded-2xl backdrop-blur-md shadow-lg transition-all cursor-pointer"
-          >
-            <LogOut size={15} />
-            <span>Logout</span>
-          </button>
-        </div>
-      </header>
-
-      {/* Welcome strip */}
-      <section className="relative z-10 max-w-5xl mx-auto px-6 pt-12 pb-8">
-        <h1 className="text-2xl md:text-3xl font-black tracking-tight">Welcome back, {name}</h1>
-        <p className="text-xs md:text-sm text-slate-300 font-medium mt-2 max-w-2xl leading-relaxed">
-          You are signed in through the staff portal. Operational modules are being rolled out in phases —
-          here is what is scheduled for this workspace.
-        </p>
-      </section>
-
-      {/* Upcoming module grid */}
-      <section className="relative z-10 max-w-5xl mx-auto px-6 pb-16 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-        {UPCOMING_MODULES.map(({ icon: Icon, title, description }) => (
-          <article
-            key={title}
-            className="bg-slate-900/60 backdrop-blur-md border border-white/10 hover:border-white/25 rounded-3xl p-6 space-y-3 transition-all duration-300"
-          >
-            <div className="w-11 h-11 rounded-2xl bg-amber-500/10 text-amber-400 border border-amber-400/25 flex items-center justify-center">
-              <Icon size={20} />
+    <div className="min-h-screen font-sans text-[#000080]">
+      {/* Sticky nav — tricolor strip + header stay pinned while scrolling */}
+      <div className="sticky top-0 z-40">
+        <div
+          className="h-1 w-full"
+          style={{ background: 'linear-gradient(90deg, #FF9933 0%, #FFFFFF 50%, #138808 100%)' }}
+          aria-hidden="true"
+        />
+        <header className="bg-white border-b border-slate-200">
+          <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between gap-4">
+            <div className="flex items-center gap-3">
+              <img src={logoAsset} alt="E-Ration" className="w-11 h-11 object-contain border border-slate-200 p-1" />
+              <div>
+                <p className="text-sm font-extrabold uppercase tracking-tight leading-tight">Distributor Console</p>
+                <p className="text-[10px] font-bold uppercase tracking-[0.14em] text-slate-400">
+                  E-Ration Staff Portal
+                </p>
+              </div>
             </div>
-            <h3 className="text-sm font-black uppercase tracking-tight">{title}</h3>
-            <p className="text-[11px] text-slate-300 font-medium leading-relaxed">{description}</p>
-            <span className="inline-block bg-white/5 border border-white/15 rounded-full px-3 py-1 text-[9px] font-black uppercase tracking-wider text-slate-300">
-              Coming Next Phase
-            </span>
-          </article>
-        ))}
-      </section>
+            <div className="flex items-center gap-3">
+              <span className="hidden sm:flex items-center gap-1.5 border border-green-700/30 bg-green-50 text-green-800 px-3 py-1.5 text-[10px] font-bold uppercase tracking-wider">
+                <BadgeCheck size={13} />
+                Authorized Staff
+              </span>
+              <button
+                type="button"
+                onClick={onLogout}
+                className="flex items-center gap-2 bg-slate-900 hover:bg-red-700 text-white text-[11px] font-bold uppercase tracking-wider px-4 py-2.5 transition-colors cursor-pointer focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-orange-500"
+              >
+                <LogOut size={14} />
+                Logout
+              </button>
+            </div>
+          </div>
+        </header>
+      </div>
 
-      <footer className="relative z-10 text-center pb-8 text-[10px] font-bold text-slate-500 uppercase tracking-wider">
-        E-Ration Portal · Distributor Console v0.1
+      <main className="max-w-7xl mx-auto px-6 py-8 space-y-8">
+        {/* Masthead — Swiss asymmetric headline block */}
+        <section>
+          <p className="text-sm font-medium text-slate-500">Namaste, {name}</p>
+          <h1 className="text-4xl md:text-5xl font-extrabold tracking-tighter mt-1">
+            Distribution Control
+          </h1>
+          <p className="text-xs md:text-sm text-slate-500 font-medium mt-2 max-w-xl">
+            Live view of citizen ration demand and the delivery configuration published to every household hub.
+          </p>
+        </section>
+
+        {loading && (
+          <p className="py-16 text-center text-sm font-semibold text-slate-400">Loading console data…</p>
+        )}
+
+        {!loading && (error || !summary) && (
+          <div className="border border-slate-300 bg-white p-10 text-center">
+            <p className="text-sm font-bold">Couldn't load the console right now.</p>
+            <button
+              type="button"
+              onClick={() => { setLoading(true); loadSummary().finally(() => setLoading(false)); }}
+              className="mt-4 bg-slate-900 hover:bg-orange-600 text-white text-[11px] font-bold uppercase tracking-wider px-5 py-2.5 transition-colors cursor-pointer"
+            >
+              Retry
+            </button>
+          </div>
+        )}
+
+        {!loading && summary && (
+          <>
+            <StatBlocks stats={summary.stats} />
+
+            <div className="grid grid-cols-1 lg:grid-cols-[1fr_380px] gap-6 items-start">
+              {/* Delivery route map + booking queue */}
+              <div className="space-y-6">
+                <section aria-label="Delivery route map" className="space-y-3">
+                  <div className="flex items-baseline justify-between">
+                    <h2 className="text-sm font-bold uppercase tracking-[0.1em]">Delivery route</h2>
+                  </div>
+                  <div className="border border-slate-200 bg-white h-[360px] overflow-hidden">
+                    <DeliveryRouteMap origin={summary.delivery.from} destination={summary.delivery.to} />
+                  </div>
+                </section>
+
+                <section aria-label="Booking queue" className="space-y-3">
+                  <div className="flex items-baseline justify-between">
+                    <h2 className="text-sm font-bold uppercase tracking-[0.1em]">
+                      Booked families queue
+                    </h2>
+                    <span className="text-[10px] font-bold uppercase tracking-[0.14em] text-slate-400 tabular-nums">
+                      {summary.bookings.length} recent
+                    </span>
+                  </div>
+                  <BookingsTable bookings={summary.bookings} />
+                </section>
+              </div>
+
+              {/* Admin-editable configuration — remounts on fresh server data */}
+              <div className="space-y-6">
+                <DeliveryDetailsEditor
+                  key={`delivery-${summary.updatedAt || 'init'}`}
+                  delivery={summary.delivery}
+                  onSaved={loadSummary}
+                />
+                <RationItemsEditor
+                  key={`items-${summary.updatedAt || 'init'}`}
+                  items={summary.items}
+                  onSaved={loadSummary}
+                />
+              </div>
+            </div>
+          </>
+        )}
+      </main>
+
+      <footer className="border-t border-slate-200 bg-white">
+        <p className="max-w-7xl mx-auto px-6 py-4 text-[10px] font-bold uppercase tracking-[0.14em] text-slate-400">
+          E-Ration Portal · Distribution Console v1.0 · Public Distribution System
+        </p>
       </footer>
     </div>
   );

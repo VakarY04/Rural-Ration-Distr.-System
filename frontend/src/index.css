@@ -46,6 +46,13 @@
 html, body, #root {
   height: 100%;
   margin: 0;
+  scrollbar-width: none;
+}
+
+html::-webkit-scrollbar,
+body::-webkit-scrollbar,
+#root::-webkit-scrollbar {
+  display: none;
 }
 
 body {

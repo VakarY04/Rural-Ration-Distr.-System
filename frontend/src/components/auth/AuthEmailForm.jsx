@@ -2,23 +2,15 @@ import { useState } from 'react';
 import { ShieldCheck, Loader2, AlertCircle } from 'lucide-react';
 import { API_URL } from '../../services/api';
 import { saveSession } from '../../services/session';
+import { swiss } from '../ui/swiss';
 
-// Accent presets so the same form serves both portal sides.
 const ACCENTS = {
-  emerald: {
-    button: 'bg-emerald-600 hover:bg-emerald-500 shadow-emerald-500/25',
-    field: 'focus:border-emerald-400 focus:ring-2 focus:ring-emerald-500/20',
-  },
-  amber: {
-    button: 'bg-amber-500 hover:bg-amber-400 text-slate-950 shadow-amber-500/25',
-    field: 'focus:border-amber-400 focus:ring-2 focus:ring-amber-500/20',
-  },
+  emerald: 'hover:bg-green-700',
+  amber: 'hover:bg-orange-600',
 };
 
-// Reusable email + password login form. Posts to /auth/login with an
-// optional `role` portal hint the backend uses to gate access.
 export default function AuthEmailForm({ role, accent = 'emerald', onSuccess, onForgotPassword }) {
-  const styles = ACCENTS[accent] || ACCENTS.emerald;
+  const hoverAccent = ACCENTS[accent] || ACCENTS.emerald;
   const [identifier, setIdentifier] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
@@ -47,34 +39,46 @@ export default function AuthEmailForm({ role, accent = 'emerald', onSuccess, onF
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
       {error && (
-        <div className="flex items-center gap-2 bg-red-500/10 border border-red-500/30 text-red-300 px-3.5 py-2.5 rounded-xl text-[11px] font-semibold">
+        <div className="flex items-center gap-2 border border-red-300 bg-red-50 text-red-700 px-3.5 py-2.5 text-[11px] font-semibold">
           <AlertCircle size={15} className="shrink-0" />
           <span>{error}</span>
         </div>
       )}
 
-      <input
-        type="email"
-        required
-        placeholder="Registered email address"
-        value={identifier}
-        onChange={(e) => setIdentifier(e.target.value)}
-        className={`w-full bg-white/5 border border-white/15 rounded-xl px-4 py-3 text-xs font-semibold text-white placeholder:text-slate-400 focus:outline-none transition-all ${styles.field}`}
-      />
+      <div>
+        <label htmlFor={`login-email-${role}`} className={swiss.label}>
+          Registered Email
+        </label>
+        <input
+          id={`login-email-${role}`}
+          type="email"
+          required
+          placeholder="citizen@portal.gov.in"
+          value={identifier}
+          onChange={(e) => setIdentifier(e.target.value)}
+          className={swiss.input}
+        />
+      </div>
 
-      <input
-        type="password"
-        required
-        placeholder="Password"
-        value={password}
-        onChange={(e) => setPassword(e.target.value)}
-        className={`w-full bg-white/5 border border-white/15 rounded-xl px-4 py-3 text-xs font-semibold text-white placeholder:text-slate-400 focus:outline-none transition-all ${styles.field}`}
-      />
+      <div>
+        <label htmlFor={`login-password-${role}`} className={swiss.label}>
+          Password
+        </label>
+        <input
+          id={`login-password-${role}`}
+          type="password"
+          required
+          placeholder="••••••••••••"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          className={swiss.input}
+        />
+      </div>
 
       <button
         type="submit"
         disabled={loading}
-        className={`w-full flex items-center justify-center gap-2 text-white text-xs font-bold py-3.5 rounded-xl uppercase tracking-wider shadow-lg transition-all cursor-pointer active:scale-[0.99] disabled:opacity-50 disabled:cursor-not-allowed ${styles.button}`}
+        className={`w-full ${swiss.btnPrimary} ${hoverAccent} py-3`}
       >
         {loading ? (
           <>
@@ -93,7 +97,7 @@ export default function AuthEmailForm({ role, accent = 'emerald', onSuccess, onF
         <button
           type="button"
           onClick={onForgotPassword}
-          className="w-full text-center text-[11px] font-semibold text-slate-300 hover:text-white transition-colors cursor-pointer"
+          className="block mx-auto text-[10px] font-bold uppercase tracking-[0.14em] text-slate-500 hover:text-orange-600 transition-colors cursor-pointer focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-orange-500"
         >
           Forgot password?
         </button>

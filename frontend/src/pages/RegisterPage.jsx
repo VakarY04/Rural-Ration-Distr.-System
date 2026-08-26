@@ -1,8 +1,15 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { ShieldCheck, Lock, Mail, User, Phone, KeyRound, ArrowLeft } from 'lucide-react';
 import logoAsset from '../images/E-RATION Logo.png';
 import heroBackdrop from '../images/india-republic-day-celebration-digital-art-with-flag.jpg';
 import { API_URL } from '../services/api';
+import { swiss } from '../components/ui/swiss';
+
+const FIELDS = [
+  { id: 'reg-name', label: 'Full Name', type: 'text', icon: User, key: 'name', placeholder: 'John Doe' },
+  { id: 'reg-email', label: 'Email Address', type: 'email', icon: Mail, key: 'email', placeholder: 'citizen@workspace.com' },
+  { id: 'reg-phone', label: 'Mobile Number', type: 'tel', icon: Phone, key: 'phone', placeholder: '98765 43210', maxLength: 12 },
+];
 
 export default function RegisterPage({ onNavigate }) {
   const [name, setName] = useState('');
@@ -13,6 +20,14 @@ export default function RegisterPage({ onNavigate }) {
   const [error, setError] = useState('');
   const [success, setSuccess] = useState(false);
   const [loading, setLoading] = useState(false);
+
+  const setters = {
+    name: setName,
+    email: setEmail,
+    phone: setPhone,
+    password: setPassword,
+    confirmPassword: setConfirmPassword,
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -68,120 +83,109 @@ export default function RegisterPage({ onNavigate }) {
   };
 
   return (
-    <div className="relative min-h-screen font-sans flex items-center justify-center p-6 text-white overflow-hidden bg-slate-950">
-      
-      {/* Top-Left Fixed Back Button */}
-      <button 
+    <div className="min-h-screen flex flex-col relative overflow-hidden font-sans text-[#000080]">
+      <div className="fixed inset-0 z-0 pointer-events-none" aria-hidden="true">
+        <img src={heroBackdrop} alt="" className="w-full h-full object-cover blur-sm scale-105" />
+      </div>
+
+      <button
         type="button"
         onClick={() => onNavigate && onNavigate('admin-login')}
-        className="fixed top-6 left-6 z-30 flex items-center gap-2 text-xs font-bold text-white bg-slate-900/80 hover:bg-slate-800 border border-white/20 px-4 py-2.5 rounded-2xl backdrop-blur-md shadow-2xl transition-all cursor-pointer hover:scale-105"
+        className="fixed top-6 left-6 z-30 flex items-center gap-2 text-[11px] font-bold uppercase tracking-wider text-white bg-slate-900/80 border border-white/20 px-4 py-2.5 hover:border-[#FF9933] hover:text-[#FF9933] transition-colors cursor-pointer backdrop-blur-sm"
       >
         <ArrowLeft size={16} />
-        <span>Back</span>
+        <span>Back to Home</span>
       </button>
 
-      {/* Heavily blurred + dimmed backdrop (~65%) so the form stays the focus */}
-      <img src={heroBackdrop} alt="" aria-hidden="true" className="fixed inset-0 w-full h-full object-cover z-0 pointer-events-none blur-[6px] scale-110" />
-      <div className="fixed inset-0 bg-slate-950/65 z-10 pointer-events-none" />
+      <main className="relative z-10 flex-1 flex items-center justify-center p-6">
+        <div className={`w-full max-w-md ${swiss.panel} rounded-3xl p-8 space-y-5 transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl hover:border-[#FF9933]/40`}>
+          <div className="flex flex-col items-center text-center space-y-2">
+            <img src={logoAsset} alt="E-Ration Logo" className="w-14 h-14 object-contain border border-slate-200 bg-slate-50 p-1" />
+            <div>
+              <h2 className="text-xl font-extrabold uppercase tracking-tighter text-[#000080]">Registration Terminal</h2>
+              <p className="text-[11px] font-medium text-slate-400 mt-0.5">Create a new citizen credential</p>
+            </div>
+          </div>
 
-      <div className="relative z-20 w-full max-w-md bg-slate-900/70 backdrop-blur-none border border-white/15 p-8 rounded-3xl shadow-2xl space-y-5">
-        
-        <div className="flex flex-col items-center text-center space-y-2">
-          <img src={logoAsset} alt="E-Ration Logo" className="w-14 h-14 object-contain rounded-2xl shadow-lg border border-white/10 bg-slate-900/40 p-1" />
-          <div>
-            <h2 className="text-xl font-black uppercase tracking-tight">Registration Terminal</h2>
-            <p className="text-xs text-slate-300 font-medium mt-0.5">Create a new citizen credential footprint</p>
+          {error && (
+            <div className="border border-red-300 bg-red-50 p-3 text-center">
+              <p className="text-xs font-bold text-red-700">{error}</p>
+            </div>
+          )}
+
+          {success && (
+            <div className="border border-[#138808] bg-green-50 p-4 text-center space-y-1">
+              <p className="text-xs font-bold text-[#138808]">Account Created Successfully!</p>
+              <p className="text-[11px] text-slate-500">Your credential has been registered.</p>
+              <p className="text-[10px] text-[#000080] font-medium animate-pulse pt-1">Redirecting to login...</p>
+            </div>
+          )}
+
+          {!success && (
+            <form onSubmit={handleSubmit} className="space-y-3.5">
+              {FIELDS.map(({ id, label, type, icon: Icon, key, placeholder, maxLength }) => (
+                <div key={id}>
+                  <label htmlFor={id} className={swiss.label}>{label}</label>
+                  <div className="relative flex items-center">
+                    <Icon className="absolute left-3.5 text-slate-400" size={16} />
+                    <input
+                      id={id}
+                      type={type}
+                      required
+                      value={{ name, email, phone }[key]}
+                      onChange={(e) => setters[key](e.target.value)}
+                      placeholder={placeholder}
+                      maxLength={maxLength}
+                      className={`${swiss.input} pl-11 py-3`}
+                    />
+                  </div>
+                </div>
+              ))}
+
+              <div>
+                <label htmlFor="reg-password" className={swiss.label}>Security Password</label>
+                <div className="relative flex items-center">
+                  <Lock className="absolute left-3.5 text-slate-400" size={16} />
+                  <input
+                    id="reg-password"
+                    type="password"
+                    required
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    placeholder="••••••••••••"
+                    className={`${swiss.input} pl-11 py-3`}
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label htmlFor="reg-confirm" className={swiss.label}>Confirm Password</label>
+                <div className="relative flex items-center">
+                  <KeyRound className="absolute left-3.5 text-slate-400" size={16} />
+                  <input
+                    id="reg-confirm"
+                    type="password"
+                    required
+                    value={confirmPassword}
+                    onChange={(e) => setConfirmPassword(e.target.value)}
+                    placeholder="••••••••••••"
+                    className={`${swiss.input} pl-11 py-3`}
+                  />
+                </div>
+              </div>
+
+              <button type="submit" disabled={loading} className={`${swiss.btnPrimary} w-full py-3.5 mt-2`}>
+                {loading ? 'Processing...' : 'Register Account'}
+              </button>
+            </form>
+          )}
+
+          <div className="flex items-center justify-center gap-2 pt-2 border-t border-slate-200">
+            <ShieldCheck size={13} className="text-[#138808]" />
+            <span className={swiss.micro}>Secure Endpoint Active</span>
           </div>
         </div>
-
-        {error && (
-          <div className="bg-red-500/10 border border-red-500/30 p-3 rounded-xl text-center">
-            <p className="text-xs font-bold text-red-400">{error}</p>
-          </div>
-        )}
-
-        {success && (
-          <div className="bg-emerald-500/10 border border-emerald-500/30 p-4 rounded-xl text-center space-y-1">
-            <p className="text-xs font-bold text-emerald-400">Account Created Successfully!</p>
-            <p className="text-[11px] text-slate-300">Your footprint has been successfully registered to MongoDB.</p>
-            <p className="text-[10px] text-blue-400 font-medium animate-pulse pt-1">Redirecting to authorization hub...</p>
-          </div>
-        )}
-
-        {!success && (
-          <form onSubmit={handleSubmit} className="space-y-3.5 text-slate-900">
-            <div className="space-y-1">
-              <label className="text-[11px] font-bold uppercase tracking-wider text-slate-200">Full Name</label>
-              <div className="relative flex items-center">
-                <User className="absolute left-3.5 text-slate-400" size={16} />
-                <input 
-                  type="text" required value={name} onChange={(e) => setName(e.target.value)} placeholder="John Doe"
-                  className="w-full bg-white/95 text-xs font-bold pl-11 pr-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500 shadow-sm"
-                />
-              </div>
-            </div>
-
-            <div className="space-y-1">
-              <label className="text-[11px] font-bold uppercase tracking-wider text-slate-200">Email Address</label>
-              <div className="relative flex items-center">
-                <Mail className="absolute left-3.5 text-slate-400" size={16} />
-                <input 
-                  type="email" required value={email} onChange={(e) => setEmail(e.target.value)} placeholder="citizen@workspace.com"
-                  className="w-full bg-white/95 text-xs font-bold pl-11 pr-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500 shadow-sm"
-                />
-              </div>
-            </div>
-
-            <div className="space-y-1">
-              <label className="text-[11px] font-bold uppercase tracking-wider text-slate-200">Mobile Number</label>
-              <div className="relative flex items-center">
-                <Phone className="absolute left-3.5 text-slate-400" size={16} />
-                <input
-                  type="tel" required value={phone} onChange={(e) => setPhone(e.target.value)} placeholder="98765 43210"
-                  maxLength={12}
-                  className="w-full bg-white/95 text-xs font-bold pl-11 pr-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500 shadow-sm"
-                />
-              </div>
-            </div>
-
-            <div className="space-y-1">
-              <label className="text-[11px] font-bold uppercase tracking-wider text-slate-200">Security Password</label>
-              <div className="relative flex items-center">
-                <Lock className="absolute left-3.5 text-slate-400" size={16} />
-                <input 
-                  type="password" required value={password} onChange={(e) => setPassword(e.target.value)} placeholder="••••••••••••"
-                  className="w-full bg-white/95 text-xs font-bold pl-11 pr-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500 shadow-sm"
-                />
-              </div>
-            </div>
-
-            <div className="space-y-1">
-              <label className="text-[11px] font-bold uppercase tracking-wider text-slate-200">Confirm Password</label>
-              <div className="relative flex items-center">
-                <KeyRound className="absolute left-3.5 text-slate-400" size={16} />
-                <input 
-                  type="password" required value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} placeholder="••••••••••••"
-                  className="w-full bg-white/95 text-xs font-bold pl-11 pr-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500 shadow-sm"
-                />
-              </div>
-            </div>
-
-            <button 
-              type="submit" 
-              disabled={loading}
-              className={`w-full bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold py-3.5 rounded-xl transition duration-200 shadow-lg mt-2 uppercase tracking-wider cursor-pointer ${loading ? 'opacity-50 cursor-not-allowed' : ''}`}
-            >
-              {loading ? 'Processing Registry Footprint...' : 'Register Account'}
-            </button>
-          </form>
-        )}
-
-        <div className="flex items-center justify-center gap-2 pt-2 text-[10px] font-bold text-slate-300 uppercase tracking-wider text-center border-t border-white/15">
-          <ShieldCheck size={13} className="text-emerald-400" />
-          <span>Secure AES Endpoint Encryption Active</span>
-        </div>
-
-      </div>
+      </main>
     </div>
   );
 }

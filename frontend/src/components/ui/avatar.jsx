@@ -1,4 +1,3 @@
-import React from 'react';
 
 const AVATAR_PALETTE = [
   'bg-blue-100 text-blue-700',

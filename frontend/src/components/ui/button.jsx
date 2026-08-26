@@ -1,4 +1,3 @@
-import React from 'react';
 
 const VARIANTS = {
   default: 'bg-slate-900 text-white hover:bg-slate-800 shadow-xs active:scale-[0.99]',
