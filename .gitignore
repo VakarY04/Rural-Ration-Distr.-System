@@ -2,6 +2,9 @@
 # E-Ration Portal — global ignore rules (applies to backend/ and frontend/)
 # ----------------------------------------------------------------------
 
+Tips.md
+.gitignore
+
 # Dependencies
 node_modules/
 

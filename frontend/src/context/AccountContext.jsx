@@ -1,4 +1,5 @@
-import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
+/* eslint-disable react-refresh/only-export-components */
+import { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import { API_URL } from '../services/api';
 
 const AccountContext = createContext(null);
@@ -37,7 +38,8 @@ export function AccountProvider({ children }) {
   }, []);
 
   useEffect(() => {
-    refresh();
+    // Defer so the initial fetch's setLoading fires outside the effect body.
+    Promise.resolve().then(refresh);
   }, [refresh]);
 
   return (

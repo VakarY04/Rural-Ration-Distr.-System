@@ -8,15 +8,15 @@ export default function HoverSplitBackdrop({ image, activeSide }) {
   const imgClass = (side) =>
     `h-full w-full object-cover transition-all duration-700 ease-out ${
       activeSide == null
-        ? 'opacity-30 scale-100'
+        ? 'opacity-5 scale-100'
         : activeSide === side
           ? 'opacity-100 scale-105'
-          : 'opacity-10 scale-100'
+          : 'opacity-5 scale-100'
     }`;
 
   const tintClass = (side) =>
     `absolute inset-0 bg-slate-950 transition-opacity duration-700 ease-out ${
-      activeSide == null ? 'opacity-40' : activeSide === side ? 'opacity-0' : 'opacity-80'
+      activeSide == null ? 'opacity-70' : activeSide === side ? 'opacity-0' : 'opacity-80'
     }`;
 
   return (
@@ -33,9 +33,9 @@ export default function HoverSplitBackdrop({ image, activeSide }) {
         <div className={tintClass('right')} />
       </div>
 
-      {/* Glowing seam between the two portals */}
-      <div className="pointer-events-none hidden md:block absolute inset-y-0 left-1/2 w-px -translate-x-1/2 bg-gradient-to-b from-transparent via-white/25 to-transparent" />
-      <div className="pointer-events-none md:hidden absolute inset-x-0 top-1/2 h-px -translate-y-1/2 bg-gradient-to-r from-transparent via-white/25 to-transparent" />
+      {/* Tricolor seam between the two portals */}
+      <div className="pointer-events-none hidden md:block absolute inset-y-0 left-1/2 w-px -translate-x-1/2 bg-gradient-to-b from-[#FF9933] via-white to-[#138808]" />
+      <div className="pointer-events-none md:hidden absolute inset-x-0 top-1/2 h-px -translate-y-1/2 bg-gradient-to-r from-[#FF9933] via-white to-[#138808]" />
     </>
   );
 }

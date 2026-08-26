@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import LandingPage from './pages/LandingPage';
 import RegisterPage from './pages/RegisterPage';
 import ForgotPasswordPage from './pages/ForgotPasswordPage';
@@ -69,8 +69,10 @@ export default function App() {
     if (path.startsWith('/reset-password/')) {
       const token = path.split('/reset-password/')[1];
       if (token) {
-        setResetToken(token);
-        handleNavigate('reset-password');
+        Promise.resolve().then(() => {
+          setResetToken(token);
+          handleNavigate('reset-password');
+        });
       }
     }
   }, []);

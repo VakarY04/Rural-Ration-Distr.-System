@@ -2,25 +2,17 @@ import { useEffect, useState } from 'react';
 import { KeyRound, Loader2, AlertCircle, RefreshCw, Smartphone, ShieldCheck } from 'lucide-react';
 import { API_URL } from '../../services/api';
 import { saveSession } from '../../services/session';
+import { swiss } from '../ui/swiss';
 
-// Accent presets shared with AuthEmailForm.
 const ACCENTS = {
-  emerald: {
-    button: 'bg-emerald-600 hover:bg-emerald-500 shadow-emerald-500/25',
-    field: 'focus:border-emerald-400 focus:ring-2 focus:ring-emerald-500/20',
-  },
-  amber: {
-    button: 'bg-amber-500 hover:bg-amber-400 text-slate-950 shadow-amber-500/25',
-    field: 'focus:border-amber-400 focus:ring-2 focus:ring-amber-500/20',
-  },
+  emerald: 'hover:bg-green-700',
+  amber: 'hover:bg-orange-600',
 };
 
 const RESEND_COOLDOWN_SECONDS = 10;
 
-// Reusable phone + OTP login form. Posts to /auth/send-otp and
-// /auth/verify-otp with an optional `role` portal hint.
 export default function AuthOtpForm({ role, accent = 'emerald', onSuccess }) {
-  const styles = ACCENTS[accent] || ACCENTS.emerald;
+  const hoverAccent = ACCENTS[accent] || ACCENTS.emerald;
   const [phone, setPhone] = useState('');
   const [otp, setOtp] = useState('');
   const [otpSent, setOtpSent] = useState(false);
@@ -29,7 +21,6 @@ export default function AuthOtpForm({ role, accent = 'emerald', onSuccess }) {
   const [error, setError] = useState('');
   const [info, setInfo] = useState('');
 
-  // Resend cooldown countdown
   useEffect(() => {
     if (cooldown <= 0) return undefined;
     const timer = setInterval(() => setCooldown((prev) => prev - 1), 1000);
@@ -89,30 +80,36 @@ export default function AuthOtpForm({ role, accent = 'emerald', onSuccess }) {
   return otpSent ? (
     <form onSubmit={handleVerifyOtp} className="space-y-4">
       {error && (
-        <div className="flex items-center gap-2 bg-red-500/10 border border-red-500/30 text-red-300 px-3.5 py-2.5 rounded-xl text-[11px] font-semibold">
+        <div className="flex items-center gap-2 border border-red-300 bg-red-50 text-red-700 px-3.5 py-2.5 text-[11px] font-semibold">
           <AlertCircle size={15} className="shrink-0" />
           <span>{error}</span>
         </div>
       )}
       {info && !error && (
-        <p className="text-[11px] font-semibold text-emerald-300 text-center">{info}</p>
+        <p className="text-[11px] font-semibold text-green-700 text-center">{info}</p>
       )}
 
-      <input
-        type="text"
-        inputMode="numeric"
-        maxLength={6}
-        required
-        placeholder="6-digit OTP code"
-        value={otp}
-        onChange={(e) => setOtp(e.target.value.replace(/\D/g, ''))}
-        className={`w-full bg-white/5 border border-white/15 rounded-xl px-4 py-3 text-center text-lg font-black tracking-[0.5em] text-white placeholder:text-sm placeholder:font-semibold placeholder:tracking-normal placeholder:text-slate-400 focus:outline-none transition-all ${styles.field}`}
-      />
+      <div>
+        <label htmlFor={`otp-code-${role}`} className={swiss.label}>
+          One-Time Password
+        </label>
+        <input
+          id={`otp-code-${role}`}
+          type="text"
+          inputMode="numeric"
+          maxLength={6}
+          required
+          placeholder="6-digit OTP code"
+          value={otp}
+          onChange={(e) => setOtp(e.target.value.replace(/\D/g, ''))}
+          className={`${swiss.input} text-center text-lg font-extrabold tracking-[0.5em] placeholder:text-sm placeholder:font-medium placeholder:tracking-normal`}
+        />
+      </div>
 
       <button
         type="submit"
         disabled={loading}
-        className={`w-full flex items-center justify-center gap-2 text-white text-xs font-bold py-3.5 rounded-xl uppercase tracking-wider shadow-lg transition-all cursor-pointer active:scale-[0.99] disabled:opacity-50 disabled:cursor-not-allowed ${styles.button}`}
+        className={`w-full ${swiss.btnPrimary} ${hoverAccent} py-3`}
       >
         {loading ? (
           <>
@@ -131,7 +128,7 @@ export default function AuthOtpForm({ role, accent = 'emerald', onSuccess }) {
         type="button"
         onClick={() => handleSendOtp(true)}
         disabled={cooldown > 0}
-        className="w-full flex items-center justify-center gap-1.5 text-[11px] font-bold text-slate-300 hover:text-white uppercase tracking-wider cursor-pointer transition-all disabled:opacity-40 disabled:cursor-not-allowed"
+        className="w-full flex items-center justify-center gap-1.5 text-[10px] font-bold uppercase tracking-[0.14em] text-slate-500 hover:text-slate-900 transition-colors cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-orange-500"
       >
         <RefreshCw size={12} />
         <span>{cooldown > 0 ? `Resend available in ${cooldown}s` : 'Resend OTP code'}</span>
@@ -140,26 +137,32 @@ export default function AuthOtpForm({ role, accent = 'emerald', onSuccess }) {
   ) : (
     <form onSubmit={(e) => e.preventDefault()} className="space-y-4">
       {error && (
-        <div className="flex items-center gap-2 bg-red-500/10 border border-red-500/30 text-red-300 px-3.5 py-2.5 rounded-xl text-[11px] font-semibold">
+        <div className="flex items-center gap-2 border border-red-300 bg-red-50 text-red-700 px-3.5 py-2.5 text-[11px] font-semibold">
           <AlertCircle size={15} className="shrink-0" />
           <span>{error}</span>
         </div>
       )}
 
-      <input
-        type="tel"
-        required
-        placeholder="Registered mobile number"
-        value={phone}
-        onChange={(e) => setPhone(e.target.value)}
-        className={`w-full bg-white/5 border border-white/15 rounded-xl px-4 py-3 text-xs font-semibold text-white placeholder:text-slate-400 focus:outline-none transition-all ${styles.field}`}
-      />
+      <div>
+        <label htmlFor={`otp-phone-${role}`} className={swiss.label}>
+          Registered Mobile
+        </label>
+        <input
+          id={`otp-phone-${role}`}
+          type="tel"
+          required
+          placeholder="98765 43210"
+          value={phone}
+          onChange={(e) => setPhone(e.target.value)}
+          className={swiss.input}
+        />
+      </div>
 
       <button
         type="submit"
         onClick={() => handleSendOtp(false)}
         disabled={loading}
-        className={`w-full flex items-center justify-center gap-2 text-white text-xs font-bold py-3.5 rounded-xl uppercase tracking-wider shadow-lg transition-all cursor-pointer active:scale-[0.99] disabled:opacity-50 disabled:cursor-not-allowed ${styles.button}`}
+        className={`w-full ${swiss.btnPrimary} ${hoverAccent} py-3`}
       >
         {loading ? (
           <>
@@ -174,7 +177,7 @@ export default function AuthOtpForm({ role, accent = 'emerald', onSuccess }) {
         )}
       </button>
 
-      <p className="flex items-center justify-center gap-1.5 text-[10px] font-bold text-slate-400 uppercase tracking-wider">
+      <p className="flex items-center justify-center gap-1.5 text-[10px] font-bold uppercase tracking-[0.14em] text-slate-400">
         <KeyRound size={11} />
         <span>A 6-digit code valid for 5 minutes will be issued</span>
       </p>

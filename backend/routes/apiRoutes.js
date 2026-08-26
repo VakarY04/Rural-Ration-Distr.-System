@@ -3,6 +3,12 @@ import { getFamilyProfile, updateFamilyProfile } from '../controllers/familyCont
 import { createBooking, getUserBookings } from '../controllers/bookingController.js';
 import { analyzeGrievance } from '../controllers/aiController.js';
 import { getDashboardSummary } from '../controllers/dashboardController.js';
+import {
+  getDistributorSummary,
+  updateDeliveryDetails,
+  updateRationItems,
+} from '../controllers/distributorController.js';
+import { requireStaff } from '../middleware/staffMiddleware.js';
 import { protect } from '../middleware/authMiddleware.js';
 import { dbGate } from '../middleware/dbGate.js';
 import { register, login, sendOtp, verifyOtp, getMe, updateMe, deleteMe } from '../controllers/authController.js';
@@ -33,6 +39,11 @@ router.get('/bookings', protect, getUserBookings);
 
 // Terminal Hub summary (profile status, quota, next booking, delivery route)
 router.get('/dashboard/summary', protect, getDashboardSummary);
+
+// Distributor / Admin console (staff only)
+router.get('/distributor/summary', protect, requireStaff, getDistributorSummary);
+router.put('/distributor/delivery', protect, requireStaff, updateDeliveryDetails);
+router.put('/distributor/items', protect, requireStaff, updateRationItems);
 
 // Gemini AI Support Endpoint
 router.post('/ai/grievance', protect, analyzeGrievance);

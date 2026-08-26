@@ -1,4 +1,4 @@
-import React from 'react';
+/* eslint-disable react-refresh/only-export-components */
 
 // Deterministic pastel color for arbitrary free-typed relation text
 const PALETTE = [

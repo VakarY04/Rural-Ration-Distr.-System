@@ -1,20 +1,26 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import {
-  ShieldCheck, AlertCircle, ArrowRight, Calendar, Clock, Bell,
-  ShoppingBag, MapPin, Home, Building2, Wheat,
+  AlertCircle, ArrowRight, Calendar, Clock, Bell,
+  ShoppingBag, Home, Building2, Wheat,
 } from 'lucide-react';
 import DeliveryRouteMap from '../components/DeliveryRouteMap';
 import { API_URL } from '../services/api';
+import { swiss, SectionHead } from '../components/ui/swiss';
 
-function IconChip({ icon: Icon, color }) {
+const FOCUS =
+  'focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-orange-500';
+
+const chip = 'inline-flex items-center border px-2 py-1 text-[10px] font-bold uppercase tracking-wider';
+
+function IconChip({ icon: Icon, tone }) {
   const palette = {
-    emerald: 'bg-emerald-50 text-emerald-600',
-    blue: 'bg-blue-50 text-blue-600',
-    violet: 'bg-violet-50 text-violet-600',
-    amber: 'bg-amber-50 text-amber-600',
+    green: 'border-green-200 bg-green-50 text-green-700',
+    blue: 'border-blue-200 bg-blue-50 text-blue-600',
+    orange: 'border-orange-200 bg-orange-50 text-orange-600',
+    amber: 'border-amber-200 bg-amber-50 text-amber-600',
   };
   return (
-    <div className={`w-11 h-11 rounded-2xl flex items-center justify-center shrink-0 ${palette[color]}`}>
+    <div className={`w-11 h-11 border flex items-center justify-center shrink-0 ${palette[tone]}`}>
       <Icon size={20} />
     </div>
   );
@@ -28,7 +34,7 @@ export default function DashboardHome({ onNavigate }) {
   useEffect(() => {
     const token = localStorage.getItem('ration_user_token');
     if (!token) {
-      setLoading(false);
+      Promise.resolve().then(() => setLoading(false));
       return;
     }
 
@@ -43,15 +49,15 @@ export default function DashboardHome({ onNavigate }) {
 
   if (loading) {
     return (
-      <div className="max-w-6xl mx-auto py-24 text-center text-slate-400 text-sm font-medium">
-        Loading your terminal hub…
+      <div className="max-w-7xl mx-auto py-24 text-center">
+        <p className={swiss.micro}>Loading your terminal hub…</p>
       </div>
     );
   }
 
   if (error || !summary) {
     return (
-      <div className="max-w-6xl mx-auto py-24 text-center text-slate-500 text-sm font-medium">
+      <div className="max-w-7xl mx-auto py-24 text-center text-sm font-medium text-slate-500">
         Couldn't load your terminal hub right now. Please refresh the page.
       </div>
     );
@@ -62,74 +68,70 @@ export default function DashboardHome({ onNavigate }) {
 
   return (
     <div className="max-w-7xl mx-auto space-y-6 font-sans">
-      {/* Header */}
-      <div>
-        <p className="text-sm text-slate-500 font-medium mb-1">Namaste, {name} 👋</p>
-        <h1 className="text-3xl font-extrabold text-slate-900 tracking-tight">Terminal Hub</h1>
-        <p className="text-sm text-slate-500 mt-1">
+      <header>
+        <p className={swiss.micro}>Namaste, {name} 👋</p>
+        <div className="flex items-baseline gap-3 mt-1">
+          <h1 className={swiss.headline}>Terminal Hub</h1>
+          <span className="text-base font-medium text-slate-400">Terminal Hub</span>
+        </div>
+        <p className="text-sm text-slate-500 mt-2">
           {hasProfile
             ? `Ration card ${profile.rationCardNumber} · Household of ${profile.totalMembers} member${profile.totalMembers === 1 ? '' : 's'}`
             : 'No household profile on file yet'}
         </p>
-      </div>
+      </header>
 
-      {/* Metric cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-        <div className="bg-white rounded-2xl border border-slate-200 p-5 flex items-center gap-4">
-          <IconChip icon={ShieldCheck} color="emerald" />
+      <section className={`${swiss.panel} grid grid-cols-1 sm:grid-cols-3 divide-y sm:divide-y-0 sm:divide-x divide-slate-200`}>
+        <div className="p-6">
+          <p className={swiss.micro}>Profile status</p>
+          <p className={`mt-2 text-3xl md:text-4xl font-extrabold tracking-tight tabular-nums ${hasProfile ? 'text-green-700' : 'text-amber-600'}`}>
+            {hasProfile ? 'Complete' : 'Incomplete'}
+          </p>
+          <p className="text-xs text-slate-400 mt-1">{hasProfile ? 'All details are up to date' : 'Some details are missing'}</p>
+        </div>
+        <div className="p-6">
+          <p className={swiss.micro}>Next collection</p>
+          <p className={`mt-2 text-3xl md:text-4xl font-extrabold tracking-tight tabular-nums ${booking ? 'text-slate-900' : 'text-slate-300'}`}>
+            {booking ? booking.distributionDate : 'Not scheduled'}
+          </p>
+          <p className="text-xs text-slate-400 mt-1">{booking ? booking.timeSlot : 'Book a slot to see it here'}</p>
+        </div>
+        <div className="p-6 flex items-end justify-between gap-4">
           <div>
-            <p className="text-[11px] font-semibold uppercase tracking-wide text-slate-400">Profile status</p>
-            <p className={`text-xl font-bold ${hasProfile ? 'text-emerald-600' : 'text-amber-600'}`}>
-              {hasProfile ? 'Complete' : 'Incomplete'}
+            <p className={swiss.micro}>Monthly quota</p>
+            <p className="mt-2 text-4xl md:text-5xl font-extrabold tracking-tight tabular-nums text-slate-900">
+              {ration.totalKg}
+              <span className="text-lg font-bold text-slate-400 ml-1">kg</span>
             </p>
-            <p className="text-xs text-slate-400">{hasProfile ? 'All details are up to date' : 'Some details are missing'}</p>
+            <p className="text-xs text-slate-400 mt-1">Total entitlement</p>
           </div>
+          <IconChip icon={ShoppingBag} tone="orange" />
         </div>
-        <div className="bg-white rounded-2xl border border-slate-200 p-5 flex items-center gap-4">
-          <IconChip icon={Calendar} color="blue" />
-          <div>
-            <p className="text-[11px] font-semibold uppercase tracking-wide text-slate-400">Next collection</p>
-            <p className="text-xl font-bold text-slate-900">{booking ? booking.distributionDate : 'Not scheduled'}</p>
-            <p className="text-xs text-slate-400">{booking ? booking.timeSlot : 'Book a slot to see it here'}</p>
-          </div>
-        </div>
-        <div className="bg-white rounded-2xl border border-slate-200 p-5 flex items-center gap-4">
-          <IconChip icon={ShoppingBag} color="violet" />
-          <div>
-            <p className="text-[11px] font-semibold uppercase tracking-wide text-slate-400">Monthly quota</p>
-            <p className="text-xl font-bold text-slate-900">{ration.totalKg} kg</p>
-            <p className="text-xs text-slate-400">Total entitlement</p>
-          </div>
-        </div>
-      </div>
+      </section>
 
-      {/* Map + right-hand delivery/item panels */}
       <div className="grid grid-cols-1 lg:grid-cols-[1fr_300px] gap-6 items-stretch">
-        <div className="rounded-2xl overflow-hidden border border-slate-200 h-full min-h-[420px]">
+        <div className={`${swiss.panel} overflow-hidden h-full min-h-[420px]`}>
           <DeliveryRouteMap origin={delivery.from} destination={delivery.to} />
         </div>
 
         <div className="space-y-4">
-          <div className="bg-white rounded-2xl border border-slate-200 p-5">
-            <div className="flex items-center gap-2 mb-4">
-              <MapPin size={16} className="text-emerald-600" />
-              <h2 className="text-xs font-bold uppercase tracking-wide text-slate-400">Ration delivery details</h2>
-            </div>
-            <div className="space-y-4">
+          <div className={`${swiss.panel} p-5`}>
+            <SectionHead title="Delivery details" />
+            <div className="space-y-4 mt-4">
               <div>
-                <p className="text-[11px] font-semibold text-slate-400 uppercase mb-1.5">From</p>
+                <p className={swiss.label}>From</p>
                 <div className="flex items-center gap-2">
-                  <div className="w-8 h-8 rounded-lg bg-slate-100 flex items-center justify-center shrink-0">
+                  <div className="w-8 h-8 border border-slate-200 bg-slate-100 flex items-center justify-center shrink-0">
                     <Home size={14} className="text-slate-500" />
                   </div>
                   <span className="text-sm font-medium text-slate-700">{delivery.from.label}</span>
                 </div>
               </div>
               <div>
-                <p className="text-[11px] font-semibold text-slate-400 uppercase mb-1.5">To</p>
+                <p className={swiss.label}>To</p>
                 <div className="flex items-center gap-2">
-                  <div className="w-8 h-8 rounded-lg bg-emerald-50 flex items-center justify-center shrink-0">
-                    <Building2 size={14} className="text-emerald-600" />
+                  <div className="w-8 h-8 border border-green-200 bg-green-50 flex items-center justify-center shrink-0">
+                    <Building2 size={14} className="text-green-700" />
                   </div>
                   <span className="text-sm font-medium text-slate-700">{delivery.to.label}</span>
                 </div>
@@ -140,21 +142,20 @@ export default function DashboardHome({ onNavigate }) {
             </p>
           </div>
 
-          <div className="bg-white rounded-2xl border border-slate-200 p-5">
-            <div className="flex items-center gap-2 mb-4">
-              <Wheat size={16} className="text-blue-600" />
-              <h2 className="text-xs font-bold uppercase tracking-wide text-slate-400">Ration items &amp; quantity</h2>
-            </div>
-            <div className="space-y-3">
+          <div className={`${swiss.panel} p-5`}>
+            <SectionHead title="Items & quantity" />
+            <div className="space-y-3 mt-4">
               {ration.items.map((item) => (
                 <div key={item.key} className="flex items-center justify-between gap-3">
                   <div className="flex items-center gap-2 min-w-0">
-                    <div className="w-8 h-8 rounded-lg bg-amber-50 flex items-center justify-center shrink-0">
+                    <div className="w-8 h-8 border border-amber-200 bg-amber-50 flex items-center justify-center shrink-0">
                       <Wheat size={14} className="text-amber-600" />
                     </div>
                     <span className="text-sm font-medium text-slate-700 truncate">{item.label}</span>
                   </div>
-                  <span className="text-sm font-bold text-slate-900 shrink-0">{item.quantity} {item.unit}</span>
+                  <span className="text-sm font-extrabold tracking-tight tabular-nums text-slate-900 shrink-0">
+                    {item.quantity} {item.unit}
+                  </span>
                 </div>
               ))}
             </div>
@@ -165,37 +166,30 @@ export default function DashboardHome({ onNavigate }) {
         </div>
       </div>
 
-      {/* Household + appointment cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div className="bg-emerald-50/40 p-6 rounded-2xl border border-emerald-100 space-y-4">
-          <div className="flex items-center gap-2">
-            <ShieldCheck size={16} className={hasProfile ? 'text-emerald-600' : 'text-amber-600'} />
-            <h2 className="text-xs font-bold uppercase tracking-wide text-slate-400">Household registry profile</h2>
-          </div>
-
+        <div className={`${swiss.panel} p-6 space-y-4`}>
+          <SectionHead title="Household registry profile" />
           {hasProfile ? (
             <div className="space-y-2 text-sm">
-              <div className="flex justify-between py-1.5 border-b border-emerald-100/70">
+              <div className="flex justify-between py-1.5 border-b border-slate-100">
                 <span className="text-slate-500">Ration card ID</span>
-                <span className="font-semibold text-slate-800">{profile.rationCardNumber}</span>
+                <span className="font-semibold text-slate-800 tabular-nums">{profile.rationCardNumber}</span>
               </div>
-              <div className="flex justify-between py-1.5 border-b border-emerald-100/70">
+              <div className="flex justify-between py-1.5 border-b border-slate-100">
                 <span className="text-slate-500">Head of family</span>
                 <span className="font-semibold text-slate-800">{profile.headOfFamily}</span>
               </div>
-              <div className="flex justify-between py-1.5 border-b border-emerald-100/70">
+              <div className="flex justify-between py-1.5 border-b border-slate-100">
                 <span className="text-slate-500">Registered family members</span>
-                <span className="font-semibold text-slate-800">{profile.totalMembers || 1} member(s)</span>
+                <span className="font-semibold text-slate-800 tabular-nums">{profile.totalMembers || 1} member(s)</span>
               </div>
               <div className="flex justify-between items-center py-1.5">
                 <span className="text-slate-500">Record status</span>
-                <span className="bg-emerald-100 text-emerald-700 text-[11px] font-bold px-2.5 py-1 rounded-lg">
-                  Active household record
-                </span>
+                <span className={`${chip} border-green-600 bg-green-50 text-green-700`}>Active household record</span>
               </div>
             </div>
           ) : (
-            <div className="bg-amber-50 border border-amber-200 p-5 rounded-xl space-y-2">
+            <div className="bg-amber-50 border border-amber-300 p-5 space-y-2">
               <div className="flex items-center gap-2 text-amber-700 font-semibold text-sm">
                 <AlertCircle size={18} />
                 <span>Profile setup required</span>
@@ -206,38 +200,27 @@ export default function DashboardHome({ onNavigate }) {
             </div>
           )}
 
-          <button
-            onClick={() => onNavigate('profile')}
-            className="w-full bg-white hover:bg-slate-50 text-slate-900 border border-slate-200 text-sm font-semibold py-3 rounded-xl transition-all cursor-pointer flex items-center justify-center gap-2"
-          >
+          <button onClick={() => onNavigate('profile')} className={`${swiss.btnSecondary} w-full`}>
             <span>{hasProfile ? 'Manage household profile' : 'Set up household profile'}</span>
             <ArrowRight size={14} />
           </button>
         </div>
 
-        <div className="bg-blue-50/40 p-6 rounded-2xl border border-blue-100 space-y-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <Calendar size={16} className="text-blue-600" />
-              <h2 className="text-xs font-bold uppercase tracking-wide text-slate-400">Collection window appointment</h2>
-            </div>
-          </div>
-
+        <div className={`${swiss.panel} p-6 space-y-4`}>
+          <SectionHead title="Collection window appointment" />
           {booking ? (
             <div className="space-y-2 text-sm">
-              <div className="flex justify-between py-1.5 border-b border-blue-100/70">
+              <div className="flex justify-between py-1.5 border-b border-slate-100">
                 <span className="text-slate-500">Status</span>
-                <span className="bg-blue-100 text-blue-700 text-[10px] font-bold px-2.5 py-1 rounded-lg uppercase tracking-wide">
-                  {booking.status || 'Confirmed'}
-                </span>
+                <span className={`${chip} border-blue-600 bg-blue-50 text-blue-700`}>{booking.status || 'Confirmed'}</span>
               </div>
-              <div className="flex justify-between py-1.5 border-b border-blue-100/70">
+              <div className="flex justify-between py-1.5 border-b border-slate-100">
                 <span className="text-slate-500 flex items-center gap-1.5"><Calendar size={13} /> Date</span>
-                <span className="font-semibold text-slate-800">{booking.distributionDate}</span>
+                <span className="font-semibold text-slate-800 tabular-nums">{booking.distributionDate}</span>
               </div>
-              <div className="flex justify-between py-1.5 border-b border-blue-100/70">
+              <div className="flex justify-between py-1.5 border-b border-slate-100">
                 <span className="text-slate-500 flex items-center gap-1.5"><Clock size={13} /> Time slot</span>
-                <span className="font-semibold text-slate-800">{booking.timeSlot}</span>
+                <span className="font-semibold text-slate-800 tabular-nums">{booking.timeSlot}</span>
               </div>
               <div className="flex justify-between py-1.5">
                 <span className="text-slate-500 flex items-center gap-1.5"><Building2 size={13} /> Distribution center</span>
@@ -245,7 +228,7 @@ export default function DashboardHome({ onNavigate }) {
               </div>
             </div>
           ) : (
-            <div className="bg-white border border-blue-100 p-5 rounded-xl text-slate-500 text-sm flex items-center gap-3">
+            <div className={`${swiss.panel} p-5 text-slate-500 text-sm flex items-center gap-3`}>
               <Calendar size={20} className="shrink-0 text-slate-400" />
               <span>No collection window is currently scheduled.</span>
             </div>
@@ -253,7 +236,7 @@ export default function DashboardHome({ onNavigate }) {
 
           <button
             onClick={() => onNavigate('booking')}
-            className="w-full bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold py-3 rounded-xl transition-all cursor-pointer flex items-center justify-center gap-2"
+            className={`w-full bg-blue-700 hover:bg-blue-800 text-white text-[11px] font-bold uppercase tracking-wider px-4 py-2.5 transition-colors cursor-pointer inline-flex items-center justify-center gap-2 ${FOCUS}`}
           >
             <span>{booking ? 'Reschedule allocation' : 'Book a collection slot'}</span>
             <ArrowRight size={14} />
@@ -261,8 +244,7 @@ export default function DashboardHome({ onNavigate }) {
         </div>
       </div>
 
-      {/* Notice strip */}
-      <div className="bg-amber-50 border border-amber-200 rounded-2xl p-4 flex items-center justify-between">
+      <div className="bg-amber-50 border border-amber-300 p-4 flex items-center justify-between">
         <div className="flex items-center gap-3">
           <Bell size={18} className="text-amber-500" />
           <p className="text-sm text-slate-700">
