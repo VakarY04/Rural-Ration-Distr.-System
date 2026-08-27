@@ -55,6 +55,16 @@ body::-webkit-scrollbar,
   display: none;
 }
 
+/* Landing page scroll container: hide the scrollbar visually while keeping
+   all scrolling input (wheel, trackpad, touch, keyboard) fully functional. */
+.landing-scroll {
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* legacy Edge / IE */
+}
+.landing-scroll::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, Edge */
+}
+
 body {
   font-family: 'Cabinet Grotesk', ui-sans-serif, system-ui, -apple-system, sans-serif;
 }
@@ -85,3 +95,10 @@ body {
 .perspective-text {
   perspective: 1000px;
 }
+
+/* Landing-page cards: the hover "shell" wrapper MUST mirror the inner card's
+   border-radius and keep `overflow-hidden` + the same background. A square shell
+   around a rounded card exposes the dark page background in the card's rounded
+   corners on hover (triangular notch under the square box-shadow). Keep radii in
+   sync with cardBase / badgeBase. Any inner overlay/gradient/pseudo-element must
+   rely on the card's overflow-hidden and never introduce a mismatched radius. */

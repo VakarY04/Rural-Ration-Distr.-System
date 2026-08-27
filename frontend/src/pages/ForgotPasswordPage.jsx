@@ -1,15 +1,24 @@
 import { useState } from 'react';
-import { ShieldCheck, Mail, ArrowLeft } from 'lucide-react';
+import { ShieldCheck, Mail } from 'lucide-react';
 import logoAsset from '../images/E-RATION Logo.png';
 import heroBackdrop from '../images/india-republic-day-celebration-digital-art-with-flag.jpg';
+import HoverSplitBackdrop from '../components/auth/HoverSplitBackdrop';
 import { API_URL } from '../services/api';
 import { swiss } from '../components/ui/swiss';
 
-export default function ForgotPasswordPage({ onNavigate }) {
+export default function ForgotPasswordPage() {
   const [forgotEmail, setForgotEmail] = useState('');
   const [forgotSuccess, setForgotSuccess] = useState(false);
   const [forgotError, setForgotError] = useState('');
   const [loading, setLoading] = useState(false);
+
+  // Drive the split backdrop hover exactly like the login portal.
+  const [activeSide, setActiveSide] = useState(null);
+  const activate = (side) => setActiveSide(side);
+  const deactivate = () => setActiveSide(null);
+
+  // Hovering the card reveals the backdrop artwork behind it.
+  const [cardHovered, setCardHovered] = useState(false);
 
   const handleSendResetEmail = async (e) => {
     e.preventDefault();
@@ -39,24 +48,23 @@ export default function ForgotPasswordPage({ onNavigate }) {
   };
 
   return (
-    <div className="min-h-screen flex flex-col relative overflow-hidden font-sans text-[#000080]">
-      <div className="fixed inset-0 z-0 pointer-events-none" aria-hidden="true">
-        <img src={heroBackdrop} alt="" className="w-full h-full object-cover blur-sm scale-105" />
+    <div className="relative h-screen font-sans bg-slate-950 text-white overflow-hidden flex flex-col">
+      <HoverSplitBackdrop image={heroBackdrop} activeSide={activeSide} reveal={cardHovered} />
+
+      {/* Invisible hover zones that light up each side of the split backdrop. */}
+      <div className="absolute inset-0 z-0" onMouseLeave={deactivate} aria-hidden="true">
+        <div className="absolute inset-y-0 left-0 w-1/2" onMouseEnter={() => activate('left')} />
+        <div className="absolute inset-y-0 right-0 w-1/2" onMouseEnter={() => activate('right')} />
       </div>
 
-      <button
-        type="button"
-        onClick={() => onNavigate && onNavigate('admin-login')}
-        className="fixed top-6 left-6 z-30 flex items-center gap-2 text-[11px] font-bold uppercase tracking-wider text-white bg-slate-900/80 border border-white/20 px-4 py-2.5 hover:border-[#FF9933] hover:text-[#FF9933] transition-colors cursor-pointer backdrop-blur-sm"
-      >
-        <ArrowLeft size={16} />
-        <span>Back to Home</span>
-      </button>
-
       <main className="relative z-10 flex-1 flex items-center justify-center p-6">
-        <div className={`w-full max-w-md ${swiss.panel} rounded-3xl p-8 space-y-6 transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl hover:border-[#FF9933]/40`}>
+        <div
+          onMouseEnter={() => setCardHovered(true)}
+          onMouseLeave={() => setCardHovered(false)}
+          className={`w-full max-w-md ${swiss.panel} rounded-3xl p-8 space-y-6 transition-all duration-300 hover:-translate-y-2 hover:scale-[1.02] hover:shadow-2xl hover:border-[#FF9933]`}
+        >
           <div className="flex flex-col items-center text-center space-y-2">
-            <img src={logoAsset} alt="E-Ration Brand Logo" className="w-14 h-14 object-contain border border-slate-200 bg-slate-50 p-1 rounded-2xl" />
+            <img src={logoAsset} alt="E-Ration Brand Logo" className="w-14 h-14 object-contain bg-slate-50 p-1 rounded-2xl" />
             <div>
               <h2 className="text-xl font-extrabold uppercase tracking-tighter text-[#000080]">Account Recovery</h2>
               <p className="text-[11px] font-medium text-slate-400 mt-0.5">Recover registry credentials via email</p>

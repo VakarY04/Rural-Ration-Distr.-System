@@ -65,7 +65,7 @@ export default function ResetPasswordPage({ token, onResetSuccess }) {
       <main className="relative z-10 flex-1 flex items-center justify-center p-6">
         <div className={`w-full max-w-md ${swiss.panel} p-8 space-y-5`}>
           <div className="flex flex-col items-center text-center space-y-2">
-            <img src={logoAsset} alt="E-Ration Brand Logo" className="w-14 h-14 object-contain border border-slate-200 bg-slate-50 p-1" />
+            <img src={logoAsset} alt="E-Ration Brand Logo" className="w-14 h-14 object-contain bg-slate-50 p-1 rounded-2xl" />
             <div>
               <h2 className="text-xl font-extrabold uppercase tracking-tighter text-slate-900">Update Credentials</h2>
               <p className="text-[11px] font-medium text-slate-400 mt-0.5">Set a new security access password</p>

@@ -47,7 +47,7 @@ export default function DistributorConsolePage({ onLogout }) {
         <header className="bg-white border-b border-slate-200">
           <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between gap-4">
             <div className="flex items-center gap-3">
-              <img src={logoAsset} alt="E-Ration" className="w-11 h-11 object-contain border border-slate-200 p-1" />
+              <img src={logoAsset} alt="E-Ration" className="w-11 h-11 object-contain p-1 rounded-2xl" />
               <div>
                 <p className="text-sm font-extrabold uppercase tracking-tight leading-tight">Distributor Console</p>
                 <p className="text-[10px] font-bold uppercase tracking-[0.14em] text-slate-400">

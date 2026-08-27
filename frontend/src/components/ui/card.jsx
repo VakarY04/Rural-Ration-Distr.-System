@@ -1,7 +1,11 @@
 
+// Cards clip their rounded corners via `overflow-hidden`; this also keeps any
+// inner gradient/overlay from leaking past the radius. If a hover transform or
+// box-shadow is ever added here, wrap the card in a shell that mirrors this same
+// border-radius + overflow-hidden, otherwise the corners expose the page behind.
 export function Card({ className = '', children, ...props }) {
   return (
-    <div className={`rounded-2xl border border-slate-200/90 bg-white shadow-xs ${className}`} {...props}>
+    <div className={`rounded-2xl border border-slate-200/90 bg-white shadow-xs overflow-hidden ${className}`} {...props}>
       {children}
     </div>
   );
