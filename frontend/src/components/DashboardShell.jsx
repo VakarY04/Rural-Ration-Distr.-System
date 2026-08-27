@@ -26,7 +26,7 @@ export default function DashboardShell({ children, currentSubPage, onSubPageChan
       <aside className="w-64 bg-slate-900 text-white flex flex-col justify-between p-5 border-r border-slate-800 shrink-0">
         <div>
           <div className="flex items-center gap-3 px-1 mb-4">
-            <img src={logoAsset} alt="E-Ration" className="w-11 h-11 object-contain bg-slate-800 p-1" />
+            <img src={logoAsset} alt="E-Ration" className="w-11 h-11 object-contain bg-slate-800 p-1 rounded-2xl" />
             <div>
               <h1 className="text-sm font-bold uppercase tracking-[0.08em] text-white leading-tight">E-ration portal</h1>
               <p className="text-[10px] font-bold uppercase tracking-[0.14em] text-slate-400">Citizen workspace</p>

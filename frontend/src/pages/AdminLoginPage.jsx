@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { ArrowLeft, Users, Building2 } from 'lucide-react';
+import { Users, Building2 } from 'lucide-react';
 import HoverSplitBackdrop from '../components/auth/HoverSplitBackdrop';
 import AuthMethodTabs from '../components/auth/AuthMethodTabs';
 import AuthEmailForm from '../components/auth/AuthEmailForm';
@@ -45,15 +45,6 @@ export default function AdminLoginPage({ onNavigate, onAuthSuccess }) {
     <div className="relative h-screen font-sans bg-slate-950 text-white overflow-hidden flex flex-col">
       <HoverSplitBackdrop image={heroBackdrop} activeSide={activeSide} />
 
-      <button
-        type="button"
-        onClick={() => onNavigate && onNavigate('landing')}
-        className="fixed top-6 left-6 z-40 flex items-center gap-2 text-[11px] font-bold uppercase tracking-wider text-white bg-slate-900/80 border border-white/20 px-4 py-2.5 hover:border-[#FF9933] hover:text-[#FF9933] transition-colors cursor-pointer backdrop-blur-sm"
-      >
-        <ArrowLeft size={16} />
-        <span>Back to Home</span>
-      </button>
-
       <div className="relative z-20 pt-16 pb-6 shrink-0 text-center px-6 pointer-events-none">
         <h1 className="text-xl md:text-3xl font-extrabold uppercase tracking-tighter text-white">
           E-Ration Access Portal
@@ -63,7 +54,7 @@ export default function AdminLoginPage({ onNavigate, onAuthSuccess }) {
         </p>
       </div>
 
-      <div className="relative z-20 flex flex-col md:flex-row items-stretch justify-center flex-1 min-h-0">
+      <div className="relative z-20 flex flex-col md:flex-row items-stretch justify-center flex-1 min-h-0 -translate-y-7">
         {PORTALS.map((portal) => {
           const Icon = portal.icon;
           const isActive = activeSide === portal.side;
@@ -76,11 +67,11 @@ export default function AdminLoginPage({ onNavigate, onAuthSuccess }) {
               onBlur={deactivate}
               className="flex-1 flex items-center justify-center p-5 md:p-10 transition-opacity duration-700"
             >
-              <div
-                className={`w-full max-w-sm bg-white border p-8 space-y-5 transition-all duration-500 ${
-                  isActive ? 'border-[#FF9933] -translate-y-1 shadow-xl' : 'border-slate-200 hover:shadow-lg hover:-translate-y-0.5'
-                }`}
-              >
+                <div
+                  className={`w-full max-w-sm bg-white border rounded-3xl p-8 space-y-5 transition-all duration-500 ${
+                    isActive ? 'border-[#FF9933] -translate-y-1 shadow-xl' : 'border-slate-200 hover:shadow-lg hover:-translate-y-0.5'
+                  }`}
+                >
                 <div className="flex items-center gap-3.5">
                   <div className={`w-12 h-12 flex items-center justify-center border shrink-0 ${portal.iconBox}`}>
                     <Icon size={22} />
