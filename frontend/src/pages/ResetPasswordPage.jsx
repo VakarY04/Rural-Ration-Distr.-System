@@ -2,8 +2,9 @@ import { useState } from 'react';
 import { ShieldCheck, Lock, Eye, EyeOff } from 'lucide-react';
 import logoAsset from '../images/E-RATION Logo.png';
 import heroBackdrop from '../images/india-republic-day-celebration-digital-art-with-flag.jpg';
-import { API_URL } from '../services/api';
+import { authApi } from '../services/authApi';
 import { swiss, TricolorStrip } from '../components/ui/swiss';
+import { Alert } from '../components/ui/alert';
 
 export default function ResetPasswordPage({ token, onResetSuccess }) {
   const [password, setPassword] = useState('');
@@ -29,24 +30,13 @@ export default function ResetPasswordPage({ token, onResetSuccess }) {
 
     setLoading(true);
     try {
-      const response = await fetch(`${API_URL}/auth/reset-password/${token}`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ password }),
-      });
-
-      const data = await response.json();
-
-      if (response.ok) {
-        setSuccess(true);
-        setTimeout(() => {
-          if (onResetSuccess) onResetSuccess();
-        }, 2500);
-      } else {
-        setError(data.message || 'Authorization verification failed, token expired.');
-      }
-    } catch {
-      setError('Could not establish connection to security verification server.');
+      await authApi.resetPassword(token, password);
+      setSuccess(true);
+      setTimeout(() => {
+        if (onResetSuccess) onResetSuccess();
+      }, 2500);
+    } catch (err) {
+      setError(err.message || 'Authorization verification failed, token expired.');
     } finally {
       setLoading(false);
     }
@@ -72,17 +62,13 @@ export default function ResetPasswordPage({ token, onResetSuccess }) {
             </div>
           </div>
 
-          {error && (
-            <div className="border border-red-300 bg-red-50 p-3 text-center">
-              <p className="text-xs font-bold text-red-700">{error}</p>
-            </div>
-          )}
+          {error && <Alert variant="error">{error}</Alert>}
 
           {success && (
-            <div className="border border-green-700 bg-green-50 p-3 text-center">
-              <p className="text-xs font-bold text-green-700">Security credentials updated cleanly!</p>
-              <p className="text-[10px] text-slate-500 mt-0.5">Redirecting to terminal access interface...</p>
-            </div>
+            <Alert variant="success">
+              Security credentials updated cleanly!
+              <span className="block text-[10px] text-slate-500 mt-0.5">Redirecting to terminal access interface...</span>
+            </Alert>
           )}
 
           {!success && (

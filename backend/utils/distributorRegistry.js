@@ -38,6 +38,21 @@ export const matchRegistryPassword = async (entry, password) => {
   return entry.password === password;
 };
 
+// True only when the registry entry exists and the password matches. Used by
+// the login flow so the credential check is expressed in one place.
+export const verifyRegistryCredentials = async (entry, password) =>
+  entry ? matchRegistryPassword(entry, password) : false;
+
+// Resolves the provisioned registry entry for an email OR mobile number and
+// mirrors it into MongoDB, returning the synced user (or null when the
+// identifier does not belong to a government-provisioned distributor). This
+// single helper replaces the duplicated lookup+sync block in login/sendOtp.
+export const resolveRegistryUser = async (UserModel, { email, phone }) => {
+  const entry = findRegistryEntry({ email, phone });
+  if (!entry) return null;
+  return syncRegistryUserToDb(UserModel, entry);
+};
+
 // Mirrors a provisioned registry entry into MongoDB (creating or reusing the
 // account document) so JWT sessions and OTP storage keep working unchanged.
 export const syncRegistryUserToDb = async (UserModel, entry) => {

@@ -1,18 +1,15 @@
 import { useEffect, useState } from 'react';
-import { KeyRound, Loader2, AlertCircle, RefreshCw, Smartphone, ShieldCheck } from 'lucide-react';
-import { API_URL } from '../../services/api';
+import { KeyRound, Loader2, RefreshCw, Smartphone, ShieldCheck } from 'lucide-react';
 import { saveSession } from '../../services/session';
+import { authApi } from '../../services/authApi';
 import { swiss } from '../ui/swiss';
-
-const ACCENTS = {
-  emerald: 'hover:bg-green-700',
-  amber: 'hover:bg-orange-600',
-};
+import { getAccentHover } from '../ui/authStyles';
+import { Alert } from '../ui/alert';
 
 const RESEND_COOLDOWN_SECONDS = 10;
 
 export default function AuthOtpForm({ role, accent = 'emerald', onSuccess }) {
-  const hoverAccent = ACCENTS[accent] || ACCENTS.emerald;
+  const hoverAccent = getAccentHover(accent);
   const [phone, setPhone] = useState('');
   const [otp, setOtp] = useState('');
   const [otpSent, setOtpSent] = useState(false);
@@ -27,17 +24,6 @@ export default function AuthOtpForm({ role, accent = 'emerald', onSuccess }) {
     return () => clearInterval(timer);
   }, [cooldown]);
 
-  const post = async (endpoint, body) => {
-    const response = await fetch(API_URL + endpoint, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(body),
-    });
-    const data = await response.json();
-    if (!response.ok) throw new Error(data.message || 'Request failed.');
-    return data;
-  };
-
   const handleSendOtp = async (isResend) => {
     if (isResend && cooldown > 0) return;
     setError('');
@@ -48,7 +34,7 @@ export default function AuthOtpForm({ role, accent = 'emerald', onSuccess }) {
     }
     setLoading(true);
     try {
-      await post('/auth/send-otp', { phone: phone.trim(), role });
+      await authApi.sendOtp(phone, role);
       setOtpSent(true);
       setInfo(isResend ? 'A fresh OTP code has been dispatched.' : 'OTP dispatched to your mobile number.');
       if (isResend) setCooldown(RESEND_COOLDOWN_SECONDS);
@@ -68,7 +54,7 @@ export default function AuthOtpForm({ role, accent = 'emerald', onSuccess }) {
     }
     setLoading(true);
     try {
-      const data = await post('/auth/verify-otp', { phone: phone.trim(), otp: otp.trim(), role });
+      const data = await authApi.verifyOtp(phone, otp, role);
       saveSession({ token: data.token, name: data.data?.name, role: data.data?.role });
       onSuccess(data.data);
     } catch (err) {
@@ -79,15 +65,8 @@ export default function AuthOtpForm({ role, accent = 'emerald', onSuccess }) {
 
   return otpSent ? (
     <form onSubmit={handleVerifyOtp} className="space-y-4">
-      {error && (
-        <div className="flex items-center gap-2 border border-red-300 bg-red-50 text-red-700 px-3.5 py-2.5 text-[11px] font-semibold">
-          <AlertCircle size={15} className="shrink-0" />
-          <span>{error}</span>
-        </div>
-      )}
-      {info && !error && (
-        <p className="text-[11px] font-semibold text-green-700 text-center">{info}</p>
-      )}
+      {error && <Alert variant="error">{error}</Alert>}
+      {info && !error && <Alert variant="success">{info}</Alert>}
 
       <div>
         <label htmlFor={`otp-code-${role}`} className={swiss.label}>
@@ -136,12 +115,7 @@ export default function AuthOtpForm({ role, accent = 'emerald', onSuccess }) {
     </form>
   ) : (
     <form onSubmit={(e) => e.preventDefault()} className="space-y-4">
-      {error && (
-        <div className="flex items-center gap-2 border border-red-300 bg-red-50 text-red-700 px-3.5 py-2.5 text-[11px] font-semibold">
-          <AlertCircle size={15} className="shrink-0" />
-          <span>{error}</span>
-        </div>
-      )}
+      {error && <Alert variant="error">{error}</Alert>}
 
       <div>
         <label htmlFor={`otp-phone-${role}`} className={swiss.label}>

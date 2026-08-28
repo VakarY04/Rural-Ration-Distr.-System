@@ -4,24 +4,15 @@ import Booking from '../models/Booking.js';
 import { computeRationBreakdown } from '../services/rationCalculator.js';
 import { findDistributorForDistrict } from '../data/distributors.js';
 import { getDistributionSettings, DEFAULT_WAREHOUSE } from '../models/DistributionSettings.js';
-
-// Placeholder depot + delivery-route data. Until the distributor/admin
-// module is built (planned for later), these are fixed defaults rather than
-// values an admin has entered — this is what the Terminal Hub map and
-// "Ration Delivery Details" panel display in the meantime.
-const CENTRAL_WAREHOUSE = {
-  label: 'Regional Ration Warehouse',
-  address: 'Sector 20 Central Warehouse, Greater Noida, Uttar Pradesh',
-  lat: 28.4744,
-  lng: 77.5040,
-};
+import { getRequestUserId } from '../utils/requestUser.js';
+import { sendError } from '../utils/httpError.js';
 
 // Get an aggregated snapshot for the Terminal Hub (dashboard home) page:
 // citizen name, household profile status, next booking, computed ration
 // quota, and delivery route endpoints for the map.
 export const getDashboardSummary = async (req, res) => {
   try {
-    const userId = req.user?.id || req.user?._id;
+    const userId = getRequestUserId(req);
     if (!userId) {
       return res.status(401).json({ message: 'Unauthorized access token.' });
     }
@@ -43,8 +34,8 @@ export const getDashboardSummary = async (req, res) => {
       : {
         label: 'Distributor pending assignment',
         address: 'Add your address on the Family Profile page to see your local distributor',
-        lat: CENTRAL_WAREHOUSE.lat,
-        lng: CENTRAL_WAREHOUSE.lng,
+        lat: DEFAULT_WAREHOUSE.lat,
+        lng: DEFAULT_WAREHOUSE.lng,
       };
 
     // Admin-edited delivery details win over the static defaults; district
@@ -52,8 +43,8 @@ export const getDashboardSummary = async (req, res) => {
     const adminFrom = settings.delivery?.from?.label ? settings.delivery.from : null;
     const adminTo = settings.delivery?.to?.label ? settings.delivery.to : null;
     const deliveryFrom = adminFrom
-      ? { ...CENTRAL_WAREHOUSE, ...adminFrom }
-      : { ...CENTRAL_WAREHOUSE, label: DEFAULT_WAREHOUSE.label };
+      ? { ...DEFAULT_WAREHOUSE, ...adminFrom }
+      : { ...DEFAULT_WAREHOUSE, label: DEFAULT_WAREHOUSE.label };
     const deliveryTo = adminTo ? { ...deliveryToDistrict, ...adminTo } : deliveryToDistrict;
 
     return res.status(200).json({
@@ -80,9 +71,9 @@ export const getDashboardSummary = async (req, res) => {
       },
     });
   } catch (error) {
-    console.error('Dashboard Summary Error:', error);
-    return res.status(500).json({ message: 'Failed to load terminal hub summary.' });
+    return sendError(res, error, {
+      message: 'Failed to load terminal hub summary.',
+      logLabel: 'Dashboard Summary Error:',
+    });
   }
 };
-
-export default { getDashboardSummary };

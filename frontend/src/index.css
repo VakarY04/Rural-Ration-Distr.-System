@@ -37,11 +37,6 @@
   font-display: swap;
 }
 
-/* Make Tailwind's font-sans utility (used across the whole app) resolve to
-   Cabinet Grotesk, so no per-component className changes are needed. */
-@theme {
-  --font-sans: 'Cabinet Grotesk', ui-sans-serif, system-ui, -apple-system, sans-serif;
-}
 
 html, body, #root {
   height: 100%;

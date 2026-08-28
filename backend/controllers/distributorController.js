@@ -1,9 +1,11 @@
 import Booking from '../models/Booking.js';
+import User from '../models/User.js';
 import {
   getDistributionSettings,
   DEFAULT_WAREHOUSE,
   DEFAULT_COLLECTION_CENTRE,
 } from '../models/DistributionSettings.js';
+import { sendError } from '../utils/httpError.js';
 
 // Pulls the numeric kg out of an allocatedItems entry like "35 kg".
 const parseKg = (value) => {
@@ -31,19 +33,36 @@ export const getDistributorSummary = async (req, res) => {
   try {
     const settings = await getDistributionSettings();
 
-    const [recentBookings, bookedCards, totalBookings, confirmedBookings] = await Promise.all([
-      Booking.find().sort({ createdAt: -1 }).limit(30).lean(),
-      Booking.distinct('rationCardNumber'),
-      Booking.countDocuments(),
-      Booking.countDocuments({ status: 'Confirmed' }),
-    ]);
+    // Load every booking and drop any whose owning account no longer exists
+    // (e.g. a User was deleted straight from MongoDB). Bookings created by the
+    // allocation engine carry no `user` field, so those are always retained.
+    const allBookings = await Booking.find().lean();
+    const userIds = [
+      ...new Set(allBookings.map((b) => b.user).filter(Boolean).map((id) => id.toString())),
+    ];
+    const existingUsers = userIds.length
+      ? await User.find({ _id: { $in: userIds } }).select('_id').lean()
+      : [];
+    const existingUserIds = new Set(existingUsers.map((u) => u._id.toString()));
+    const bookings = allBookings.filter(
+      (b) => !b.user || existingUserIds.has(b.user.toString())
+    );
+
+    const recentBookings = [...bookings]
+      .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+      .slice(0, 30);
+
+    const bookedCards = [
+      ...new Set(bookings.map((b) => b.rationCardNumber).filter(Boolean)),
+    ];
+    const confirmedBookings = bookings.filter((b) => b.status === 'Confirmed').length;
 
     return res.status(200).json({
       name: req.user?.name || 'Staff',
       role: req.user?.role,
       stats: {
         familiesBooked: bookedCards.length,
-        totalBookings,
+        totalBookings: bookings.length,
         confirmedBookings,
         grainCommittedKg: Math.round(sumAllocatedKg(recentBookings)),
       },
@@ -58,8 +77,10 @@ export const getDistributorSummary = async (req, res) => {
       updatedAt: settings.updatedAt,
     });
   } catch (error) {
-    console.error('Distributor Summary Error:', error);
-    return res.status(500).json({ message: 'Failed to load distributor summary.' });
+    return sendError(res, error, {
+      message: 'Failed to load distributor summary.',
+      logLabel: 'Distributor Summary Error:',
+    });
   }
 };
 
@@ -84,8 +105,10 @@ export const updateDeliveryDetails = async (req, res) => {
 
     return res.status(200).json({ message: 'Delivery details updated.', delivery: settings.delivery });
   } catch (error) {
-    console.error('Update Delivery Details Error:', error);
-    return res.status(500).json({ message: 'Failed to update delivery details.' });
+    return sendError(res, error, {
+      message: 'Failed to update delivery details.',
+      logLabel: 'Update Delivery Details Error:',
+    });
   }
 };
 
@@ -114,9 +137,9 @@ export const updateRationItems = async (req, res) => {
 
     return res.status(200).json({ message: 'Ration items updated.', items: settings.items });
   } catch (error) {
-    console.error('Update Ration Items Error:', error);
-    return res.status(500).json({ message: 'Failed to update ration items.' });
+    return sendError(res, error, {
+      message: 'Failed to update ration items.',
+      logLabel: 'Update Ration Items Error:',
+    });
   }
 };
-
-export default { getDistributorSummary, updateDeliveryDetails, updateRationItems };

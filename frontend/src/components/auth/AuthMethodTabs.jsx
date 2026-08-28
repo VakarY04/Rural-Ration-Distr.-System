@@ -1,17 +1,13 @@
 import { Mail, Smartphone } from 'lucide-react';
+import { getActiveTabClass } from '../ui/authStyles';
 
 const TABS = [
   { key: 'email', label: 'Email & Password', icon: Mail },
   { key: 'otp', label: 'Phone OTP', icon: Smartphone },
 ];
 
-const ACTIVE_TAB = {
-  emerald: 'bg-green-700 text-white',
-  amber: 'bg-orange-600 text-white',
-};
-
 export default function AuthMethodTabs({ value, onChange, accent = 'emerald' }) {
-  const activeTab = ACTIVE_TAB[accent] || ACTIVE_TAB.emerald;
+  const activeTab = getActiveTabClass(accent);
 
   return (
     <div className="grid grid-cols-2 gap-1 p-1 bg-slate-100 border border-slate-200">
