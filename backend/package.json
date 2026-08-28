@@ -8,7 +8,8 @@
     "start": "node server.js",
     "dev": "nodemon server.js",
     "prod": "node server.js",
-    "seed:distributor": "node scripts/createDistributor.js"
+    "seed:distributor": "node scripts/createDistributor.js",
+    "prune:bookings": "node scripts/pruneOrphanBookings.js"
   },
   "keywords": [],
   "author": "",

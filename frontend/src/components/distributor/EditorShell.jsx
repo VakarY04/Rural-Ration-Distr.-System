@@ -1,12 +1,14 @@
 // Shared panel chrome for the two admin editors — Swiss hairline frame,
-// section head, and a single action cluster (Edit / Save / Cancel).
-export default function EditorShell({ title, editing, saving, onEdit, onSave, onCancel, error, children }) {
+// section head, and a single action cluster (Edit / Save / Cancel). When
+// `readOnly` is set the action cluster is omitted entirely (no Edit button),
+// turning the panel into a static information card.
+export default function EditorShell({ title, editing, saving, onEdit, onSave, onCancel, error, readOnly, children }) {
   return (
     <section className="border border-slate-200 bg-white rounded-2xl overflow-hidden">
       <header className="flex items-start justify-between gap-4 px-5 pt-5 pb-4 border-b border-slate-100">
         <h2 className="text-sm font-bold uppercase tracking-[0.1em] text-[#000080]">{title}</h2>
 
-        {!editing && (
+        {!readOnly && !editing && (
           <button
             type="button"
             onClick={onEdit}
@@ -15,7 +17,7 @@ export default function EditorShell({ title, editing, saving, onEdit, onSave, on
             Edit
           </button>
         )}
-        {editing && (
+        {!readOnly && editing && (
           <div className="flex shrink-0 gap-2">
             <button
               type="button"

@@ -1,4 +1,6 @@
 import { GoogleGenerativeAI } from '@google/generative-ai';
+import { generateOtp } from '../utils/random.js';
+import { sendError } from '../utils/httpError.js';
 
 export const analyzeGrievance = async (req, res) => {
   try {
@@ -21,11 +23,11 @@ export const analyzeGrievance = async (req, res) => {
     }
 
     // Intelligent Fallback Ticket Generation
-    const ticketId = Math.floor(100000 + Math.random() * 900000);
+    const ticketId = generateOtp();
     return res.status(200).json({
       response: `• Translation: "${issue}"\n• Category: Quantity & Allocation Discrepancy\n• Status: Official Complaint Ticket #${ticketId} Logged\n• Action: Assigned to District Ration Inspector for Fair Price Shop Verification.`
     });
   } catch (error) {
-    return res.status(500).json({ message: 'Failed to process grievance.' });
+    return sendError(res, error, { message: 'Failed to process grievance.' });
   }
 };

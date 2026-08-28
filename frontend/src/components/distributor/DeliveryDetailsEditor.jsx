@@ -52,29 +52,12 @@ export default function DeliveryDetailsEditor({ delivery, onSaved }) {
     onSaved,
   });
 
-  const setEndpoint = (side) => (value) => section.setDraft((d) => ({ ...d, [side]: value }));
-
   return (
-    <EditorShell
-      title="Ration delivery details"
-      editing={section.editing}
-      saving={section.saving}
-      error={section.error}
-      onEdit={section.startEditing}
-      onCancel={section.cancelEditing}
-      onSave={section.save}
-    >
-      {section.editing ? (
-        <div className="space-y-5">
-          <RouteField side="From warehouse" value={section.draft.from} onChange={setEndpoint('from')} editing />
-          <RouteField side="To collection centre" value={section.draft.to} onChange={setEndpoint('to')} editing />
-        </div>
-      ) : (
-        <dl className="space-y-4">
-          <RouteField side="From warehouse" value={section.draft.from} onChange={() => {}} editing={false} />
-          <RouteField side="To collection centre" value={section.draft.to} onChange={() => {}} editing={false} />
-        </dl>
-      )}
+    <EditorShell title="Ration delivery details" readOnly>
+      <dl className="space-y-4">
+        <RouteField side="From warehouse" value={section.draft.from} onChange={() => {}} editing={false} />
+        <RouteField side="To collection centre" value={section.draft.to} onChange={() => {}} editing={false} />
+      </dl>
     </EditorShell>
   );
 }

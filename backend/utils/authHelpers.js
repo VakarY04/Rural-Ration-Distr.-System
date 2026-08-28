@@ -38,3 +38,17 @@ export const sessionPayload = (user) => ({
   phone: user.phone || null,
   role: user.role,
 });
+
+// Emits the standard auth-success response (token + session payload) used by
+// register/login/verifyOtp so the three handlers shape it identically.
+export const sendAuthSuccess = (res, user, status = 200) =>
+  res.status(status).json({ token: signSessionToken(user._id), data: sessionPayload(user) });
+
+// Public-facing account shape returned by the profile read/update endpoints.
+export const publicUser = (user) => ({
+  name: user.name,
+  avatar: user.avatar || null,
+  phone: user.phone || null,
+  email: user.email || null,
+  role: user.role,
+});

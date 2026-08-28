@@ -1,6 +1,6 @@
 /* eslint-disable react-refresh/only-export-components */
 import { createContext, useContext, useState, useEffect, useCallback } from 'react';
-import { API_URL } from '../services/api';
+import { api } from '../services/api';
 
 const AccountContext = createContext(null);
 
@@ -17,14 +17,11 @@ export function AccountProvider({ children }) {
       setLoading(false);
       return;
     }
-    const headers = { Authorization: `Bearer ${token}` };
     try {
-      const [accountRes, profileRes] = await Promise.all([
-        fetch(API_URL + '/auth/me', { headers }),
-        fetch(API_URL + '/family/profile', { headers }),
+      const [accountData, profileData] = await Promise.all([
+        api('/auth/me'),
+        api('/family/profile'),
       ]);
-      const accountData = accountRes.ok ? await accountRes.json() : null;
-      const profileData = profileRes.ok ? await profileRes.json() : null;
       setAccount({
         name: accountData?.name || 'Citizen',
         avatar: accountData?.avatar || null,

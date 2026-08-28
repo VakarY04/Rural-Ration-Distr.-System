@@ -1,9 +1,11 @@
 import Family from '../models/Family.js';
+import { getRequestUserId } from '../utils/requestUser.js';
+import { sendError } from '../utils/httpError.js';
 
 // Get Family Profile for Authenticated User
 export const getFamilyProfile = async (req, res) => {
   try {
-    const userId = req.user?.id || req.user?._id;
+    const userId = getRequestUserId(req);
 
     if (!userId) {
       return res.status(401).json({ message: 'Unauthorized access token.' });
@@ -17,15 +19,17 @@ export const getFamilyProfile = async (req, res) => {
 
     return res.status(200).json(profile);
   } catch (error) {
-    console.error('Get Family Profile Error:', error);
-    return res.status(500).json({ message: 'Error retrieving family profile records.' });
+    return sendError(res, error, {
+      message: 'Error retrieving family profile records.',
+      logLabel: 'Get Family Profile Error:',
+    });
   }
 };
 
 // Create or Update Family Profile
 export const updateFamilyProfile = async (req, res) => {
   try {
-    const userId = req.user?.id || req.user?._id;
+    const userId = getRequestUserId(req);
 
     if (!userId) {
       return res.status(401).json({ message: 'Unauthorized access token.' });
@@ -76,17 +80,9 @@ export const updateFamilyProfile = async (req, res) => {
       profile: updatedProfile,
     });
   } catch (error) {
-    console.error('Update Family Profile Error:', error);
-    return res.status(400).json({
-      message: error.message || 'Failed to update family profile details.',
+    return sendError(res, error, {
+      message: 'Failed to update family profile details.',
+      logLabel: 'Update Family Profile Error:',
     });
   }
 };
-
-// Export object bundle to support `import { familyController }` or `import familyController` in apiRoutes.js
-export const familyController = {
-  getFamilyProfile,
-  updateFamilyProfile,
-};
-
-export default familyController;

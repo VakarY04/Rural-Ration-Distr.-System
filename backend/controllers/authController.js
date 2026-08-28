@@ -1,15 +1,24 @@
 import User from '../models/User.js';
+import Booking from '../models/Booking.js';
 import {
   normalizePortalRole,
   portalAccessError,
-  signSessionToken,
-  sessionPayload,
+  sendAuthSuccess,
+  publicUser,
 } from '../utils/authHelpers.js';
 import {
   findRegistryEntry,
-  matchRegistryPassword,
   syncRegistryUserToDb,
+  resolveRegistryUser,
+  verifyRegistryCredentials,
 } from '../utils/distributorRegistry.js';
+import {
+  normalizePhone,
+  isValidPhone,
+  normalizeEmail,
+} from '../utils/validators.js';
+import { generateOtp } from '../utils/random.js';
+import { sendError } from '../utils/httpError.js';
 
 // 1. Citizen Registration Controller
 export const register = async (req, res) => {
@@ -18,14 +27,14 @@ export const register = async (req, res) => {
   // Public registration ALWAYS creates a citizen. Distributor accounts are
   // provisioned exclusively through the government registry file
   // (backend/data/distributorRegistry.js) and can never be self-registered.
-  const normalizedPhone = typeof phone === 'string' ? phone.trim() : '';
+  const normalizedPhone = normalizePhone(phone);
 
   try {
-    if (!normalizedPhone || normalizedPhone.replace(/\D/g, '').length < 10) {
+    if (!isValidPhone(normalizedPhone)) {
       return res.status(400).json({ message: 'Please provide a valid 10-digit mobile number.' });
     }
 
-    const normalizedEmail = String(email || '').trim().toLowerCase();
+    const normalizedEmail = normalizeEmail(email);
     const clash = await User.findOne({ $or: [{ email: normalizedEmail }, { phone: normalizedPhone }] });
     if (clash) {
       if (clash.email === normalizedEmail) {
@@ -42,13 +51,12 @@ export const register = async (req, res) => {
       role: 'citizen',
     });
 
-    res.status(201).json({
-      token: signSessionToken(user._id),
-      data: sessionPayload(user),
-    });
+    return sendAuthSuccess(res, user, 201);
   } catch (error) {
-    console.error('Registration Error:', error);
-    res.status(500).json({ message: 'Error establishing citizen registry footprint.' });
+    return sendError(res, error, {
+      message: 'Error establishing citizen registry footprint.',
+      logLabel: 'Registration Error:',
+    });
   }
 };
 
@@ -67,7 +75,7 @@ export const login = async (req, res) => {
   const { email, password } = req.body;
   const portalRole = normalizePortalRole(req.body.role);
 
-  const identifier = String(email || '').trim().toLowerCase();
+  const identifier = normalizeEmail(email);
   const lookupQuery = identifier.includes('@')
     ? { email: identifier }
     : { phone: identifier.replace(/\s+/g, '') };
@@ -82,7 +90,7 @@ export const login = async (req, res) => {
         return res.status(400).json({ message: 'Invalid credentials provided.' });
       }
 
-      const passwordOk = await matchRegistryPassword(entry, password);
+      const passwordOk = await verifyRegistryCredentials(entry, password);
       if (!passwordOk) {
         return res.status(400).json({ message: 'Invalid credentials provided.' });
       }
@@ -107,26 +115,25 @@ export const login = async (req, res) => {
       return res.status(403).json({ message: accessError });
     }
 
-    res.status(200).json({
-      token: signSessionToken(user._id),
-      data: sessionPayload(user),
-    });
+    return sendAuthSuccess(res, user);
   } catch (error) {
-    console.error('Login Error:', error);
-    res.status(500).json({ message: 'Internal server error processing terminal access.' });
+    return sendError(res, error, {
+      message: 'Internal server error processing terminal access.',
+      logLabel: 'Login Error:',
+    });
   }
 };
 
 // 3. Send OTP Controller
 export const sendOtp = async (req, res) => {
-  const { phone } = req.body;
   const portalRole = normalizePortalRole(req.body.role);
+  const phone = normalizePhone(req.body.phone);
 
-  if (!phone || phone.length < 10) {
-    return res.status(400).json({ message: "Please provide a valid phone number." });
+  if (!isValidPhone(phone)) {
+    return res.status(400).json({ message: 'Please provide a valid phone number.' });
   }
   if (portalRole === undefined) {
-    return res.status(400).json({ message: "Unknown portal requested." });
+    return res.status(400).json({ message: 'Unknown portal requested.' });
   }
 
   try {
@@ -135,16 +142,14 @@ export const sendOtp = async (req, res) => {
     // Distributor portal OTP is gated by the government registry file —
     // the number must belong to a department-provisioned distributor.
     if (portalRole === 'distributor' || portalRole === 'admin') {
-      const entry = findRegistryEntry({ phone });
-      if (!entry) {
+      user = await resolveRegistryUser(User, { phone });
+      if (!user) {
         return res.status(404).json({ message: 'No distributor account found for this mobile number.' });
       }
-      // Mirror the provisioned entry into MongoDB so the OTP has a document.
-      user = await syncRegistryUserToDb(User, entry);
     }
 
     // Generate a secure 6-digit OTP
-    const otp = Math.floor(100000 + Math.random() * 900000).toString();
+    const otp = generateOtp();
     user = user || new User({ phone });
     user.otp = otp;
     user.otpExpire = Date.now() + 5 * 60 * 1000; // Active for 5 minutes
@@ -161,17 +166,20 @@ export const sendOtp = async (req, res) => {
       console.log(`===================================\n`);
     }
 
-    res.status(200).json({ message: "OTP successfully sent to your mobile number." });
+    res.status(200).json({ message: 'OTP successfully sent to your mobile number.' });
   } catch (error) {
-    console.error("Send OTP Error:", error);
-    res.status(500).json({ message: "Failed to dispatch OTP verification code." });
+    return sendError(res, error, {
+      message: 'Failed to dispatch OTP verification code.',
+      logLabel: 'Send OTP Error:',
+    });
   }
 };
 
 // 4. Verify OTP Controller
 export const verifyOtp = async (req, res) => {
-  const { phone, otp } = req.body;
+  const { otp } = req.body;
   const portalRole = normalizePortalRole(req.body.role);
+  const phone = normalizePhone(req.body.phone);
 
   try {
     const user = await User.findOne({
@@ -181,7 +189,7 @@ export const verifyOtp = async (req, res) => {
     });
 
     if (!user) {
-      return res.status(400).json({ message: "Invalid or expired OTP code." });
+      return res.status(400).json({ message: 'Invalid or expired OTP code.' });
     }
 
     const accessError = portalAccessError(user, portalRole);
@@ -194,13 +202,12 @@ export const verifyOtp = async (req, res) => {
     user.otpExpire = undefined;
     await user.save();
 
-    res.status(200).json({
-      token: signSessionToken(user._id),
-      data: sessionPayload(user),
-    });
+    return sendAuthSuccess(res, user);
   } catch (error) {
-    console.error("Verify OTP Error:", error);
-    res.status(500).json({ message: "Internal server error during verification." });
+    return sendError(res, error, {
+      message: 'Internal server error during verification.',
+      logLabel: 'Verify OTP Error:',
+    });
   }
 };
 
@@ -214,16 +221,12 @@ export const getMe = async (req, res) => {
     if (!user) {
       return res.status(404).json({ message: 'Account not found.' });
     }
-    res.status(200).json({
-      name: user.name,
-      avatar: user.avatar || null,
-      phone: user.phone || null,
-      email: user.email || null,
-      role: user.role,
-    });
+    res.status(200).json(publicUser(user));
   } catch (error) {
-    console.error('Get Account Details Error:', error);
-    res.status(500).json({ message: 'Failed to load account details.' });
+    return sendError(res, error, {
+      message: 'Failed to load account details.',
+      logLabel: 'Get Account Details Error:',
+    });
   }
 };
 
@@ -250,8 +253,8 @@ export const updateMe = async (req, res) => {
     if (avatar !== undefined) update.avatar = avatar || null;
 
     if (phone !== undefined && phone !== null) {
-      const normalizedPhone = String(phone).replace(/\s+/g, '');
-      if (normalizedPhone.replace(/\D/g, '').length < 10) {
+      const normalizedPhone = normalizePhone(phone);
+      if (!isValidPhone(normalizedPhone)) {
         return res.status(400).json({ message: 'Please provide a valid 10-digit mobile number.' });
       }
       const clash = await User.findOne({ phone: normalizedPhone, _id: { $ne: userId } });
@@ -266,17 +269,9 @@ export const updateMe = async (req, res) => {
       runValidators: true,
     });
 
-    res.status(200).json({
-      message: 'Account details updated.',
-      name: user.name,
-      avatar: user.avatar || null,
-      phone: user.phone || null,
-      email: user.email || null,
-      role: user.role,
-    });
+    res.status(200).json({ message: 'Account details updated.', ...publicUser(user) });
   } catch (error) {
-    console.error('Update Account Details Error:', error);
-    res.status(400).json({ message: error.message || 'Failed to update account details.' });
+    return sendError(res, error, { status: 400 });
   }
 };
 
@@ -289,9 +284,14 @@ export const deleteMe = async (req, res) => {
     if (!deleted) {
       return res.status(404).json({ message: 'Account not found.' });
     }
+    // Remove the account's bookings too, otherwise they linger as orphaned
+    // "families" in the distributor console after the user is gone.
+    await Booking.deleteMany({ user: userId });
     res.status(200).json({ message: 'Your account has been permanently deleted.' });
   } catch (error) {
-    console.error('Delete Account Error:', error);
-    res.status(500).json({ message: 'Failed to delete the account.' });
+    return sendError(res, error, {
+      message: 'Failed to delete the account.',
+      logLabel: 'Delete Account Error:',
+    });
   }
 };

@@ -1,6 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import { generateId } from '../utils/random.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const seedsPath = path.join(__dirname, '../data/seeds.json');
@@ -24,7 +25,7 @@ export const mockBookingRepository = {
   // Save a new slot booking to memory
   createBooking: async (bookingData) => {
     const newBooking = {
-      id: `BK-${Math.floor(1000 + Math.random() * 9000)}`,
+      id: generateId('BK'),
       ...bookingData,
       createdAt: new Date(),
       isServed: false
@@ -41,7 +42,7 @@ export const mockBookingRepository = {
   // Save a brand new family into our in-memory array database
   createFamily: async (familyData) => {
     const newFamily = {
-      familyId: `FAM-${Math.floor(100 + Math.random() * 900)}`,
+      familyId: generateId('FAM'),
       ...familyData,
       mockAadhaarToken: `auth_token_hash_${Math.random().toString(16).substring(2, 8)}`
     };

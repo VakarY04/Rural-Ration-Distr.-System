@@ -1,43 +1,31 @@
-import mongoose from 'mongoose';
+import Booking from '../models/Booking.js';
 
-// Define placeholder structural schemas for compilation safety
-const BookingSchema = new mongoose.Schema({
-  familyId: String,
-  rationCardNumber: String,
-  headOfFamily: String,
-  totalMembers: Number,
-  allocatedWeightKg: Number,
-  date: String,
-  timeSlot: String,
-  isServed: { type: Boolean, default: false }
-}, { timestamps: true });
-
-// Prevent overwrite compilation errors during module re-evaluation
-const BookingModel = mongoose.models.Booking || mongoose.model('Booking', BookingSchema);
-
+// Mongo-backed implementation of the booking repository. Reuses the single
+// `Booking` model defined in models/Booking.js so there is exactly one schema
+// (the previous inline schema collided with that model's name). This strategy
+// is only active when DATA_SOURCE=MONGO; the default MOCK strategy is used
+// everywhere today, so these methods are dormant but kept query-compatible.
 export const mongoBookingRepository = {
-  findFamilyById: async (familyId) => {
-    // Future production lookup step:
-    // return await FamilyModel.findOne({ familyId });
-    return null; 
+  findFamilyById: async () => {
+    // Family lookups are served from the in-memory seed set in MOCK mode.
+    return null;
   },
 
   countBookingsInSlot: async (date, timeSlot) => {
-    return await BookingModel.countDocuments({ date, timeSlot });
+    return Booking.countDocuments({ distributionDate: date, timeSlot });
   },
 
   createBooking: async (bookingData) => {
-    const newBooking = new BookingModel(bookingData);
+    const newBooking = new Booking(bookingData);
     return await newBooking.save();
   },
 
   getAllBookings: async () => {
-    return await BookingModel.find({});
+    return Booking.find({});
   },
 
-  createFamily: async (familyData) => {
-    // Future production lookup step:
-    // return await FamilyModel.create(familyData);
+  createFamily: async () => {
+    // Family creation is handled by the MOCK seed set today.
     return null;
-  }
+  },
 };

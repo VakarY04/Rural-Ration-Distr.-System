@@ -2,6 +2,14 @@ import { useEffect, useRef } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import SplitType from 'split-type';
+import {
+  HERO_BADGE_BOX,
+  HERO_BADGE_TITLE,
+  FEATURE_CARD_BOX,
+  FEATURE_CARD_HEADING,
+  FEATURE_CARD_TEXT,
+  TRUST_FOOTER_TEXT,
+} from './landingStyles';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -114,7 +122,7 @@ export function useLandingAnimations() {
       }
 
       if (badgesContainerRef.current) {
-        const badgeBoxes = badgesContainerRef.current.querySelectorAll('.hero-badge-box');
+        const badgeBoxes = badgesContainerRef.current.querySelectorAll(`.${HERO_BADGE_BOX}`);
         gsap.fromTo(
           badgeBoxes,
           { opacity: 0, y: 40, scale: 0.9, rotateX: 15 },
@@ -130,7 +138,7 @@ export function useLandingAnimations() {
           }
         );
 
-        const badgeTitles = badgesContainerRef.current.querySelectorAll('.hero-badge-title');
+        const badgeTitles = badgesContainerRef.current.querySelectorAll(`.${HERO_BADGE_TITLE}`);
         badgeTitles.forEach((el) => {
           const split = new SplitType(el, { types: 'chars' });
           gsap.fromTo(
@@ -149,7 +157,7 @@ export function useLandingAnimations() {
       }
 
       if (cardsGridRef.current) {
-        const cards = cardsGridRef.current.querySelectorAll('.feature-card-box');
+        const cards = cardsGridRef.current.querySelectorAll(`.${FEATURE_CARD_BOX}`);
         gsap.fromTo(
           cards,
           { opacity: 0, y: 70, scale: 0.93, rotateY: 8 },
@@ -165,7 +173,7 @@ export function useLandingAnimations() {
           }
         );
 
-        const cardHeadings = cardsGridRef.current.querySelectorAll('.feature-card-heading');
+        const cardHeadings = cardsGridRef.current.querySelectorAll(`.${FEATURE_CARD_HEADING}`);
         cardHeadings.forEach((heading) => {
           const hSplit = new SplitType(heading, { types: 'chars, words' });
           gsap.fromTo(
@@ -183,7 +191,7 @@ export function useLandingAnimations() {
           );
         });
 
-        const cardTexts = cardsGridRef.current.querySelectorAll('.feature-card-text');
+        const cardTexts = cardsGridRef.current.querySelectorAll(`.${FEATURE_CARD_TEXT}`);
         cardTexts.forEach((text) => {
           const tSplit = new SplitType(text, { types: 'words, lines' });
           gsap.fromTo(
@@ -215,7 +223,7 @@ export function useLandingAnimations() {
           }
         );
 
-        const trustText = trustFooterRef.current.querySelector('.trust-footer-text');
+        const trustText = trustFooterRef.current.querySelector(`.${TRUST_FOOTER_TEXT}`);
         if (trustText) {
           const trustSplit = new SplitType(trustText, { types: 'words, chars' });
           gsap.fromTo(

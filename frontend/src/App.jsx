@@ -29,7 +29,7 @@ function pathForPage(page, subPage = 'home') {
     case 'reset-password':
       return '/reset-password';
     case 'distributor-console':
-      return '/distributor';
+      return subPage && subPage !== 'home' ? `/distributor?view=${subPage}` : '/distributor';
     case 'dashboard':
       return subPage && subPage !== 'home' ? `/dashboard?view=${subPage}` : '/dashboard';
     case 'landing':
@@ -50,7 +50,7 @@ function parseLocation() {
     const token = path.split('/reset-password/')[1] || params.get('token') || '';
     return { page: 'reset-password', subPage: 'home', token };
   }
-  if (path === '/distributor') return { page: 'distributor-console', subPage: 'home' };
+  if (path === '/distributor') return { page: 'distributor-console', subPage: params.get('view') || 'home' };
   if (path === '/dashboard') return { page: 'dashboard', subPage: params.get('view') || 'home' };
   return null;
 }
@@ -198,7 +198,11 @@ export default function App() {
 
       {/* 7c. Distributor / Admin Console (placeholder until staff modules ship) */}
       {currentPage === 'distributor-console' && (
-        <DistributorConsolePage onLogout={handleLogout} />
+        <DistributorConsolePage
+          currentSubPage={currentSubPage}
+          onNavigate={handleNavigate}
+          onLogout={handleLogout}
+        />
       )}
 
       {/* 8. Main Dashboard Application Shell */}

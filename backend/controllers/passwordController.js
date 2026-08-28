@@ -2,6 +2,7 @@ import User from '../models/User.js';
 import crypto from 'crypto';
 import nodemailer from 'nodemailer';
 import { updateRegistryPassword } from '../utils/distributorRegistry.js';
+import { sendError } from '../utils/httpError.js';
 
 // Extension of authController.js — hosts the password-recovery flow
 // (forgot + reset) so each controller file stays under 300 lines.
@@ -60,8 +61,10 @@ export const forgotPassword = async (req, res) => {
     res.status(200).json({ message: "Recovery email successfully dispatched!" });
 
   } catch (error) {
-    console.error("Mailer Error:", error);
-    res.status(500).json({ message: "Internal server error dispatching verification token." });
+    return sendError(res, error, {
+      message: "Internal server error dispatching verification token.",
+      logLabel: "Mailer Error:",
+    });
   }
 };
 
@@ -98,7 +101,9 @@ export const resetPassword = async (req, res) => {
     res.status(200).json({ message: "Password updated successfully. Proceed to login." });
 
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: "Error updating authentication parameters." });
+    return sendError(res, error, {
+      message: "Error updating authentication parameters.",
+      logLabel: "Reset Password Error:",
+    });
   }
 };

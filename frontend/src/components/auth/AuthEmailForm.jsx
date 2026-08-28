@@ -1,16 +1,13 @@
 import { useState } from 'react';
-import { ShieldCheck, Loader2, AlertCircle } from 'lucide-react';
-import { API_URL } from '../../services/api';
+import { ShieldCheck, Loader2 } from 'lucide-react';
 import { saveSession } from '../../services/session';
+import { authApi } from '../../services/authApi';
 import { swiss } from '../ui/swiss';
-
-const ACCENTS = {
-  emerald: 'hover:bg-green-700',
-  amber: 'hover:bg-orange-600',
-};
+import { getAccentHover } from '../ui/authStyles';
+import { Alert } from '../ui/alert';
 
 export default function AuthEmailForm({ role, accent = 'emerald', onSuccess, onForgotPassword }) {
-  const hoverAccent = ACCENTS[accent] || ACCENTS.emerald;
+  const hoverAccent = getAccentHover(accent);
   const [identifier, setIdentifier] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
@@ -21,13 +18,7 @@ export default function AuthEmailForm({ role, accent = 'emerald', onSuccess, onF
     setError('');
     setLoading(true);
     try {
-      const response = await fetch(API_URL + '/auth/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email: identifier.trim().toLowerCase(), password, role }),
-      });
-      const data = await response.json();
-      if (!response.ok) throw new Error(data.message || 'Invalid credentials provided.');
+      const data = await authApi.login(identifier, password, role);
       saveSession({ token: data.token, name: data.data?.name, role: data.data?.role });
       onSuccess(data.data);
     } catch (err) {
@@ -38,12 +29,7 @@ export default function AuthEmailForm({ role, accent = 'emerald', onSuccess, onF
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
-      {error && (
-        <div className="flex items-center gap-2 border border-red-300 bg-red-50 text-red-700 px-3.5 py-2.5 text-[11px] font-semibold">
-          <AlertCircle size={15} className="shrink-0" />
-          <span>{error}</span>
-        </div>
-      )}
+      {error && <Alert variant="error">{error}</Alert>}
 
       <div>
         <label htmlFor={`login-email-${role}`} className={swiss.label}>
