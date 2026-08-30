@@ -2,6 +2,8 @@
 # E-Ration Portal — global ignore rules (applies to backend/ and frontend/)
 # ----------------------------------------------------------------------
 
+TYPOGRAPHY_COMPLIANCE_README.md
+TYPOGRAPHY_COMPLIANCE.md
 Tips.md
 
 # Dependencies
