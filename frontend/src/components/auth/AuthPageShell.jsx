@@ -39,7 +39,7 @@ export function AuthPageShell({
           <div className="flex flex-col items-center text-center space-y-2">
             <img src={logoAsset} alt="E-Ration Logo" className="w-14 h-14 object-contain bg-slate-50 p-1 rounded-2xl" />
             <div>
-              <h2 className="text-xl font-extrabold uppercase tracking-tighter text-[#000080]">{title}</h2>
+              <h2 className="text-xl font-extrabold tracking-tighter text-[#000080]">{title}</h2>
               <p className="text-[11px] font-medium text-slate-400 mt-0.5">{subtitle}</p>
             </div>
           </div>
