@@ -26,13 +26,13 @@ export const swiss = {
   input:
     'w-full border border-slate-200 focus:border-[#000080] hover:border-slate-400 hover:shadow-md bg-slate-50 focus:bg-white hover:bg-white px-3 py-2 text-sm font-medium text-[#000080] outline-none transition-all duration-200 placeholder:text-slate-400',
   btnPrimary:
-    'bg-[#FF9933] hover:bg-[#e68a00] text-white text-[11px] font-bold uppercase tracking-wider px-4 py-2.5 transition-colors cursor-pointer disabled:opacity-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#FF9933] inline-flex items-center justify-center gap-2',
+    'bg-[#FF9933] hover:bg-[#e68a00] text-white text-[11px] font-medium tracking-wider px-4 py-2.5 transition-colors cursor-pointer disabled:opacity-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#FF9933] inline-flex items-center justify-center gap-2',
   btnSecondary:
-    'border border-slate-300 hover:border-[#000080] text-[#000080] hover:text-white hover:bg-[#000080] text-[11px] font-bold uppercase tracking-wider px-4 py-2.5 transition-colors cursor-pointer disabled:opacity-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#FF9933] inline-flex items-center justify-center gap-2 bg-white',
-  label: 'text-[10px] font-bold uppercase tracking-[0.14em] text-slate-500 block mb-1.5',
-  micro: 'text-[10px] font-bold uppercase tracking-[0.14em] text-slate-400',
-  sectionTitle: 'text-sm font-bold uppercase tracking-[0.1em] text-[#000080]',
-  headline: 'text-3xl md:text-5xl font-extrabold tracking-tighter text-[#000080]',
+    'border border-slate-300 hover:border-[#000080] text-[#000080] hover:text-white hover:bg-[#000080] text-[11px] font-medium tracking-wider px-4 py-2.5 transition-colors cursor-pointer disabled:opacity-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#FF9933] inline-flex items-center justify-center gap-2 bg-white',
+  label: 'text-sm font-medium tracking-[0.14em] text-slate-500 block mb-1.5',
+  micro: 'text-sm font-medium tracking-[0.1em] text-slate-400',
+  sectionTitle: 'text-xl font-medium tracking-[0.1em] text-[#000080]',
+  headline: 'text-4xl md:text-3xl font-bold tracking-tighter text-[#000080]',
 };
 
 export function TricolorStrip({ className = 'h-1' }) {
