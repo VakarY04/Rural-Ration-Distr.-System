@@ -46,10 +46,10 @@ export default function AdminLoginPage({ onNavigate, onAuthSuccess }) {
       <HoverSplitBackdrop image={heroBackdrop} activeSide={activeSide} />
 
       <div className="relative z-20 pt-16 pb-6 shrink-0 text-center px-6 pointer-events-none">
-        <h1 className="text-xl md:text-3xl font-extrabold uppercase tracking-tighter text-white">
+        <h1 className="text-3xl md:text-4xl font-bold tracking-tighter text-white">
           E-Ration Access Portal
         </h1>
-        <p className="text-[10px] font-bold uppercase tracking-[0.14em] text-slate-200 mt-2">
+        <p className="text-xl font-medium tracking-[0.1em] text-slate-200 mt-2">
           Choose your gateway
         </p>
       </div>
@@ -77,7 +77,7 @@ export default function AdminLoginPage({ onNavigate, onAuthSuccess }) {
                     <Icon size={22} />
                   </div>
                   <div>
-                    <h2 className="text-base font-extrabold uppercase tracking-tight text-[#000080]">
+                    <h2 className="text-xl font-medium tracking-tight text-[#000080]">
                       {portal.title}
                     </h2>
                     <p className="text-[11px] font-medium text-slate-400 mt-0.5 leading-snug">
@@ -119,8 +119,8 @@ export default function AdminLoginPage({ onNavigate, onAuthSuccess }) {
                     </button>
                   </p>
                 ) : (
-                  <p className="text-center text-[10px] font-bold text-slate-400 uppercase tracking-[0.14em] pt-3">
-                    Staff accounts are provisioned by the Food &amp; Civil Supplies department
+<p className="text-center text-[10px] font-medium text-slate-400 tracking-[0.14em] pt-3">
+                    Staff accounts are provisioned by the Food & Civil Supplies department
                   </p>
                 )}
               </div>
