@@ -236,7 +236,7 @@ export default function DashboardHome({ onNavigate }) {
 
           <button
             onClick={() => onNavigate('booking')}
-            className={`w-full bg-blue-700 hover:bg-blue-800 text-white text-[11px] font-bold uppercase tracking-wider px-4 py-2.5 transition-colors cursor-pointer inline-flex items-center justify-center gap-2 ${FOCUS}`}
+            className={`w-full bg-blue-700 hover:bg-blue-800 text-white text-[11px] font-medium tracking-wider px-4 py-2.5 transition-colors cursor-pointer inline-flex items-center justify-center gap-2 ${FOCUS}`}
           >
             <span>{booking ? 'Reschedule allocation' : 'Book a collection slot'}</span>
             <ArrowRight size={14} />

@@ -150,7 +150,7 @@ export default function AiSupportPage() {
             ) : (
               <>
                 <Bot size={16} />
-                <span>ANALYZE ISSUE VIA GEMINI AI BRIDGE</span>
+                <span>Analyze Issue via Gemini AI Bridge</span>
               </>
             )}
           </button>

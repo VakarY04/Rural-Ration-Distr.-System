@@ -135,7 +135,7 @@ export default function BookingPage() {
           <AlertCircle size={24} />
         </div>
         <div>
-          <h3 className="text-base font-extrabold tracking-tight text-slate-900">Household Profile Required</h3>
+          <h3 className="text-base md:text-xl font-extrabold tracking-tight text-slate-900">Household Profile Required</h3>
           <p className="text-xs text-slate-500 font-medium mt-1 leading-relaxed">
             Please complete your household information profile details under the <strong className="text-slate-700">Family Profiles</strong> tab before scheduling a delivery allocation window.
           </p>
@@ -159,7 +159,7 @@ export default function BookingPage() {
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-200 pb-5">
           <div>
             <p className={`${swiss.micro} mb-1`}>Distribution Scheduling · वितरण अनुसूची</p>
-            <h1 className="text-2xl md:text-3xl font-extrabold tracking-tight text-slate-900">
+            <h1 className="text-2xl md:text-4xl font-bold tracking-tighter text-slate-900">
               Ration Bookings
             </h1>
             <p className="text-[11px] text-slate-400 font-medium mt-1">राशन बुकिंग</p>

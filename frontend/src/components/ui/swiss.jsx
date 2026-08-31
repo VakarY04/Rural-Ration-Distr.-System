@@ -30,9 +30,9 @@ export const swiss = {
   btnSecondary:
     'border border-slate-300 hover:border-[#000080] text-[#000080] hover:text-white hover:bg-[#000080] text-[11px] font-medium tracking-wider px-4 py-2.5 transition-colors cursor-pointer disabled:opacity-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#FF9933] inline-flex items-center justify-center gap-2 bg-white',
   label: 'text-sm font-medium tracking-[0.14em] text-slate-500 block mb-1.5',
-  micro: 'text-sm font-medium tracking-[0.1em] text-slate-400',
-  sectionTitle: 'text-xl font-medium tracking-[0.1em] text-[#000080]',
-  headline: 'text-4xl md:text-3xl font-bold tracking-tighter text-[#000080]',
+  micro: 'text-xs font-medium tracking-[0.1em] text-slate-400',
+  sectionTitle: 'text-base md:text-xl font-medium tracking-[0.1em] text-[#000080]',
+  headline: 'text-2xl md:text-4xl font-bold tracking-tighter text-[#000080]',
 };
 
 export function TricolorStrip({ className = 'h-1' }) {
