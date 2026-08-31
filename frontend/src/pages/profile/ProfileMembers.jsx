@@ -33,10 +33,10 @@ export function MembersPanel({
           <table className="w-full text-sm">
             <thead>
               <tr className="text-left text-[10px] font-bold uppercase tracking-[0.14em] text-slate-400 border-b border-slate-200">
-                <th scope="col" className="py-2 pr-3 font-bold">Name</th>
-                <th scope="col" className="py-2 pr-3 font-bold w-16">Age</th>
-                <th scope="col" className="py-2 pr-3 font-bold w-32">Relation</th>
-                <th scope="col" className="py-2 w-16"><span className="sr-only">Actions</span></th>
+                <th scope="col" className="py-2 pr-3 font-bold text-left">Name</th>
+                <th scope="col" className="py-2 pr-3 font-bold text-right">Age</th>
+                <th scope="col" className="py-2 pr-3 font-bold text-left">Relation</th>
+                <th scope="col" className="py-2 w-16 text-center"><span className="sr-only">Actions</span></th>
               </tr>
             </thead>
             <tbody>
@@ -73,7 +73,7 @@ export function MembersPanel({
                           <td className="py-2.5 pr-3 tabular-nums text-slate-600">{m.age || '—'}</td>
                           <td className="py-2.5 pr-3">
                             {m.relation ? (
-                              <span className={`inline-flex items-center border border-current px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider ${colorForText(m.relation)}`}>
+                              <span className={`inline-flex items-center border border-current px-2 py-0.5 text-[10px] font-bold tracking-wider ${colorForText(m.relation)}`}>
                                 {m.relation}
                               </span>
                             ) : (
@@ -108,7 +108,7 @@ export function MembersPanel({
         <button
           type="button"
           onClick={addMember}
-          className={`w-full mt-4 flex items-center justify-center gap-2 border border-dashed border-slate-300 hover:border-slate-900 hover:bg-slate-50 text-slate-500 hover:text-slate-900 text-[11px] font-bold uppercase tracking-wider py-3 transition-colors cursor-pointer ${FOCUS}`}
+          className={`w-full mt-4 flex items-center justify-center gap-2 border border-dashed border-slate-300 hover:border-slate-900 hover:bg-slate-50 text-slate-500 hover:text-slate-900 text-[11px] font-medium tracking-wider py-3 transition-colors cursor-pointer ${FOCUS}`}
         >
           <Plus size={16} />
           Add Another Family Member

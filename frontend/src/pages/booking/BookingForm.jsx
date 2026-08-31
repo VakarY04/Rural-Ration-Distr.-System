@@ -59,7 +59,7 @@ export default function BookingForm({
               onChange={(e) => onDateChange(e.target.value)}
               className={`${swiss.input} cursor-pointer ${FOCUS}`}
             />
-            <p className="text-[11px] text-slate-400 font-medium">Choose a future date for ration collection.</p>
+            <p className="text-[10px] md:text-[12px] text-slate-400 font-medium">Choose a future date for ration collection.</p>
           </div>
 
           {/* Time Slot Selector */}
@@ -77,7 +77,7 @@ export default function BookingForm({
                 <option key={i} value={slot}>{slot}</option>
               ))}
             </select>
-            <p className="text-[11px] text-slate-400 font-medium">Select an available time window at your terminal.</p>
+            <p className="text-[10px] md:text-[12px] text-slate-400 font-medium">Select an available time window at your terminal.</p>
           </div>
         </div>
 
@@ -112,7 +112,7 @@ export default function BookingForm({
           ) : (
             <>
               <ShieldCheck size={16} />
-              <span>CONFIRM DISTRIBUTION BOOKING</span>
+              <span>Confirm Distribution Booking</span>
             </>
           )}
         </button>
