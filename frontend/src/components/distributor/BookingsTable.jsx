@@ -40,7 +40,7 @@ export default function BookingsTable({ bookings }) {
               e.preventDefault();
               // TODO: wire up to a family details view when available.
             }}
-            className="shrink-0 text-[10px] font-bold uppercase tracking-wider px-3 py-1.5 rounded border border-slate-300 text-slate-600 hover:bg-slate-900 hover:text-white transition-colors cursor-pointer focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-orange-500"
+            className="shrink-0 text-[10px] font-bold tracking-wider px-3 py-1.5 rounded border border-slate-300 text-slate-600 hover:bg-slate-900 hover:text-white transition-colors cursor-pointer focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-orange-500"
           >
             View details
           </button>

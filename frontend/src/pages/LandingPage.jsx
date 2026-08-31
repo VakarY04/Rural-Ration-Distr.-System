@@ -84,7 +84,7 @@ export default function LandingPage({ onNavigate }) {
 
             <div ref={gradientLineRef} className="h-1 w-0 opacity-0" style={{ background: TRICOLOR_GRADIENT }} />
 
-            <p ref={descRef} className="text-white text-base md:text-lg font-semibold max-w-3xl leading-relaxed drop-shadow-md">
+            <p ref={descRef} className="text-white text-sm md:text-base font-semibold max-w-3xl leading-relaxed drop-shadow-md">
               Empowering Public Distribution Frameworks with structural clarity, zero-shot
               algorithmic routing accuracy, and secure processing layers—ensuring essential baseline
               commodities cross delivery lines transparently and cleanly.
@@ -121,7 +121,7 @@ export default function LandingPage({ onNavigate }) {
         <section className="w-full px-6 pb-28">
           <div className="max-w-7xl mx-auto space-y-16">
 
-            <h2 className="text-sm font-bold uppercase tracking-[0.1em] text-white text-center drop-shadow-md">Portal Services</h2>
+            <h2 className="text-xl md:text-2xl font-bold tracking-[0.1em] text-white text-center drop-shadow-md">Portal Services</h2>
 
             <div ref={cardsGridRef} className={`${FEATURE_CARDS_GRID} grid grid-cols-1 md:grid-cols-3 gap-8`}>
 
@@ -168,7 +168,7 @@ export default function LandingPage({ onNavigate }) {
                 <BannerWaves />
                 <div className="relative z-10 flex flex-col sm:flex-row items-center justify-center gap-3 text-center">
                   <ShieldCheck className="text-[#138808] shrink-0" size={22} aria-hidden="true" />
-                  <p className={`${TRUST_FOOTER_TEXT} text-xs sm:text-sm font-bold text-[#000080] tracking-wide uppercase`}>
+                  <p className={`${TRUST_FOOTER_TEXT} text-xs sm:text-sm font-bold text-[#000080] tracking-wide`}>
                     Committed to a Hunger-Free India through Transparency, Technology & Trust
                   </p>
                 </div>
