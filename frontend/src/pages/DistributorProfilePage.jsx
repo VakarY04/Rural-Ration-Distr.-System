@@ -17,7 +17,7 @@ export default function DistributorProfilePage({ name, role }) {
           <Avatar src={null} name={name} size={56} />
           <div>
             <p className="text-lg font-extrabold text-slate-900 leading-tight">{name}</p>
-            <p className="text-[11px] font-bold uppercase tracking-[0.14em] text-slate-400 mt-0.5">
+            <p className="text-[11px] font-bold tracking-[0.14em] text-slate-400 mt-0.5">
               {role || 'Staff'} · E-Ration Staff Portal
             </p>
           </div>
