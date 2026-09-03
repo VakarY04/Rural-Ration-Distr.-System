@@ -20,7 +20,7 @@ const pin = (label, color) =>
         <span style="
           transform: rotate(45deg);
           color: white; font-weight: 800; font-size: 12px;
-          font-family: 'Inter', system-ui, sans-serif;
+          font-family: 'Noto Sans', system-ui, sans-serif;
         ">${label}</span>
       </div>`,
     iconSize: [30, 30],

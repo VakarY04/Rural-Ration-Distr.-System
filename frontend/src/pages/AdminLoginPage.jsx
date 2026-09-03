@@ -49,7 +49,7 @@ export default function AdminLoginPage({ onNavigate, onAuthSuccess }) {
         <h1 className="text-3xl md:text-4xl font-bold tracking-tighter text-white">
           E-Ration Access Portal
         </h1>
-        <p className="text-xl font-medium tracking-[0.1em] text-slate-200 mt-2">
+        <p className="text-xl font-medium tracking-normal text-slate-200 mt-2">
           Choose your gateway
         </p>
       </div>
@@ -119,7 +119,7 @@ export default function AdminLoginPage({ onNavigate, onAuthSuccess }) {
                     </button>
                   </p>
                 ) : (
-<p className="text-center text-[10px] font-medium text-slate-400 tracking-[0.14em] pt-3">
+                  <p className="text-center text-[10px] font-medium text-slate-400 tracking-wide pt-3">
                     Staff accounts are provisioned by the Food & Civil Supplies department
                   </p>
                 )}

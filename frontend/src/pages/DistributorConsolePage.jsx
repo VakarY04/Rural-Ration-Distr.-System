@@ -77,16 +77,16 @@ export default function DistributorConsolePage({ currentSubPage = 'home', onNavi
           aria-hidden="true"
         />
         <header className="bg-white border-b border-slate-200">
-          <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between gap-4">
+          <div className="w-full px-4 sm:px-6 lg:px-8 py-4 flex items-center justify-between gap-4">
             <button
               type="button"
               onClick={() => onNavigate('distributor-console', { subPage: 'home' })}
               className={`flex items-center gap-3 text-left cursor-pointer rounded ${FOCUS}`}
             >
-              <img src={logoAsset} alt="E-Ration" className="w-11 h-11 object-contain p-1 rounded-2xl" />
+              <img src={logoAsset} alt="E-Ration" className="w-14 h-14 object-contain p-1 rounded-2xl" />
               <div>
-                <p className="text-sm font-extrabold tracking-tight leading-tight">Distributor Console</p>
-                <p className="text-[10px] font-bold tracking-[0.14em] text-slate-400">
+                <p className="text-base font-extrabold tracking-tight leading-tight">Distributor Console</p>
+                <p className="text-xs font-bold uppercase tracking-[0.14em] text-slate-400">
                   E-Ration Staff Portal
                 </p>
               </div>
@@ -102,7 +102,7 @@ export default function DistributorConsolePage({ currentSubPage = 'home', onNavi
                       type="button"
                       onClick={() => onNavigate('distributor-console', { subPage: item.id })}
                       aria-current={active ? 'page' : undefined}
-                      className={`text-[11px] font-bold tracking-wider px-3 py-2 transition-colors cursor-pointer rounded ${FOCUS} ${
+                      className={`text-[11px] font-bold uppercase tracking-wider px-3 py-2 transition-colors cursor-pointer rounded ${FOCUS} ${
                         active ? 'text-[#000080] bg-slate-100' : 'text-slate-600 hover:text-[#000080]'
                       }`}
                     >
@@ -129,7 +129,7 @@ export default function DistributorConsolePage({ currentSubPage = 'home', onNavi
             <button
               type="button"
               onClick={() => { setLoading(true); loadSummary().finally(() => setLoading(false)); }}
-              className="mt-4 bg-slate-900 hover:bg-orange-600 text-white text-[11px] font-bold tracking-wider px-5 py-2.5 transition-colors cursor-pointer"
+              className="mt-4 bg-slate-900 hover:bg-orange-600 text-white text-[11px] font-bold uppercase tracking-wider px-5 py-2.5 transition-colors cursor-pointer"
             >
               Retry
             </button>
@@ -165,7 +165,7 @@ export default function DistributorConsolePage({ currentSubPage = 'home', onNavi
               <div className="space-y-6">
                 <section aria-label="Delivery route map" className="space-y-3">
                   <div className="flex items-baseline justify-between">
-                    <h2 className="text-sm font-bold tracking-[0.1em]">Delivery route</h2>
+                    <h2 className="text-sm font-bold tracking-tight">Delivery route</h2>
                   </div>
                   <div className="border border-slate-200 bg-white h-[360px] overflow-hidden isolate">
                     <DeliveryRouteMap origin={summary.delivery.from} destination={summary.delivery.to} />
@@ -174,7 +174,7 @@ export default function DistributorConsolePage({ currentSubPage = 'home', onNavi
 
                 <section aria-label="Booking queue" className="space-y-3">
                   <div className="flex items-baseline justify-between">
-                    <h2 className="text-sm font-bold tracking-[0.1em]">
+                    <h2 className="text-sm font-bold tracking-tight">
                       Booked families queue
                     </h2>
                     <span className="text-[10px] font-bold uppercase tracking-[0.14em] text-slate-400 tabular-nums">
@@ -199,7 +199,7 @@ export default function DistributorConsolePage({ currentSubPage = 'home', onNavi
       </main>
 
       <footer className="border-t border-slate-200 bg-white">
-        <p className="max-w-7xl mx-auto px-6 py-4 text-[10px] font-bold tracking-[0.14em] text-slate-400">
+        <p className="w-full px-4 sm:px-6 lg:px-8 py-4 text-[10px] font-bold tracking-wide text-slate-400">
           E-Ration Portal · Distribution Console v1.0 · Public Distribution System
         </p>
       </footer>

@@ -42,7 +42,7 @@ export function ActiveBookingTicket({ bookingDetails, headOfFamily }) {
       <SectionHead
         title="Active Scheduled Slot"
         right={
-          <span className="bg-green-700 text-white text-[10px] font-bold px-2 py-0.5 tracking-wider tabular-nums">
+          <span className="bg-green-700 text-white text-[10px] font-bold uppercase px-2 py-0.5 tracking-wider tabular-nums">
             {bookingDetails.status || 'Confirmed'}
           </span>
         }

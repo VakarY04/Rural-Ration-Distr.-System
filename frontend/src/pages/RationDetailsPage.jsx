@@ -9,7 +9,7 @@ export default function RationDetailsPage({ items }) {
   return (
     <div className="space-y-6 font-sans">
       <header>
-        <p className={swiss.micro}>Entitlement records · राशन विवरण</p>
+        <p className={swiss.micro}>Entitlement records</p>
         <h1 className={swiss.headline}>Ration Details</h1>
         <p className="text-sm text-slate-500 mt-2">
           Per-household ration entitlement shown to citizens at booking and on the Terminal Hub.
