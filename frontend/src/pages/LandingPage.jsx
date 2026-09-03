@@ -1,6 +1,6 @@
 import { ArrowRight, Users, ShieldCheck } from 'lucide-react';
 import heroBackdrop from '../images/india-republic-day-celebration-digital-art-with-flag.jpg';
-import logoAsset from '../images/E-Ration Logo.png';
+import logoAsset from '../images/E-RATION Logo.png';
 import { swiss, TricolorStrip, TRICOLOR_GRADIENT } from '../components/ui/swiss';
 import { useLandingAnimations } from './landing/useLandingAnimations';
 import { WaveAccent, BannerWaves } from '../components/landing/WaveDecorations';
@@ -121,7 +121,7 @@ export default function LandingPage({ onNavigate }) {
         <section className="w-full px-6 pb-28">
           <div className="max-w-7xl mx-auto space-y-16">
 
-            <h2 className="text-xl md:text-2xl font-bold tracking-[0.1em] text-white text-center drop-shadow-md">Portal Services</h2>
+            <h2 className="text-xl md:text-2xl font-bold tracking-tight text-white text-center drop-shadow-md">Portal Services</h2>
 
             <div ref={cardsGridRef} className={`${FEATURE_CARDS_GRID} grid grid-cols-1 md:grid-cols-3 gap-8`}>
 

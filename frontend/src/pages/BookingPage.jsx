@@ -158,11 +158,10 @@ export default function BookingPage() {
         {/* Header Info */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-200 pb-5">
           <div>
-            <p className={`${swiss.micro} mb-1`}>Distribution Scheduling · वितरण अनुसूची</p>
+            <p className={`${swiss.micro} mb-1`}>Distribution Scheduling</p>
             <h1 className="text-2xl md:text-4xl font-bold tracking-tighter text-slate-900">
               Ration Bookings
             </h1>
-            <p className="text-[11px] text-slate-400 font-medium mt-1">राशन बुकिंग</p>
             <p className="text-xs text-slate-500 font-medium mt-1 max-w-md leading-relaxed">
               Select an available time window at your designated Fair Price Shop (FPS) terminal.
             </p>

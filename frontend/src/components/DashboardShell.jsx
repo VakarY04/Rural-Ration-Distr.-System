@@ -28,7 +28,7 @@ export default function DashboardShell({ children, currentSubPage, onSubPageChan
           <div className="flex items-center gap-3 px-1 mb-4">
             <img src={logoAsset} alt="E-Ration" className="w-11 h-11 object-contain bg-slate-800 p-1 rounded-2xl" />
             <div>
-              <h1 className="text-sm font-bold tracking-[0.08em] text-white leading-tight">E-ration portal</h1>
+              <h1 className="text-sm font-bold tracking-tight text-white leading-tight">E-ration portal</h1>
               <p className="text-[10px] font-bold uppercase tracking-[0.14em] text-slate-400">Citizen workspace</p>
             </div>
           </div>
@@ -73,14 +73,14 @@ export default function DashboardShell({ children, currentSubPage, onSubPageChan
       <main className="flex-1 overflow-y-auto">
         {account?.rationCardNumber && (
           <div className="flex items-center justify-between px-8 pt-6">
-            <p className="text-[10px] font-bold tracking-[0.14em] text-slate-400">
+            <p className="text-[10px] font-bold uppercase tracking-[0.14em] text-slate-400">
               Public Distribution System
             </p>
             <div className="flex items-center gap-3 bg-white border border-slate-200 px-4 py-2.5">
               <Avatar src={account.avatar} name={account.name} size={32} />
               <div className="text-left">
                 <p className="text-sm font-bold text-slate-900 leading-tight">{account.name}</p>
-<p className="text-[10px] font-bold tracking-[0.14em] text-slate-400">
+                <p className="text-[10px] font-bold uppercase tracking-[0.14em] text-slate-400">
                   Ration card: {account.rationCardNumber}
                 </p>
               </div>

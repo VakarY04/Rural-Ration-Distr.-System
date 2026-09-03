@@ -1,37 +1,37 @@
 @import "tailwindcss";
 
-/* Cabinet Grotesk — self-hosted, served from /public/fonts */
+/* Noto Sans — self-hosted, served from /public/fonts (Government of India DBIM typeface) */
 @font-face {
-  font-family: 'Cabinet Grotesk';
-  src: url('/fonts/CabinetGrotesk-Regular.woff2') format('woff2');
+  font-family: 'Noto Sans';
+  src: url('/fonts/NotoSans-Regular.woff2') format('woff2');
   font-weight: 400;
   font-style: normal;
   font-display: swap;
 }
 @font-face {
-  font-family: 'Cabinet Grotesk';
-  src: url('/fonts/CabinetGrotesk-Medium.woff2') format('woff2');
+  font-family: 'Noto Sans';
+  src: url('/fonts/NotoSans-Medium.woff2') format('woff2');
   font-weight: 500;
   font-style: normal;
   font-display: swap;
 }
 @font-face {
-  font-family: 'Cabinet Grotesk';
-  src: url('/fonts/CabinetGrotesk-Bold.woff2') format('woff2');
+  font-family: 'Noto Sans';
+  src: url('/fonts/NotoSans-Bold.woff2') format('woff2');
   font-weight: 700;
   font-style: normal;
   font-display: swap;
 }
 @font-face {
-  font-family: 'Cabinet Grotesk';
-  src: url('/fonts/CabinetGrotesk-Extrabold.woff2') format('woff2');
+  font-family: 'Noto Sans';
+  src: url('/fonts/NotoSans-ExtraBold.woff2') format('woff2');
   font-weight: 800;
   font-style: normal;
   font-display: swap;
 }
 @font-face {
-  font-family: 'Cabinet Grotesk';
-  src: url('/fonts/CabinetGrotesk-Black.woff2') format('woff2');
+  font-family: 'Noto Sans';
+  src: url('/fonts/NotoSans-Black.woff2') format('woff2');
   font-weight: 900;
   font-style: normal;
   font-display: swap;
@@ -61,7 +61,7 @@ body::-webkit-scrollbar,
 }
 
 body {
-  font-family: 'Cabinet Grotesk', ui-sans-serif, system-ui, -apple-system, sans-serif;
+  font-family: 'Noto Sans', ui-sans-serif, system-ui, -apple-system, sans-serif;
 }
 
 /* On-Scroll Typography Animation Styles */

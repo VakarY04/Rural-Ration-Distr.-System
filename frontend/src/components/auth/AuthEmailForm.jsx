@@ -39,6 +39,7 @@ export default function AuthEmailForm({ role, accent = 'emerald', onSuccess, onF
           id={`login-email-${role}`}
           type="email"
           required
+          autoComplete="off"
           placeholder="citizen@portal.gov.in"
           value={identifier}
           onChange={(e) => setIdentifier(e.target.value)}
@@ -54,6 +55,7 @@ export default function AuthEmailForm({ role, accent = 'emerald', onSuccess, onF
           id={`login-password-${role}`}
           type="password"
           required
+          autoComplete="off"
           placeholder="••••••••••••"
           value={password}
           onChange={(e) => setPassword(e.target.value)}

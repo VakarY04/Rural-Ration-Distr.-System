@@ -194,10 +194,9 @@ export default function ProfilePage({ onAccountDeleted }) {
     <div className="max-w-6xl mx-auto space-y-6 font-sans">
       <header className="flex flex-col md:flex-row md:items-start justify-between gap-4">
         <div>
-          <p className={swiss.micro}>Citizen records · नागरिक अभिलेख</p>
+          <p className={swiss.micro}>Citizen records</p>
           <div className="flex items-baseline gap-3 mt-1">
             <h1 className={swiss.headline}>Family Profile</h1>
-            <span className="text-base font-medium text-slate-400">पारिवारिक प्रोफ़ाइल</span>
           </div>
           <p className="text-sm text-slate-500 mt-2">
             Manage your account, family members and get accurate ration entitlement.
@@ -269,7 +268,7 @@ export default function ProfilePage({ onAccountDeleted }) {
       <DangerZonePanel onDelete={handleDeleteAccount} />
 
       <footer className="border-t border-slate-200 pt-5 pb-2 flex flex-col sm:flex-row items-center justify-between gap-2">
-        <p className={swiss.micro}>© {new Date().getFullYear()} Government of India · भारत सरकार</p>
+        <p className={swiss.micro}>© {new Date().getFullYear()} Government of India</p>
         <div className={`flex items-center gap-4 ${swiss.micro}`}>
           <span className="hover:text-slate-600 cursor-pointer">Privacy Policy</span>
           <span className="hover:text-slate-600 cursor-pointer">Terms of Use</span>
