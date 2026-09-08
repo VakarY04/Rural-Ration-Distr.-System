@@ -3,6 +3,7 @@
 // deduplicated by their unique ration card number so the same card never
 // appears twice, while two different cards that happen to share a family
 // name are both retained.
+import { MapPin, Eye } from 'lucide-react';
 export default function BookingsTable({ bookings }) {
   if (!bookings?.length) {
     return (
@@ -33,6 +34,9 @@ export default function BookingsTable({ bookings }) {
           <span className="text-[11px] font-bold text-slate-400 tabular-nums w-6 shrink-0" aria-hidden="true">
             {String(i + 1).padStart(2, '0')}
           </span>
+          <span className="w-7 h-7 border border-[#198754]/30 bg-[#198754]/10 text-[#198754] flex items-center justify-center shrink-0" title="Booked household location" aria-hidden="true">
+            <MapPin size={13} />
+          </span>
           <span className="flex-1 min-w-0 text-sm font-semibold text-slate-900 truncate">{b.headOfFamily}</span>
           <button
             type="button"
@@ -40,8 +44,10 @@ export default function BookingsTable({ bookings }) {
               e.preventDefault();
               // TODO: wire up to a family details view when available.
             }}
-            className="shrink-0 text-[10px] font-bold uppercase tracking-wider px-3 py-1.5 rounded border border-slate-300 text-slate-600 hover:bg-slate-900 hover:text-white transition-colors cursor-pointer focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-orange-500"
+            title="View family details"
+            className="shrink-0 text-xs font-semibold tracking-wide px-3 py-1.5 rounded border border-slate-300 text-slate-600 hover:bg-slate-900 hover:text-white transition-colors cursor-pointer focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-orange-500 inline-flex items-center gap-1.5"
           >
+            <Eye size={12} aria-hidden="true" />
             View details
           </button>
         </li>

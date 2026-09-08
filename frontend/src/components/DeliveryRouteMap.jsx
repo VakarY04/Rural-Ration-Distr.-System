@@ -63,7 +63,7 @@ export default function DeliveryRouteMap({ origin, destination }) {
 
       <Polyline
         positions={bounds}
-        pathOptions={{ color: '#1D4ED8', weight: 4, dashArray: '2 10', lineCap: 'round' }}
+        pathOptions={{ color: '#0D6EFD', weight: 4, dashArray: '2 10', lineCap: 'round' }}
       />
     </MapContainer>
   );

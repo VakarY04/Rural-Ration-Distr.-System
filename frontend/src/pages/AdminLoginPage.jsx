@@ -4,7 +4,7 @@ import HoverSplitBackdrop from '../components/auth/HoverSplitBackdrop';
 import AuthMethodTabs from '../components/auth/AuthMethodTabs';
 import AuthEmailForm from '../components/auth/AuthEmailForm';
 import AuthOtpForm from '../components/auth/AuthOtpForm';
-import heroBackdrop from '../images/india-republic-day-celebration-digital-art-with-flag.jpg';
+import heroBackdrop from '../images/india-republic-day-celebration-digital-art-with-flag.webp';
 
 const PORTALS = [
   {

@@ -31,7 +31,7 @@ export default function EditorShell({ title, editing, saving, onEdit, onSave, on
               type="button"
               onClick={onSave}
               disabled={saving}
-              className="bg-green-700 hover:bg-green-800 text-white text-[11px] font-bold uppercase tracking-wider px-3.5 py-2 transition-colors cursor-pointer disabled:opacity-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-green-600"
+              className="bg-[#198754] hover:bg-[#157347] text-white text-[11px] font-bold uppercase tracking-wider px-3.5 py-2 transition-colors cursor-pointer disabled:opacity-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#198754]"
             >
               {saving ? 'Saving…' : 'Save'}
             </button>
@@ -40,7 +40,7 @@ export default function EditorShell({ title, editing, saving, onEdit, onSave, on
       </header>
 
       {error && (
-        <p role="alert" className="mx-5 mt-4 bg-red-50 border border-red-200 text-red-700 text-xs font-semibold px-3 py-2">
+        <p role="alert" className="mx-5 mt-4 bg-[#DC3545]/10 border border-[#DC3545]/40 text-[#DC3545] text-xs font-semibold px-3 py-2">
           {error}
         </p>
       )}

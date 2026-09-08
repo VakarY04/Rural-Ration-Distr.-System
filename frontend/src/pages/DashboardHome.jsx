@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import {
-  AlertCircle, ArrowRight, Calendar, Clock, Bell,
+  AlertCircle, ArrowRight, Calendar, Clock, Bell, MapPin, Users, FileCheck,
   ShoppingBag, Home, Building2, Wheat,
 } from 'lucide-react';
 import DeliveryRouteMap from '../components/DeliveryRouteMap';
@@ -14,8 +14,8 @@ const chip = 'inline-flex items-center border px-2 py-1 text-[10px] font-bold up
 
 function IconChip({ icon: Icon, tone }) {
   const palette = {
-    green: 'border-green-200 bg-green-50 text-green-700',
-    blue: 'border-blue-200 bg-blue-50 text-blue-600',
+    green: 'border-[#198754]/30 bg-[#198754]/10 text-[#198754]',
+    blue: 'border-[#0D6EFD]/30 bg-[#0D6EFD]/10 text-[#0D6EFD]',
     orange: 'border-orange-200 bg-orange-50 text-orange-600',
     amber: 'border-amber-200 bg-amber-50 text-amber-600',
   };
@@ -69,7 +69,7 @@ export default function DashboardHome({ onNavigate }) {
   return (
     <div className="max-w-7xl mx-auto space-y-6 font-sans">
       <header>
-        <p className={swiss.micro}>Namaste, {name} 👋</p>
+        <p className={swiss.micro}>Namaste, {name}</p>
         <div className="flex items-baseline gap-3 mt-1">
           <h1 className={swiss.headline}>Terminal Hub</h1>
           <span className="text-base font-medium text-slate-400">Terminal Hub</span>
@@ -84,7 +84,7 @@ export default function DashboardHome({ onNavigate }) {
       <section className={`${swiss.panel} grid grid-cols-1 sm:grid-cols-3 divide-y sm:divide-y-0 sm:divide-x divide-slate-200`}>
         <div className="p-6">
           <p className={swiss.micro}>Profile status</p>
-          <p className={`mt-2 text-3xl md:text-4xl font-extrabold tracking-tight tabular-nums ${hasProfile ? 'text-green-700' : 'text-amber-600'}`}>
+          <p className={`mt-2 text-3xl md:text-4xl font-extrabold tracking-tight tabular-nums ${hasProfile ? 'text-[#198754]' : 'text-amber-600'}`}>
             {hasProfile ? 'Complete' : 'Incomplete'}
           </p>
           <p className="text-xs text-slate-400 mt-1">{hasProfile ? 'All details are up to date' : 'Some details are missing'}</p>
@@ -110,7 +110,7 @@ export default function DashboardHome({ onNavigate }) {
       </section>
 
       <div className="grid grid-cols-1 lg:grid-cols-[1fr_300px] gap-6 items-stretch">
-        <div className={`${swiss.panel} overflow-hidden h-full min-h-[420px]`}>
+        <div className={`${swiss.panel} overflow-hidden h-full min-h-[420px]`} title="Delivery route map — use + / − controls to zoom">
           <DeliveryRouteMap origin={delivery.from} destination={delivery.to} />
         </div>
 
@@ -121,8 +121,8 @@ export default function DashboardHome({ onNavigate }) {
               <div>
                 <p className={swiss.label}>From</p>
                 <div className="flex items-center gap-2">
-                  <div className="w-8 h-8 border border-slate-200 bg-slate-100 flex items-center justify-center shrink-0">
-                    <Home size={14} className="text-slate-500" />
+                  <div className="w-8 h-8 border border-slate-200 bg-slate-100 flex items-center justify-center shrink-0" title="Warehouse location">
+                    <Home size={14} className="text-slate-500" aria-hidden="true" />
                   </div>
                   <span className="text-sm font-medium text-slate-700">{delivery.from.label}</span>
                 </div>
@@ -130,8 +130,8 @@ export default function DashboardHome({ onNavigate }) {
               <div>
                 <p className={swiss.label}>To</p>
                 <div className="flex items-center gap-2">
-                  <div className="w-8 h-8 border border-green-200 bg-green-50 flex items-center justify-center shrink-0">
-                    <Building2 size={14} className="text-green-700" />
+                  <div className="w-8 h-8 border border-[#198754]/30 bg-[#198754]/10 flex items-center justify-center shrink-0" title="Your local distributor">
+                    <MapPin size={14} className="text-[#198754]" aria-hidden="true" />
                   </div>
                   <span className="text-sm font-medium text-slate-700">{delivery.to.label}</span>
                 </div>
@@ -143,7 +143,12 @@ export default function DashboardHome({ onNavigate }) {
           </div>
 
           <div className={`${swiss.panel} p-5`}>
-            <SectionHead title="Items & quantity" />
+            <div className="flex items-center gap-2.5">
+              <span className="w-8 h-8 border border-[#198754]/30 bg-[#198754]/10 text-[#198754] flex items-center justify-center shrink-0" aria-hidden="true">
+                <FileCheck size={14} />
+              </span>
+              <SectionHead title="Items & quantity" />
+            </div>
             <div className="space-y-3 mt-4">
               {ration.items.map((item) => (
                 <div key={item.key} className="flex items-center justify-between gap-3">
@@ -168,7 +173,12 @@ export default function DashboardHome({ onNavigate }) {
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div className={`${swiss.panel} p-6 space-y-4`}>
-          <SectionHead title="Household registry profile" />
+          <div className="flex items-center gap-2.5">
+            <span className="w-8 h-8 border border-slate-200 bg-slate-50 text-slate-600 flex items-center justify-center shrink-0" aria-hidden="true">
+              <Users size={15} />
+            </span>
+            <SectionHead title="Household registry profile" />
+          </div>
           {hasProfile ? (
             <div className="space-y-2 text-sm">
               <div className="flex justify-between py-1.5 border-b border-slate-100">
@@ -185,7 +195,7 @@ export default function DashboardHome({ onNavigate }) {
               </div>
               <div className="flex justify-between items-center py-1.5">
                 <span className="text-slate-500">Record status</span>
-                <span className={`${chip} border-green-600 bg-green-50 text-green-700`}>Active household record</span>
+                <span className={`${chip} border-[#198754] bg-[#198754]/10 text-[#198754]`}>Active household record</span>
               </div>
             </div>
           ) : (
@@ -207,12 +217,17 @@ export default function DashboardHome({ onNavigate }) {
         </div>
 
         <div className={`${swiss.panel} p-6 space-y-4`}>
-          <SectionHead title="Collection window appointment" />
+          <div className="flex items-center gap-2.5">
+            <span className="w-8 h-8 border border-[#0D6EFD]/30 bg-[#0D6EFD]/10 text-[#0D6EFD] flex items-center justify-center shrink-0" aria-hidden="true">
+              <Clock size={15} />
+            </span>
+            <SectionHead title="Collection window appointment" />
+          </div>
           {booking ? (
             <div className="space-y-2 text-sm">
               <div className="flex justify-between py-1.5 border-b border-slate-100">
                 <span className="text-slate-500">Status</span>
-                <span className={`${chip} border-blue-600 bg-blue-50 text-blue-700`}>{booking.status || 'Confirmed'}</span>
+                <span className={`${chip} border-[#0D6EFD] bg-[#0D6EFD]/10 text-[#0D6EFD]`}>{booking.status || 'Confirmed'}</span>
               </div>
               <div className="flex justify-between py-1.5 border-b border-slate-100">
                 <span className="text-slate-500 flex items-center gap-1.5"><Calendar size={13} /> Date</span>
@@ -236,7 +251,7 @@ export default function DashboardHome({ onNavigate }) {
 
           <button
             onClick={() => onNavigate('booking')}
-            className={`w-full bg-blue-700 hover:bg-blue-800 text-white text-[11px] font-medium uppercase tracking-wider px-4 py-2.5 transition-colors cursor-pointer inline-flex items-center justify-center gap-2 ${FOCUS}`}
+            className={`w-full bg-[#0D6EFD] hover:bg-[#0B5ED7] text-white text-xs font-semibold tracking-wide px-4 py-2.5 transition-colors cursor-pointer inline-flex items-center justify-center gap-2 ${FOCUS}`}
           >
             <span>{booking ? 'Reschedule allocation' : 'Book a collection slot'}</span>
             <ArrowRight size={14} />
@@ -244,9 +259,9 @@ export default function DashboardHome({ onNavigate }) {
         </div>
       </div>
 
-      <div className="bg-amber-50 border border-amber-300 p-4 flex items-center justify-between">
+      <div className="bg-amber-50 border border-amber-300 p-4 flex items-center justify-between" role="status" title="Booking status notification">
         <div className="flex items-center gap-3">
-          <Bell size={18} className="text-amber-500" />
+          <Bell size={18} className="text-amber-500" aria-hidden="true" />
           <p className="text-sm text-slate-700">
             {booking
               ? 'Your next collection window is confirmed.'

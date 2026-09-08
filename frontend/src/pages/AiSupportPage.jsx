@@ -99,8 +99,8 @@ export default function AiSupportPage() {
 
         {/* Error Alert */}
         {error && (
-          <div role="alert" className="bg-red-50 border-l-4 border-red-600 text-red-700 p-4 text-xs font-semibold flex items-center gap-2.5">
-            <AlertCircle size={17} className="shrink-0 text-red-600" />
+          <div role="alert" className="bg-[#DC3545]/10 border-l-4 border-[#DC3545] text-[#DC3545] p-4 text-xs font-semibold flex items-center gap-2.5">
+            <AlertCircle size={17} className="shrink-0 text-[#DC3545]" />
             <span>{error}</span>
           </div>
         )}
@@ -129,8 +129,8 @@ export default function AiSupportPage() {
           </div>
 
           {/* Multilingual Info Strip */}
-          <div className="border border-blue-200 bg-blue-50/60 px-4 py-3 text-xs font-medium text-slate-800 flex items-center gap-2.5">
-            <span aria-hidden="true" className="w-5 h-5 border border-blue-500 text-blue-700 flex items-center justify-center shrink-0 text-[11px] font-bold">
+          <div className="border border-[#0D6EFD]/30 bg-[#0D6EFD]/10 px-4 py-3 text-xs font-medium text-slate-800 flex items-center gap-2.5">
+            <span aria-hidden="true" className="w-5 h-5 border border-[#0D6EFD] text-[#0D6EFD] flex items-center justify-center shrink-0 text-[11px] font-bold">
               i
             </span>
             <span>You can type in any local language. Our AI will understand and assist you.</span>
@@ -161,7 +161,7 @@ export default function AiSupportPage() {
           <div role="status" className="border border-slate-200 bg-slate-50 p-6 space-y-4">
             <div className="flex items-center justify-between border-b border-slate-200 pb-3 gap-2 flex-wrap">
               <div className="flex items-center gap-2 text-slate-900 font-bold text-xs uppercase tracking-[0.08em]">
-                <CheckCircle2 size={16} className="text-green-700" />
+                <CheckCircle2 size={16} className="text-[#198754]" />
                 <span>AI Grievance Analysis & Official Ticket Generated</span>
               </div>
               <span className="bg-orange-600 text-white text-[10px] font-bold px-2 py-0.5 uppercase tracking-wider">
@@ -185,7 +185,7 @@ export default function AiSupportPage() {
                 </div>
                 <div className="bg-white p-3">
                   <p className={swiss.micro}>Action Status</p>
-                  <p className="font-bold text-green-700 mt-0.5">{analysis.action || 'Assigned to FPS Inspector'}</p>
+                  <p className="font-bold text-[#198754] mt-0.5">{analysis.action || 'Assigned to FPS Inspector'}</p>
                 </div>
               </div>
             )}
@@ -237,6 +237,7 @@ export default function AiSupportPage() {
               <button
                 type="button"
                 onClick={() => setShowHelplineModal(false)}
+                title="Close helpline directory"
                 aria-label="Close helpline directory"
                 className={`text-slate-400 hover:text-slate-900 hover:bg-slate-100 p-1.5 cursor-pointer transition-colors ${FOCUS}`}
               >

@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { ShieldCheck } from 'lucide-react';
 import logoAsset from '../../images/E-RATION Logo.png';
-import heroBackdrop from '../../images/india-republic-day-celebration-digital-art-with-flag.jpg';
+import heroBackdrop from '../../images/india-republic-day-celebration-digital-art-with-flag.webp';
 import HoverSplitBackdrop from './HoverSplitBackdrop';
 import { swiss } from '../ui/swiss';
 

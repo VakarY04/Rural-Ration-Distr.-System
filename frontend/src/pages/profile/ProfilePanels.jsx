@@ -23,6 +23,7 @@ export function AccountPanel({
             type="button"
             onClick={() => fileInputRef.current?.click()}
             className="relative group cursor-pointer focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-orange-500"
+            title="Change profile picture"
             aria-label="Change profile picture"
           >
             <Avatar src={avatar} name={accountName} size={56} />

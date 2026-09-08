@@ -202,11 +202,11 @@ export default function ProfilePage({ onAccountDeleted }) {
             Manage your account, family members and get accurate ration entitlement.
           </p>
         </div>
-        <div className="flex items-start gap-2 bg-blue-50 border border-blue-200 px-4 py-3 max-w-sm">
-          <Info size={16} className="text-blue-600 shrink-0 mt-0.5" />
+        <div className="flex items-start gap-2 bg-[#0D6EFD]/10 border border-[#0D6EFD]/30 px-4 py-3 max-w-sm">
+          <Info size={16} className="text-[#0D6EFD] shrink-0 mt-0.5" />
           <div>
-            <p className="text-xs font-bold text-blue-700">Coming soon: Family auto-sync</p>
-            <p className="text-[11px] text-blue-600 mt-0.5">
+            <p className="text-xs font-bold text-[#0D6EFD]">Coming soon: Family auto-sync</p>
+            <p className="text-[11px] text-[#0D6EFD] mt-0.5">
               We'll soon fetch your family members automatically from your ration card.
             </p>
           </div>
@@ -214,13 +214,13 @@ export default function ProfilePage({ onAccountDeleted }) {
       </header>
 
       {msg.error && (
-        <div className="flex items-start gap-2 text-sm font-medium text-red-700 bg-red-50 border border-red-200 p-4">
+        <div className="flex items-start gap-2 text-sm font-medium text-[#DC3545] bg-[#DC3545]/10 border border-[#DC3545]/30 p-4">
           <AlertCircle size={18} className="shrink-0 mt-0.5" />
           <span>{msg.error}</span>
         </div>
       )}
       {msg.success && (
-        <div className="flex items-start gap-2 text-sm font-medium text-green-700 bg-green-50 border border-green-200 p-4">
+        <div className="flex items-start gap-2 text-sm font-medium text-[#198754] bg-[#198754]/10 border border-[#198754]/30 p-4">
           <CheckCircle2 size={18} className="shrink-0 mt-0.5" />
           <span>{msg.success}</span>
         </div>

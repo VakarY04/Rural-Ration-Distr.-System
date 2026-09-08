@@ -1,5 +1,13 @@
 @import "tailwindcss";
 
+/* DBIM §4 — Noto Sans is the single mandatory typeface (Latin + Devanagari
+   fallback so Hindi/regional text renders in the same family). Mapping it to
+   Tailwind's --font-sans makes every `font-sans` utility resolve to Noto Sans
+   instead of Tailwind's default stack. */
+@theme {
+  --font-sans: 'Noto Sans', 'Noto Sans Devanagari', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
+}
+
 /* Noto Sans — self-hosted, served from /public/fonts (Government of India DBIM typeface) */
 @font-face {
   font-family: 'Noto Sans';
@@ -61,7 +69,12 @@ body::-webkit-scrollbar,
 }
 
 body {
-  font-family: 'Noto Sans', ui-sans-serif, system-ui, -apple-system, sans-serif;
+  font-family: 'Noto Sans', 'Noto Sans Devanagari', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
+  text-align: left;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  line-height: 1.5;
 }
 
 /* On-Scroll Typography Animation Styles */
