@@ -41,7 +41,7 @@ export function AuthPageShell({
         <div
           onMouseEnter={() => setCardHovered(true)}
           onMouseLeave={() => setCardHovered(false)}
-          className={`w-full max-w-md ${swiss.panel} rounded-3xl p-8 space-y-6 transition-all duration-300 ${cardClassName}`}
+          className={`w-full max-w-md ${swiss.panel} p-8 space-y-6 transition-all duration-300 ${cardClassName}`}
         >
           <div className="flex flex-col items-center text-center space-y-2">
             <img src={logoAsset} alt="E-Ration Logo" className="w-14 h-14 object-contain bg-slate-50 p-1 rounded-2xl" />

@@ -47,6 +47,13 @@ export const getDashboardSummary = async (req, res) => {
       : { ...DEFAULT_WAREHOUSE, label: DEFAULT_WAREHOUSE.label };
     const deliveryTo = adminTo ? { ...deliveryToDistrict, ...adminTo } : deliveryToDistrict;
 
+    // Last-reviewed stamp for the Terminal Hub (GIGW Q5): freshest timestamp
+    // across the household profile, latest booking and distribution settings.
+    const stamped = [profile?.updatedAt, latestBooking?.updatedAt, settings?.updatedAt]
+      .filter(Boolean)
+      .map((d) => new Date(d).getTime());
+    const updatedAt = stamped.length ? new Date(Math.max(...stamped)).toISOString() : null;
+
     return res.status(200).json({
       name: user?.name || 'Citizen',
       profile: profile
@@ -65,6 +72,7 @@ export const getDashboardSummary = async (req, res) => {
           }
         : null,
       ration,
+      updatedAt,
       delivery: {
         from: deliveryFrom,
         to: deliveryTo,

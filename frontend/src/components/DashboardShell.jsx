@@ -1,21 +1,21 @@
 import { useState } from 'react';
-import { ChevronDown, PanelLeftClose, PanelLeftOpen } from 'lucide-react';
+import { PanelLeftClose, PanelLeftOpen, LogOut } from 'lucide-react';
 import logoAsset from '../images/E-RATION Logo.png';
 import terminalHubIcon from '../images/nav/terminal-hub.png';
 import familyProfileIcon from '../images/nav/family-profile.png';
 import rationBookingsIcon from '../images/nav/ration-bookings.png';
 import aiHelpDeskIcon from '../images/nav/ai-help-desk.png';
-import logoutIcon from '../images/nav/logout.png';
 import { useAccount } from '../context/AccountContext';
 import { Avatar } from './ui/avatar';
 import { swiss, TricolorStrip } from './ui/swiss';
 import SkipLink from './SkipLink';
 import AccessibilityToolbar from './AccessibilityToolbar';
+import SiteFooter from './SiteFooter';
 
 const FOCUS =
   'focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-orange-500';
 
-export default function DashboardShell({ children, currentSubPage, onSubPageChange, onLogout }) {
+export default function DashboardShell({ children, currentSubPage, onSubPageChange, onNavigate, onLogout }) {
   const { account } = useAccount();
   // Collapsible navigation — persisted so the choice survives reloads. Gives
   // zoomed/low-width viewports room by collapsing to icon-only rails.
@@ -84,14 +84,38 @@ export default function DashboardShell({ children, currentSubPage, onSubPageChan
           </nav>
         </div>
 
-        <button
-          onClick={onLogout}
-          title={navCollapsed ? 'Log out' : undefined}
-          className={`w-full flex items-center justify-center gap-2 border border-slate-700 hover:border-slate-600 hover:bg-slate-800 text-slate-300 hover:text-white py-3 text-sm font-semibold transition-colors cursor-pointer ${FOCUS}`}
-        >
-          <img src={logoutIcon} alt="" className="w-5 h-5 object-contain" />
-          {!navCollapsed && <span>Log out</span>}
-        </button>
+        <div className="space-y-2">
+          <button
+            type="button"
+            onClick={() => onSubPageChange('profile')}
+            aria-current={currentSubPage === 'profile' ? 'page' : undefined}
+            title="Family profile"
+            className={`relative w-full flex items-center gap-3 py-2.5 text-sm font-semibold transition-colors cursor-pointer ${FOCUS} ${navCollapsed ? 'justify-center px-2' : 'px-3'} ${
+              currentSubPage === 'profile'
+                ? 'bg-slate-950 text-white'
+                : 'text-slate-300 hover:text-white hover:bg-slate-800'
+            }`}
+          >
+            <Avatar src={account?.avatar} name={account?.name || 'Citizen'} size={32} />
+            {!navCollapsed && (
+              <div className="text-left min-w-0">
+                <p className="text-sm font-bold leading-tight truncate">{account?.name || 'Citizen'}</p>
+                <p className="text-[10px] font-bold uppercase tracking-[0.14em] text-slate-400 truncate">
+                  {account?.rationCardNumber ? `Ration card: ${account.rationCardNumber}` : 'Citizen workspace'}
+                </p>
+              </div>
+            )}
+          </button>
+
+          <button
+            onClick={onLogout}
+            title={navCollapsed ? 'Log out' : undefined}
+            className={`w-full flex items-center justify-center gap-2 border border-slate-700 hover:border-slate-600 hover:bg-slate-800 text-slate-300 hover:text-white py-3 text-sm font-semibold transition-colors cursor-pointer ${FOCUS}`}
+          >
+            <LogOut size={18} className="shrink-0" aria-hidden="true" />
+            {!navCollapsed && <span>Log out</span>}
+          </button>
+        </div>
       </aside>
 
       <main className="flex-1 overflow-y-auto overflow-x-clip overscroll-y-contain min-w-0 bg-[#F4F6F9]" id="main-content" tabIndex={-1}>
@@ -111,22 +135,13 @@ export default function DashboardShell({ children, currentSubPage, onSubPageChan
         </div>
         {account?.rationCardNumber && (
           <div className="flex items-center justify-between flex-wrap gap-3 px-8 pt-6">
-              <p className="text-[10px] font-bold uppercase tracking-[0.14em] text-slate-500">
-                Public Distribution System
-              </p>
-            <div className="flex items-center gap-3 bg-white border border-slate-200 px-4 py-2.5">
-              <Avatar src={account.avatar} name={account.name} size={32} />
-              <div className="text-left">
-                <p className="text-sm font-bold text-slate-900 leading-tight">{account.name}</p>
-                <p className="text-[10px] font-bold uppercase tracking-[0.14em] text-slate-500">
-                  Ration card: {account.rationCardNumber}
-                </p>
-              </div>
-              <ChevronDown size={16} className="text-slate-500" />
-            </div>
+            <p className="text-[10px] font-bold uppercase tracking-[0.14em] text-slate-500">
+              Public Distribution System
+            </p>
           </div>
         )}
         <div className="px-8 pt-4 pb-0">{children}</div>
+        <SiteFooter onNavigate={onNavigate} />
       </main>
     </div>
   );

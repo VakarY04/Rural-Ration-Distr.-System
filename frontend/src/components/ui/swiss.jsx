@@ -33,7 +33,7 @@ export const STATUS = {
 
 export const swiss = {
   page: 'min-h-screen font-sans bg-[#F4F6F9] text-[#000080]',
-  panel: 'bg-white border border-slate-200/80 rounded-3xl',
+  panel: 'bg-white border border-slate-200/80 rounded-xl',
   input:
     'w-full border border-slate-200 focus:border-[#000080] hover:border-slate-400 hover:shadow-md bg-slate-50 focus:bg-white hover:bg-white px-3 py-2 text-sm font-medium text-[#000080] outline-none transition-all duration-200 placeholder:text-slate-500',
   btnPrimary:

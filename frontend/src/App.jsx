@@ -12,6 +12,7 @@ import ProfilePage from './pages/ProfilePage';
 import BookingPage from './pages/BookingPage';
 import OverlayScrollbar from './components/OverlayScrollbar';
 import AiSupportPage from './pages/AiSupportPage';
+import InfoPage from './pages/info/InfoPage';
 
 // Mirror the app's React-state routes into the History API (instead of pulling
 // in a router) so the browser's native Back/Forward buttons work. Every page
@@ -31,6 +32,8 @@ function pathForPage(page, subPage = 'home') {
       return '/reset-password';
     case 'distributor-console':
       return subPage && subPage !== 'home' ? `/distributor?view=${subPage}` : '/distributor';
+    case 'info':
+      return subPage && subPage !== 'home' ? `/info?view=${subPage}` : '/info';
     case 'dashboard':
       return subPage && subPage !== 'home' ? `/dashboard?view=${subPage}` : '/dashboard';
     case 'landing':
@@ -52,6 +55,7 @@ function parseLocation() {
     return { page: 'reset-password', subPage: 'home', token };
   }
   if (path === '/distributor') return { page: 'distributor-console', subPage: params.get('view') || 'home' };
+  if (path === '/info') return { page: 'info', subPage: params.get('view') || 'help' };
   if (path === '/dashboard') return { page: 'dashboard', subPage: params.get('view') || 'home' };
   return null;
 }
@@ -213,6 +217,7 @@ export default function App() {
           <DashboardShell
             currentSubPage={currentSubPage}
             onSubPageChange={handleSubPageChange}
+            onNavigate={handleNavigate}
             onLogout={handleLogout}
           >
             {currentSubPage === 'home' && <DashboardHome onNavigate={handleSubPageChange} />}
@@ -221,6 +226,10 @@ export default function App() {
             {currentSubPage === 'ai-support' && <AiSupportPage />}
           </DashboardShell>
         </AccountProvider>
+      )}
+      {/* 9. Public info pages (Help, Feedback, Sitemap, Policies) */}
+      {currentPage === 'info' && (
+        <InfoPage view={currentSubPage} onNavigate={handleNavigate} />
       )}
     </div>
   );

@@ -266,15 +266,6 @@ export default function ProfilePage({ onAccountDeleted }) {
       </form>
 
       <DangerZonePanel onDelete={handleDeleteAccount} />
-
-      <footer className="border-t border-slate-200 pt-5 pb-2 flex flex-col sm:flex-row items-center justify-between gap-2">
-        <p className={swiss.micro}>© {new Date().getFullYear()} Government of India</p>
-        <div className={`flex items-center gap-4 ${swiss.micro}`}>
-          <span className="hover:text-slate-600 cursor-pointer">Privacy Policy</span>
-          <span className="hover:text-slate-600 cursor-pointer">Terms of Use</span>
-          <span className="hover:text-slate-600 cursor-pointer">Accessibility Statement</span>
-        </div>
-      </footer>
     </div>
   );
 }

@@ -7,10 +7,12 @@ import DeliveryRouteMap from '../components/DeliveryRouteMap';
 import StatBlocks from '../components/distributor/StatBlocks';
 import BookingsTable from '../components/distributor/BookingsTable';
 import DeliveryDetailsEditor from '../components/distributor/DeliveryDetailsEditor';
+import RationItemsEditor from '../components/distributor/RationItemsEditor';
 import DistributorProfileMenu from '../components/distributor/DistributorProfileMenu';
 import FamiliesDetailsPage from './FamiliesDetailsPage';
 import RationDetailsPage from './RationDetailsPage';
 import DistributorProfilePage from './DistributorProfilePage';
+import SiteFooter from '../components/SiteFooter';
 import SkipLink from '../components/SkipLink';
 import AccessibilityToolbar from '../components/AccessibilityToolbar';
 
@@ -149,7 +151,7 @@ export default function DistributorConsolePage({ currentSubPage = 'home', onNavi
         )}
 
         {!loading && summary && currentSubPage === 'ration-details' && (
-          <RationDetailsPage items={summary.items} />
+          <RationDetailsPage items={summary.items} updatedAt={summary.updatedAt} />
         )}
 
         {!loading && currentSubPage === 'profile' && (
@@ -200,17 +202,18 @@ export default function DistributorConsolePage({ currentSubPage = 'home', onNavi
                   delivery={summary.delivery}
                   onSaved={loadSummary}
                 />
+                <RationItemsEditor
+                  key={`items-${summary.updatedAt || 'init'}`}
+                  items={summary.items}
+                  onSaved={loadSummary}
+                />
               </div>
             </div>
           </>
         )}
       </main>
 
-      <footer className="border-t border-slate-200 bg-white">
-        <p className="w-full px-4 sm:px-6 lg:px-8 py-4 text-[10px] font-bold tracking-wide text-slate-500">
-          E-Ration Portal · Distribution Console v1.0 · Public Distribution System
-        </p>
-      </footer>
+      <SiteFooter onNavigate={onNavigate} />
     </div>
   );
 }
