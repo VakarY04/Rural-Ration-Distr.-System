@@ -84,6 +84,19 @@ html, body, #root {
   }
 }
 
+/* Print (GIGW Q20): booking confirmations and entitlement pages print on A4
+   without app chrome — sidebar, toolbars and action buttons stay on screen. */
+@media print {
+  aside,
+  [role='toolbar'],
+  .no-print {
+    display: none !important;
+  }
+  main {
+    overflow: visible !important;
+  }
+}
+
 body {
   font-family: 'Noto Sans', 'Noto Sans Devanagari', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
   text-align: left;

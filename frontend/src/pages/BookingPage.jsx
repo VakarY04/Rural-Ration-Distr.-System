@@ -165,6 +165,11 @@ export default function BookingPage() {
             <p className="text-xs text-slate-500 font-medium mt-1 max-w-md leading-relaxed">
               Select an available time window at your designated Fair Price Shop (FPS) terminal.
             </p>
+            {profile?.updatedAt && (
+              <p className="text-[11px] text-slate-500 font-medium mt-1 tabular-nums">
+                Profile last reviewed {new Date(profile.updatedAt).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })}
+              </p>
+            )}
           </div>
 
           <div className="flex items-center gap-2 bg-white text-slate-900 border border-slate-300 px-3 py-1.5 text-xs font-bold tabular-nums w-fit shrink-0">

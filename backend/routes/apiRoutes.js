@@ -13,6 +13,7 @@ import { protect } from '../middleware/authMiddleware.js';
 import { dbGate } from '../middleware/dbGate.js';
 import { register, login, sendOtp, verifyOtp, getMe, updateMe, deleteMe } from '../controllers/authController.js';
 import { forgotPassword, resetPassword } from '../controllers/passwordController.js';
+import { submitFeedback } from '../controllers/feedbackController.js';
 
 const router = express.Router();
 
@@ -44,6 +45,9 @@ router.get('/dashboard/summary', protect, getDashboardSummary);
 router.get('/distributor/summary', protect, requireStaff, getDistributorSummary);
 router.put('/distributor/delivery', protect, requireStaff, updateDeliveryDetails);
 router.put('/distributor/items', protect, requireStaff, updateRationItems);
+
+// Citizen feedback inbox (stored always, emailed to owner when SMTP is set)
+router.post('/feedback', protect, submitFeedback);
 
 // Gemini AI Support Endpoint
 router.post('/ai/grievance', protect, analyzeGrievance);

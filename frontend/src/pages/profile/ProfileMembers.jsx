@@ -109,15 +109,6 @@ export function MembersPanel({
             </tbody>
           </table>
         )}
-
-        <button
-          type="button"
-          onClick={addMember}
-          className={`w-full mt-4 flex items-center justify-center gap-2 border border-dashed border-slate-300 hover:border-slate-900 hover:bg-slate-50 text-slate-500 hover:text-slate-900 text-xs font-semibold tracking-wide py-3 transition-colors cursor-pointer ${FOCUS}`}
-        >
-          <Plus size={16} />
-          Add Another Family Member
-        </button>
       </div>
     </section>
   );

@@ -75,7 +75,7 @@ export default function AdminLoginPage({ onNavigate, onAuthSuccess }) {
               className="flex-1 flex items-center justify-center p-5 md:p-10 transition-opacity duration-700"
             >
                 <div
-                  className={`w-full max-w-sm bg-white border rounded-3xl p-8 space-y-5 transition-all duration-500 ${
+                  className={`w-full max-w-sm bg-white border rounded-xl p-8 space-y-5 transition-all duration-500 ${
                     isActive ? 'border-[#FF9933] -translate-y-1 shadow-xl' : 'border-slate-200 hover:shadow-lg hover:-translate-y-0.5'
                   }`}
                 >

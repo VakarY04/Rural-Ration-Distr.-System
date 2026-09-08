@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import {
-  AlertCircle, ArrowRight, Calendar, Clock, Bell, MapPin, Users, FileCheck,
-  ShoppingBag, Home, Building2, Wheat,
+  AlertCircle, ArrowRight, Calendar, Clock, Bell, MapPin, Users,
+  ShoppingBag, Building2,
 } from 'lucide-react';
 import DeliveryRouteMap from '../components/DeliveryRouteMap';
 import { API_URL } from '../services/api';
@@ -72,13 +72,17 @@ export default function DashboardHome({ onNavigate }) {
         <p className={swiss.micro}>Namaste, {name}</p>
         <div className="flex items-baseline gap-3 mt-1">
           <h1 className={swiss.headline}>Terminal Hub</h1>
-          <span className="text-base font-medium text-slate-500">Terminal Hub</span>
         </div>
         <p className="text-sm text-slate-500 mt-2">
           {hasProfile
             ? `Ration card ${profile.rationCardNumber} · Household of ${profile.totalMembers} member${profile.totalMembers === 1 ? '' : 's'}`
             : 'No household profile on file yet'}
         </p>
+        {summary.updatedAt && (
+          <p className="text-[11px] text-slate-500 mt-1 tabular-nums">
+            Last reviewed {new Date(summary.updatedAt).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })}
+          </p>
+        )}
       </header>
 
       <section className={`${swiss.panel} grid grid-cols-1 sm:grid-cols-3 divide-y sm:divide-y-0 sm:divide-x divide-slate-200`}>
@@ -110,7 +114,7 @@ export default function DashboardHome({ onNavigate }) {
       </section>
 
       <div className="grid grid-cols-1 lg:grid-cols-[1fr_300px] gap-6 items-stretch">
-        <div className={`${swiss.panel} overflow-hidden h-full min-h-[420px]`} title="Delivery route map — use + / − controls to zoom">
+        <div className={`${swiss.panel} overflow-hidden h-[360px]`} title="Delivery route map — use + / − controls to zoom">
           <DeliveryRouteMap origin={delivery.from} destination={delivery.to} />
         </div>
 
@@ -119,53 +123,28 @@ export default function DashboardHome({ onNavigate }) {
             <SectionHead title="Delivery details" />
             <div className="space-y-4 mt-4">
               <div>
-                <p className={swiss.label}>From</p>
-                <div className="flex items-center gap-2">
-                  <div className="w-8 h-8 border border-slate-200 bg-slate-100 flex items-center justify-center shrink-0" title="Warehouse location">
-                    <Home size={14} className="text-slate-500" aria-hidden="true" />
+                <p className="text-[10px] font-bold uppercase tracking-[0.14em] text-slate-500">From warehouse</p>
+                <div className="mt-1.5 flex items-start gap-2">
+                  <MapPin size={14} className="text-orange-600 mt-0.5 shrink-0" aria-hidden="true" />
+                  <div className="min-w-0">
+                    <p className="text-sm font-semibold text-slate-700 leading-snug">{delivery.from.label}</p>
+                    <p className="text-xs text-slate-500 leading-snug">{delivery.from.address}</p>
                   </div>
-                  <span className="text-sm font-medium text-slate-700">{delivery.from.label}</span>
                 </div>
               </div>
               <div>
-                <p className={swiss.label}>To</p>
-                <div className="flex items-center gap-2">
-                  <div className="w-8 h-8 border border-[#198754]/30 bg-[#198754]/10 flex items-center justify-center shrink-0" title="Your local distributor">
-                    <MapPin size={14} className="text-[#198754]" aria-hidden="true" />
+                <p className="text-[10px] font-bold uppercase tracking-[0.14em] text-slate-500">To collection centre</p>
+                <div className="mt-1.5 flex items-start gap-2">
+                  <MapPin size={14} className="text-orange-600 mt-0.5 shrink-0" aria-hidden="true" />
+                  <div className="min-w-0">
+                    <p className="text-sm font-semibold text-slate-700 leading-snug">{delivery.to.label}</p>
+                    <p className="text-xs text-slate-500 leading-snug">{delivery.to.address}</p>
                   </div>
-                  <span className="text-sm font-medium text-slate-700">{delivery.to.label}</span>
                 </div>
               </div>
             </div>
             <p className="text-[11px] text-slate-500 mt-4">
               Assigned by your registered district — collect your ration from here.
-            </p>
-          </div>
-
-          <div className={`${swiss.panel} p-5`}>
-            <div className="flex items-center gap-2.5">
-              <span className="w-8 h-8 border border-[#198754]/30 bg-[#198754]/10 text-[#198754] flex items-center justify-center shrink-0" aria-hidden="true">
-                <FileCheck size={14} />
-              </span>
-              <SectionHead title="Items & quantity" />
-            </div>
-            <div className="space-y-3 mt-4">
-              {ration.items.map((item) => (
-                <div key={item.key} className="flex items-center justify-between gap-3">
-                  <div className="flex items-center gap-2 min-w-0">
-                    <div className="w-8 h-8 border border-amber-200 bg-amber-50 flex items-center justify-center shrink-0">
-                      <Wheat size={14} className="text-amber-600" />
-                    </div>
-                    <span className="text-sm font-medium text-slate-700 truncate">{item.label}</span>
-                  </div>
-                  <span className="text-sm font-extrabold tracking-tight tabular-nums text-slate-900 shrink-0">
-                    {item.quantity} {item.unit}
-                  </span>
-                </div>
-              ))}
-            </div>
-            <p className="text-[11px] text-slate-500 mt-4">
-              Calculated from your household size ({ration.totalMembers} member{ration.totalMembers === 1 ? '' : 's'}).
             </p>
           </div>
         </div>
@@ -259,17 +238,12 @@ export default function DashboardHome({ onNavigate }) {
         </div>
       </div>
 
-      <div className="bg-amber-50 border border-amber-300 p-4 flex items-center justify-between" role="status" title="Booking status notification">
-        <div className="flex items-center gap-3">
-          <Bell size={18} className="text-amber-500" aria-hidden="true" />
-          <p className="text-sm text-slate-700">
-            {booking
-              ? 'Your next collection window is confirmed.'
-              : 'Slot booking is open — reserve your collection window.'}
-          </p>
+      {booking && (
+        <div className="bg-amber-50 border border-amber-300 px-4 py-2.5 flex items-center gap-2.5" role="status" title="Booking status notification">
+          <Bell size={16} className="text-amber-500 shrink-0" aria-hidden="true" />
+          <p className="text-sm text-slate-700">Your next collection window is confirmed.</p>
         </div>
-        <ArrowRight size={16} className="text-slate-500" />
-      </div>
+      )}
     </div>
   );
 }

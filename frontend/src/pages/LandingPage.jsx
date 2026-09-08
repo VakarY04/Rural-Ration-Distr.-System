@@ -5,6 +5,7 @@ import { swiss, TricolorStrip, TRICOLOR_GRADIENT } from '../components/ui/swiss'
 import { useLandingAnimations } from './landing/useLandingAnimations';
 import SkipLink from '../components/SkipLink';
 import AccessibilityToolbar from '../components/AccessibilityToolbar';
+import SiteFooter from '../components/SiteFooter';
 import { WaveAccent, BannerWaves } from '../components/landing/WaveDecorations';
 import { heroBadges, featureCards } from './landing/landingContent';
 import {
@@ -41,6 +42,7 @@ export default function LandingPage({ onNavigate }) {
   return (
     <div ref={mainContainerRef} className="h-screen flex flex-col overflow-hidden selection:bg-orange-100 font-sans">
       <SkipLink />
+      <AccessibilityToolbar />
 
       <div className="fixed inset-0 z-0 pointer-events-none" aria-hidden="true">
         <img src={heroBackdrop} alt="" className="w-full h-full object-cover" />
@@ -51,7 +53,7 @@ export default function LandingPage({ onNavigate }) {
 
       <header className="fixed top-0 left-0 right-0 z-50">
         <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between gap-4 flex-wrap">
-          <AccessibilityToolbar />
+          <div />
           <button onClick={() => onNavigate('admin-login')} type="button" className={`${swiss.btnPrimary} rounded-lg`}>
             <Users size={14} aria-hidden="true" />
             <span>Sign In</span>
@@ -180,6 +182,7 @@ export default function LandingPage({ onNavigate }) {
 
           </div>
         </section>
+        <SiteFooter onNavigate={onNavigate} />
       </main>
 
     </div>

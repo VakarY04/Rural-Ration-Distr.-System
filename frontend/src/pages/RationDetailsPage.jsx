@@ -4,7 +4,7 @@ import { swiss } from '../components/ui/swiss';
 // Minimal Ration Details view — shows the per-household entitlement items
 // published to every citizen hub. Full item management is out of scope for
 // this navigation step.
-export default function RationDetailsPage({ items }) {
+export default function RationDetailsPage({ items, updatedAt }) {
   const rows = Array.isArray(items) ? items : [];
 
   return (
@@ -20,6 +20,11 @@ export default function RationDetailsPage({ items }) {
         <p className="text-sm text-slate-500 mt-2">
           Per-household ration entitlement shown to citizens at booking and on the Terminal Hub.
         </p>
+        {updatedAt && (
+          <p className="text-[11px] text-slate-500 mt-1 tabular-nums">
+            Last reviewed {new Date(updatedAt).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })}
+          </p>
+        )}
       </header>
 
       <section className="border border-slate-200 bg-white rounded-2xl overflow-hidden">
