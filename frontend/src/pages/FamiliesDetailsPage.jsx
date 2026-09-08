@@ -1,3 +1,4 @@
+import { Users } from 'lucide-react';
 import { swiss } from '../components/ui/swiss';
 import BookingsTable from '../components/distributor/BookingsTable';
 
@@ -9,7 +10,12 @@ export default function FamiliesDetailsPage({ bookings }) {
     <div className="space-y-6 font-sans">
       <header>
         <p className={swiss.micro}>Distribution records</p>
-        <h1 className={swiss.headline}>Families Details</h1>
+        <h1 className={`${swiss.headline} flex items-center gap-2.5`}>
+          <span className="w-9 h-9 border border-slate-200 bg-slate-50 text-slate-600 flex items-center justify-center shrink-0" aria-hidden="true">
+            <Users size={17} />
+          </span>
+          Families Details
+        </h1>
         <p className="text-sm text-slate-500 mt-2">
           Households that have booked ration through the Public Distribution System.
         </p>

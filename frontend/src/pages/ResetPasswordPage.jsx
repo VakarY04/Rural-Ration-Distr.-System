@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { ShieldCheck, Lock, Eye, EyeOff } from 'lucide-react';
 import logoAsset from '../images/E-RATION Logo.png';
-import heroBackdrop from '../images/india-republic-day-celebration-digital-art-with-flag.jpg';
+import heroBackdrop from '../images/india-republic-day-celebration-digital-art-with-flag.webp';
 import { authApi } from '../services/authApi';
 import { swiss, TricolorStrip } from '../components/ui/swiss';
 import { Alert } from '../components/ui/alert';
@@ -89,6 +89,7 @@ export default function ResetPasswordPage({ token, onResetSuccess }) {
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
+                    title={showPassword ? 'Hide password' : 'Show password'}
                     aria-label={showPassword ? 'Hide password' : 'Show password'}
                     className="absolute right-3.5 text-slate-400 hover:text-slate-900 cursor-pointer focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-orange-500"
                   >
@@ -120,7 +121,7 @@ export default function ResetPasswordPage({ token, onResetSuccess }) {
           )}
 
           <div className="flex items-center justify-center gap-2 pt-2 border-t border-slate-200">
-            <ShieldCheck size={13} className="text-green-700" />
+            <ShieldCheck size={13} className="text-[#198754]" />
             <span className={swiss.micro}>Encrypted Password Overwrite Terminal Active</span>
           </div>
         </div>

@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
+import { RefreshCw, MapPin } from 'lucide-react';
 import logoAsset from '../images/E-RATION Logo.png';
 import { api } from '../services/api';
 import { TRICOLOR_GRADIENT } from '../components/ui/swiss';
@@ -129,8 +130,9 @@ export default function DistributorConsolePage({ currentSubPage = 'home', onNavi
             <button
               type="button"
               onClick={() => { setLoading(true); loadSummary().finally(() => setLoading(false)); }}
-              className="mt-4 bg-slate-900 hover:bg-orange-600 text-white text-[11px] font-bold uppercase tracking-wider px-5 py-2.5 transition-colors cursor-pointer"
+              className="mt-4 bg-slate-900 hover:bg-orange-600 text-white text-[11px] font-bold uppercase tracking-wider px-5 py-2.5 transition-colors cursor-pointer inline-flex items-center gap-2"
             >
+              <RefreshCw size={13} aria-hidden="true" />
               Retry
             </button>
           </div>
@@ -164,10 +166,10 @@ export default function DistributorConsolePage({ currentSubPage = 'home', onNavi
               {/* Delivery route map + booking queue */}
               <div className="space-y-6">
                 <section aria-label="Delivery route map" className="space-y-3">
-                  <div className="flex items-baseline justify-between">
-                    <h2 className="text-sm font-bold tracking-tight">Delivery route</h2>
+                  <div className="flex items-center justify-between">
+                    <h2 className="text-sm font-bold tracking-tight flex items-center gap-1.5"><MapPin size={13} className="text-[#198754]" aria-hidden="true" /> Delivery route</h2>
                   </div>
-                  <div className="border border-slate-200 bg-white h-[360px] overflow-hidden isolate">
+                  <div className="border border-slate-200 bg-white h-[360px] overflow-hidden isolate" title="Delivery route map — use + / − controls to zoom">
                     <DeliveryRouteMap origin={summary.delivery.from} destination={summary.delivery.to} />
                   </div>
                 </section>

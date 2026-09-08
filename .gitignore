@@ -2,6 +2,8 @@
 # E-Ration Portal — global ignore rules (applies to backend/ and frontend/)
 # ----------------------------------------------------------------------
 
+ROADMAP_GOVT_GRADE.md
+INDIAN_GOVT_WEBSITE_GUIDELINES.md
 TYPOGRAPHY_COMPLIANCE_README.md
 TYPOGRAPHY_COMPLIANCE.md
 Tips.md

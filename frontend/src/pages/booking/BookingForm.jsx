@@ -1,4 +1,4 @@
-import { AlertCircle, CheckCircle2, RefreshCw, ShieldCheck, Lock } from 'lucide-react';
+import { AlertCircle, CheckCircle2, RefreshCw, ShieldCheck, Lock, Calendar, Clock } from 'lucide-react';
 import { swiss, SectionHead } from '../../components/ui/swiss';
 
 const FOCUS =
@@ -22,20 +22,20 @@ export default function BookingForm({
     <>
       {/* Dynamic Alerts */}
       {error && (
-        <div role="alert" className="bg-red-50 border-l-4 border-red-600 text-red-700 p-4 text-xs font-semibold flex items-center gap-2.5">
-          <AlertCircle size={17} className="shrink-0 text-red-600" />
+        <div role="alert" className="bg-[#DC3545]/10 border-l-4 border-[#DC3545] text-[#DC3545] p-4 text-xs font-semibold flex items-center gap-2.5">
+          <AlertCircle size={17} className="shrink-0 text-[#DC3545]" />
           <span>{error}</span>
         </div>
       )}
 
       {success && (
-        <div role="status" className="bg-green-50 border-l-4 border-green-700 text-green-800 p-4 text-xs font-semibold space-y-1.5">
+        <div role="status" className="bg-[#198754]/10 border-l-4 border-[#198754] text-[#198754] p-4 text-xs font-semibold space-y-1.5">
           <div className="flex items-center gap-2">
-            <CheckCircle2 size={18} className="text-green-700" />
+            <CheckCircle2 size={18} className="text-[#198754]" />
             <span className="font-bold">{success}</span>
           </div>
           {bookingDetails && (
-            <p className="text-[11px] font-medium text-green-700 pl-6 tabular-nums">
+            <p className="text-[11px] font-medium text-[#198754] pl-6 tabular-nums">
               Confirmed distribution slot on <strong>{bookingDetails.distributionDate}</strong> during <strong>{bookingDetails.timeSlot}</strong>.
             </p>
           )}
@@ -49,7 +49,7 @@ export default function BookingForm({
         <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
           {/* Date Picker */}
           <div className="space-y-1.5">
-            <label htmlFor="distribution-date" className={swiss.label}>Distribution Date</label>
+            <label htmlFor="distribution-date" className={swiss.label}><span className="flex items-center gap-1.5"><Calendar size={12} aria-hidden="true" /> Distribution Date</span></label>
             <input
               id="distribution-date"
               type="date"
@@ -64,7 +64,7 @@ export default function BookingForm({
 
           {/* Time Slot Selector */}
           <div className="space-y-1.5">
-            <label htmlFor="time-slot" className={swiss.label}>Terminal Time Slot</label>
+            <label htmlFor="time-slot" className={swiss.label}><span className="flex items-center gap-1.5"><Clock size={12} aria-hidden="true" /> Terminal Time Slot</span></label>
             <select
               id="time-slot"
               required
@@ -82,9 +82,9 @@ export default function BookingForm({
         </div>
 
         {/* Identification Notice Strip */}
-        <div className="border border-blue-200 bg-blue-50/60 p-4 flex items-center justify-between gap-4">
+        <div className="border border-[#0D6EFD]/30 bg-[#0D6EFD]/10 p-4 flex items-center justify-between gap-4">
           <div className="flex items-center gap-3 text-xs font-medium text-slate-800">
-            <span aria-hidden="true" className="w-5 h-5 border border-blue-500 text-blue-700 flex items-center justify-center shrink-0 text-[11px] font-bold">
+            <span aria-hidden="true" className="w-5 h-5 border border-[#0D6EFD] text-[#0D6EFD] flex items-center justify-center shrink-0 text-[11px] font-bold">
               i
             </span>
             <p>
@@ -93,8 +93,8 @@ export default function BookingForm({
           </div>
 
           <div className="hidden sm:flex items-center gap-1.5 bg-white border border-slate-200 px-3 py-1.5 shrink-0">
-            <ShieldCheck size={16} className="text-blue-700" />
-            <Lock size={13} className="text-green-700" />
+            <ShieldCheck size={16} className="text-[#0D6EFD]" />
+            <Lock size={13} className="text-[#198754]" />
           </div>
         </div>
 
@@ -120,7 +120,7 @@ export default function BookingForm({
         {/* Bottom Security Banner */}
         <div className="border border-slate-200 bg-white px-4 py-3 text-xs font-semibold text-slate-600 flex items-center justify-between gap-3">
           <div className="flex items-center gap-2.5">
-            <ShieldCheck size={16} className="text-green-700 shrink-0" />
+            <ShieldCheck size={16} className="text-[#198754] shrink-0" />
             <span>Your booking is safe and secure. You will receive a confirmation once the slot is booked successfully.</span>
           </div>
           <Lock size={14} className="text-slate-400 shrink-0" />

@@ -1,5 +1,5 @@
 import { ArrowRight, Users, ShieldCheck } from 'lucide-react';
-import heroBackdrop from '../images/india-republic-day-celebration-digital-art-with-flag.jpg';
+import heroBackdrop from '../images/india-republic-day-celebration-digital-art-with-flag.webp';
 import logoAsset from '../images/E-RATION Logo.png';
 import { swiss, TricolorStrip, TRICOLOR_GRADIENT } from '../components/ui/swiss';
 import { useLandingAnimations } from './landing/useLandingAnimations';

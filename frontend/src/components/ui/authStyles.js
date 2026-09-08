@@ -3,12 +3,12 @@
 // AuthMethodTabs.
 
 export const ACCENT_HOVER = {
-  emerald: 'hover:bg-green-700',
+  emerald: 'hover:bg-[#157347]',
   amber: 'hover:bg-orange-600',
 };
 
 export const ACTIVE_TAB = {
-  emerald: 'bg-green-700 text-white',
+  emerald: 'bg-[#198754] text-white',
   amber: 'bg-orange-600 text-white',
 };
 

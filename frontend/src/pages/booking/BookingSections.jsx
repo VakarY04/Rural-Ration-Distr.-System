@@ -1,11 +1,16 @@
-import { Wheat, Scale } from 'lucide-react';
+import { Wheat, Scale, FileCheck, Calendar, Clock } from 'lucide-react';
 import { swiss, SectionHead } from '../../components/ui/swiss';
 
 export function QuotaPanel({ memberCount, totalQuota }) {
   return (
     <div className="space-y-4">
-      <div className="flex flex-wrap items-baseline justify-between gap-2">
-        <SectionHead title="Monthly Quota Allocation" />
+      <div className="flex flex-wrap items-center justify-between gap-2">
+        <div className="flex items-center gap-2.5">
+          <span className="w-8 h-8 border border-[#198754]/30 bg-[#198754]/10 text-[#198754] flex items-center justify-center shrink-0" aria-hidden="true">
+            <FileCheck size={15} />
+          </span>
+          <SectionHead title="Monthly Quota Allocation" />
+        </div>
         <p className="text-[11px] text-slate-500 font-medium tabular-nums">
           {memberCount} Registered Member{memberCount > 1 ? 's' : ''}
         </p>
@@ -42,18 +47,18 @@ export function ActiveBookingTicket({ bookingDetails, headOfFamily }) {
       <SectionHead
         title="Active Scheduled Slot"
         right={
-          <span className="bg-green-700 text-white text-[10px] font-bold uppercase px-2 py-0.5 tracking-wider tabular-nums">
+          <span className="bg-[#198754] text-white text-[10px] font-bold uppercase px-2 py-0.5 tracking-wider tabular-nums">
             {bookingDetails.status || 'Confirmed'}
           </span>
         }
       />
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-px bg-slate-200 border border-slate-200 text-xs">
         <div className="bg-white p-3">
-          <p className={swiss.micro}>Date</p>
+          <p className={swiss.micro}><span className="flex items-center gap-1"><Calendar size={11} aria-hidden="true" /> Date</span></p>
           <p className="font-bold text-slate-900 mt-0.5 tabular-nums">{bookingDetails.distributionDate}</p>
         </div>
         <div className="bg-white p-3">
-          <p className={swiss.micro}>Time Window</p>
+          <p className={swiss.micro}><span className="flex items-center gap-1"><Clock size={11} aria-hidden="true" /> Time Window</span></p>
           <p className="font-bold text-slate-900 mt-0.5 tabular-nums">{bookingDetails.timeSlot}</p>
         </div>
         <div className="bg-white p-3">
