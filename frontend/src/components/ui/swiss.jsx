@@ -35,13 +35,13 @@ export const swiss = {
   page: 'min-h-screen font-sans bg-[#F4F6F9] text-[#000080]',
   panel: 'bg-white border border-slate-200/80 rounded-3xl',
   input:
-    'w-full border border-slate-200 focus:border-[#000080] hover:border-slate-400 hover:shadow-md bg-slate-50 focus:bg-white hover:bg-white px-3 py-2 text-sm font-medium text-[#000080] outline-none transition-all duration-200 placeholder:text-slate-400',
+    'w-full border border-slate-200 focus:border-[#000080] hover:border-slate-400 hover:shadow-md bg-slate-50 focus:bg-white hover:bg-white px-3 py-2 text-sm font-medium text-[#000080] outline-none transition-all duration-200 placeholder:text-slate-500',
   btnPrimary:
     'bg-[#FF9933] hover:bg-[#e68a00] text-white text-xs font-semibold tracking-wide px-4 py-2.5 transition-colors cursor-pointer disabled:opacity-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#FF9933] inline-flex items-center justify-center gap-2',
   btnSecondary:
     'border border-slate-300 hover:border-[#000080] text-[#000080] hover:text-white hover:bg-[#000080] text-xs font-semibold tracking-wide px-4 py-2.5 transition-colors cursor-pointer disabled:opacity-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#FF9933] inline-flex items-center justify-center gap-2 bg-white',
   label: 'text-sm font-medium tracking-wide text-slate-500 block mb-1.5',
-  micro: 'text-xs font-medium tracking-wide text-slate-400',
+  micro: 'text-xs font-medium tracking-wide text-slate-500',
   sectionTitle: 'text-base md:text-xl font-medium tracking-tight text-[#000080]',
   headline: 'text-2xl md:text-4xl font-bold tracking-tighter text-[#000080]',
 };

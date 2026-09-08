@@ -72,7 +72,7 @@ export default function DashboardHome({ onNavigate }) {
         <p className={swiss.micro}>Namaste, {name}</p>
         <div className="flex items-baseline gap-3 mt-1">
           <h1 className={swiss.headline}>Terminal Hub</h1>
-          <span className="text-base font-medium text-slate-400">Terminal Hub</span>
+          <span className="text-base font-medium text-slate-500">Terminal Hub</span>
         </div>
         <p className="text-sm text-slate-500 mt-2">
           {hasProfile
@@ -82,28 +82,28 @@ export default function DashboardHome({ onNavigate }) {
       </header>
 
       <section className={`${swiss.panel} grid grid-cols-1 sm:grid-cols-3 divide-y sm:divide-y-0 sm:divide-x divide-slate-200`}>
-        <div className="p-6">
+        <div className="p-6 min-w-0 overflow-hidden">
           <p className={swiss.micro}>Profile status</p>
-          <p className={`mt-2 text-3xl md:text-4xl font-extrabold tracking-tight tabular-nums ${hasProfile ? 'text-[#198754]' : 'text-amber-600'}`}>
+          <p className={`mt-2 text-2xl sm:text-3xl md:text-4xl font-extrabold tracking-tight tabular-nums break-words ${hasProfile ? 'text-[#198754]' : 'text-amber-600'}`}>
             {hasProfile ? 'Complete' : 'Incomplete'}
           </p>
-          <p className="text-xs text-slate-400 mt-1">{hasProfile ? 'All details are up to date' : 'Some details are missing'}</p>
+          <p className="text-xs text-slate-500 mt-1">{hasProfile ? 'All details are up to date' : 'Some details are missing'}</p>
         </div>
-        <div className="p-6">
+        <div className="p-6 min-w-0 overflow-hidden">
           <p className={swiss.micro}>Next collection</p>
-          <p className={`mt-2 text-3xl md:text-4xl font-extrabold tracking-tight tabular-nums ${booking ? 'text-slate-900' : 'text-slate-300'}`}>
+          <p className={`mt-2 text-2xl sm:text-3xl md:text-4xl font-extrabold tracking-tight tabular-nums break-words ${booking ? 'text-slate-900' : 'text-slate-500'}`}>
             {booking ? booking.distributionDate : 'Not scheduled'}
           </p>
-          <p className="text-xs text-slate-400 mt-1">{booking ? booking.timeSlot : 'Book a slot to see it here'}</p>
+          <p className="text-xs text-slate-500 mt-1">{booking ? booking.timeSlot : 'Book a slot to see it here'}</p>
         </div>
-        <div className="p-6 flex items-end justify-between gap-4">
-          <div>
+        <div className="p-6 min-w-0 overflow-hidden flex flex-wrap items-end justify-between gap-4">
+          <div className="min-w-0">
             <p className={swiss.micro}>Monthly quota</p>
-            <p className="mt-2 text-4xl md:text-5xl font-extrabold tracking-tight tabular-nums text-slate-900">
+            <p className="mt-2 text-3xl md:text-5xl font-extrabold tracking-tight tabular-nums text-slate-900 break-words">
               {ration.totalKg}
-              <span className="text-lg font-bold text-slate-400 ml-1">kg</span>
+              <span className="text-lg font-bold text-slate-500 ml-1">kg</span>
             </p>
-            <p className="text-xs text-slate-400 mt-1">Total entitlement</p>
+            <p className="text-xs text-slate-500 mt-1">Total entitlement</p>
           </div>
           <IconChip icon={ShoppingBag} tone="orange" />
         </div>
@@ -137,7 +137,7 @@ export default function DashboardHome({ onNavigate }) {
                 </div>
               </div>
             </div>
-            <p className="text-[11px] text-slate-400 mt-4">
+            <p className="text-[11px] text-slate-500 mt-4">
               Assigned by your registered district — collect your ration from here.
             </p>
           </div>
@@ -164,7 +164,7 @@ export default function DashboardHome({ onNavigate }) {
                 </div>
               ))}
             </div>
-            <p className="text-[11px] text-slate-400 mt-4">
+            <p className="text-[11px] text-slate-500 mt-4">
               Calculated from your household size ({ration.totalMembers} member{ration.totalMembers === 1 ? '' : 's'}).
             </p>
           </div>
@@ -244,7 +244,7 @@ export default function DashboardHome({ onNavigate }) {
             </div>
           ) : (
             <div className={`${swiss.panel} p-5 text-slate-500 text-sm flex items-center gap-3`}>
-              <Calendar size={20} className="shrink-0 text-slate-400" />
+              <Calendar size={20} className="shrink-0 text-slate-500" />
               <span>No collection window is currently scheduled.</span>
             </div>
           )}
@@ -268,7 +268,7 @@ export default function DashboardHome({ onNavigate }) {
               : 'Slot booking is open — reserve your collection window.'}
           </p>
         </div>
-        <ArrowRight size={16} className="text-slate-400" />
+        <ArrowRight size={16} className="text-slate-500" />
       </div>
     </div>
   );

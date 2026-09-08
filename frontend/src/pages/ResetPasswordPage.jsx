@@ -43,7 +43,7 @@ export default function ResetPasswordPage({ token, onResetSuccess }) {
   };
 
   return (
-    <div className="min-h-screen flex flex-col relative overflow-hidden font-sans text-[#000080]">
+    <div className="min-h-screen flex flex-col relative overflow-x-hidden font-sans text-[#000080]">
       <div className="fixed inset-0 z-0 pointer-events-none" aria-hidden="true">
         <img src={heroBackdrop} alt="" className="w-full h-full object-cover opacity-30" />
       </div>
@@ -58,7 +58,7 @@ export default function ResetPasswordPage({ token, onResetSuccess }) {
             <img src={logoAsset} alt="E-Ration Brand Logo" className="w-14 h-14 object-contain bg-slate-50 p-1 rounded-2xl" />
             <div>
               <h2 className="text-xl font-bold tracking-tighter text-slate-900">Update Credentials</h2>
-              <p className="text-[11px] font-medium text-slate-400 mt-0.5">Set a new security access password</p>
+              <p className="text-[11px] font-medium text-slate-500 mt-0.5">Set a new security access password</p>
             </div>
           </div>
 
@@ -76,7 +76,7 @@ export default function ResetPasswordPage({ token, onResetSuccess }) {
               <div>
                 <label htmlFor="reset-password" className={swiss.label}>New Security Password</label>
                 <div className="relative flex items-center">
-                  <Lock className="absolute left-3.5 text-slate-400" size={16} />
+                  <Lock className="absolute left-3.5 text-slate-500" size={16} />
                   <input
                     id="reset-password"
                     type={showPassword ? 'text' : 'password'}
@@ -91,7 +91,7 @@ export default function ResetPasswordPage({ token, onResetSuccess }) {
                     onClick={() => setShowPassword(!showPassword)}
                     title={showPassword ? 'Hide password' : 'Show password'}
                     aria-label={showPassword ? 'Hide password' : 'Show password'}
-                    className="absolute right-3.5 text-slate-400 hover:text-slate-900 cursor-pointer focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-orange-500"
+                    className="absolute right-3.5 text-slate-500 hover:text-slate-900 cursor-pointer focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-orange-500"
                   >
                     {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
                   </button>
@@ -101,7 +101,7 @@ export default function ResetPasswordPage({ token, onResetSuccess }) {
               <div>
                 <label htmlFor="reset-confirm" className={swiss.label}>Confirm New Password</label>
                 <div className="relative flex items-center">
-                  <Lock className="absolute left-3.5 text-slate-400" size={16} />
+                  <Lock className="absolute left-3.5 text-slate-500" size={16} />
                   <input
                     id="reset-confirm"
                     type={showPassword ? 'text' : 'password'}

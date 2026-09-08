@@ -4,6 +4,8 @@ import logoAsset from '../../images/E-RATION Logo.png';
 import heroBackdrop from '../../images/india-republic-day-celebration-digital-art-with-flag.webp';
 import HoverSplitBackdrop from './HoverSplitBackdrop';
 import { swiss } from '../ui/swiss';
+import SkipLink from '../SkipLink';
+import AccessibilityToolbar from '../AccessibilityToolbar';
 
 // Shared full-page shell for the single centred-card auth screens
 // (registration, account recovery, …). Encapsulates the split backdrop,
@@ -21,7 +23,8 @@ export function AuthPageShell({
   const [cardHovered, setCardHovered] = useState(false);
 
   return (
-    <div className="relative h-screen font-sans bg-slate-950 text-white overflow-hidden flex flex-col">
+    <div className="relative min-h-screen font-sans bg-slate-950 text-white overflow-x-hidden flex flex-col">
+      <SkipLink />
       <HoverSplitBackdrop image={heroBackdrop} activeSide={activeSide} reveal={cardHovered} />
 
       {/* Invisible hover zones that light up each side of the split backdrop. */}
@@ -30,7 +33,11 @@ export function AuthPageShell({
         <div className="absolute inset-y-0 right-0 w-1/2" onMouseEnter={() => setActiveSide('right')} />
       </div>
 
-      <main className="relative z-10 flex-1 flex items-center justify-center p-6">
+      <div className="absolute top-4 right-4 z-20">
+        <AccessibilityToolbar />
+      </div>
+
+      <main className="relative z-10 flex-1 flex items-center justify-center p-6 overscroll-y-contain" id="main-content" tabIndex={-1}>
         <div
           onMouseEnter={() => setCardHovered(true)}
           onMouseLeave={() => setCardHovered(false)}
@@ -40,7 +47,7 @@ export function AuthPageShell({
             <img src={logoAsset} alt="E-Ration Logo" className="w-14 h-14 object-contain bg-slate-50 p-1 rounded-2xl" />
             <div>
               <h2 className="text-xl font-extrabold tracking-tighter text-[#000080]">{title}</h2>
-              <p className="text-[11px] font-medium text-slate-400 mt-0.5">{subtitle}</p>
+              <p className="text-[11px] font-medium text-slate-500 mt-0.5">{subtitle}</p>
             </div>
           </div>
 

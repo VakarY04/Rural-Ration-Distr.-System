@@ -49,23 +49,39 @@
 html, body, #root {
   height: 100%;
   margin: 0;
+}
+
+/* Native scrollbars are fully suppressed everywhere — the global
+   OverlayScrollbar component (App.jsx) paints the only visible thumb as a
+   fixed overlay, so page width is identical whether it shows or hides.
+   All native scrolling (wheel, touchpad, keyboard, PgUp/PgDn, Home/End,
+   touch) keeps working underneath. */
+* {
   scrollbar-width: none;
+  -ms-overflow-style: none;
 }
-
-html::-webkit-scrollbar,
-body::-webkit-scrollbar,
-#root::-webkit-scrollbar {
+*::-webkit-scrollbar {
   display: none;
+  width: 0 !important;
+  height: 0 !important;
 }
 
-/* Landing page scroll container: hide the scrollbar visually while keeping
-   all scrolling input (wheel, trackpad, touch, keyboard) fully functional. */
-.landing-scroll {
-  scrollbar-width: none; /* Firefox */
-  -ms-overflow-style: none; /* legacy Edge / IE */
+/* The overlay thumb itself fades fast (100–200ms); honour reduced motion
+   and never print it. */
+.overlay-scroll-thumb {
+  transition-property: opacity;
+  transition-duration: 150ms;
+  transition-timing-function: ease-out;
 }
-.landing-scroll::-webkit-scrollbar {
-  display: none; /* Chrome, Safari, Edge */
+@media (prefers-reduced-motion: reduce) {
+  .overlay-scroll-thumb {
+    transition: none;
+  }
+}
+@media print {
+  .overlay-scroll-thumb {
+    display: none;
+  }
 }
 
 body {
@@ -75,6 +91,47 @@ body {
   -moz-osx-font-smoothing: grayscale;
   text-rendering: optimizeLegibility;
   line-height: 1.5;
+}
+
+/* ── Skip link: sr-only until keyboard-focused. Plain CSS (not Tailwind
+   variants) so visibility never depends on variant codegen. ─────────── */
+a.sr-only:focus-visible {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  z-index: 100;
+  width: auto;
+  height: auto;
+  padding: 8px 16px;
+  margin: 0;
+  overflow: visible;
+  clip: auto;
+  white-space: normal;
+  background: #0f172a;
+  color: #fff;
+  font-size: 14px;
+  font-weight: 700;
+  border-radius: 6px;
+  text-decoration: none;
+}
+
+/* ── Accessibility toolbar modes (Phase 1.3, GIGW A) ───────────────────   Toggled on <html> by utils/a11y.js. Text-only strengthens failing light
+   greys to slate-800 (≈10:1 on white) without touching solid buttons. Map
+   tiles are excluded from image-hiding so the route map stays usable. */
+.a11y-high-contrast .text-slate-400,
+.a11y-high-contrast .text-slate-500 {
+  color: #1e293b !important;
+}
+.a11y-high-contrast .placeholder\:text-slate-400::placeholder {
+  color: #475569 !important;
+}
+.a11y-highlight-links a {
+  outline: 2px solid #0D6EFD !important;
+  outline-offset: 2px;
+  text-decoration: underline !important;
+}
+.a11y-hide-images img:not(.leaflet-tile) {
+  display: none !important;
 }
 
 /* On-Scroll Typography Animation Styles */

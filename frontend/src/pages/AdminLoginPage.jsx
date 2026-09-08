@@ -5,6 +5,8 @@ import AuthMethodTabs from '../components/auth/AuthMethodTabs';
 import AuthEmailForm from '../components/auth/AuthEmailForm';
 import AuthOtpForm from '../components/auth/AuthOtpForm';
 import heroBackdrop from '../images/india-republic-day-celebration-digital-art-with-flag.webp';
+import SkipLink from '../components/SkipLink';
+import AccessibilityToolbar from '../components/AccessibilityToolbar';
 
 const PORTALS = [
   {
@@ -42,7 +44,8 @@ export default function AdminLoginPage({ onNavigate, onAuthSuccess }) {
   };
 
   return (
-    <div className="relative h-screen font-sans bg-slate-950 text-white overflow-hidden flex flex-col">
+    <div className="relative min-h-screen font-sans bg-slate-950 text-white overflow-x-hidden flex flex-col">
+      <SkipLink />
       <HoverSplitBackdrop image={heroBackdrop} activeSide={activeSide} />
 
       <div className="relative z-20 pt-16 pb-6 shrink-0 text-center px-6 pointer-events-none">
@@ -54,7 +57,11 @@ export default function AdminLoginPage({ onNavigate, onAuthSuccess }) {
         </p>
       </div>
 
-      <div className="relative z-20 flex flex-col md:flex-row items-stretch justify-center flex-1 min-h-0 -translate-y-7">
+      <div className="relative z-20 flex justify-center px-6 pb-2 shrink-0">
+        <AccessibilityToolbar />
+      </div>
+
+      <div className="relative z-20 flex flex-col md:flex-row items-stretch justify-center flex-1 py-6" role="main" id="main-content" tabIndex={-1}>
         {PORTALS.map((portal) => {
           const Icon = portal.icon;
           const isActive = activeSide === portal.side;
@@ -80,7 +87,7 @@ export default function AdminLoginPage({ onNavigate, onAuthSuccess }) {
                     <h2 className="text-xl font-medium tracking-tight text-[#000080]">
                       {portal.title}
                     </h2>
-                    <p className="text-[11px] font-medium text-slate-400 mt-0.5 leading-snug">
+                    <p className="text-[11px] font-medium text-slate-500 mt-0.5 leading-snug">
                       {portal.subtitle}
                     </p>
                   </div>
@@ -119,7 +126,7 @@ export default function AdminLoginPage({ onNavigate, onAuthSuccess }) {
                     </button>
                   </p>
                 ) : (
-                  <p className="text-center text-[10px] font-medium text-slate-400 tracking-wide pt-3">
+                  <p className="text-center text-[10px] font-medium text-slate-500 tracking-wide pt-3">
                     Staff accounts are provisioned by the Food & Civil Supplies department
                   </p>
                 )}

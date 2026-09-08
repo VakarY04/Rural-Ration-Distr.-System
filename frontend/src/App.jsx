@@ -10,6 +10,7 @@ import { AccountProvider } from './context/AccountContext';
 import DashboardHome from './pages/DashboardHome';
 import ProfilePage from './pages/ProfilePage';
 import BookingPage from './pages/BookingPage';
+import OverlayScrollbar from './components/OverlayScrollbar';
 import AiSupportPage from './pages/AiSupportPage';
 
 // Mirror the app's React-state routes into the History API (instead of pulling
@@ -157,6 +158,7 @@ export default function App() {
 
   return (
     <div className="min-h-screen bg-[#F4F6F9]">
+      <OverlayScrollbar />
       {/* 1. Landing Page */}
       {currentPage === 'landing' && (
         <LandingPage onNavigate={handleNavigate} />

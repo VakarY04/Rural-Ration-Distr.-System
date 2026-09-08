@@ -51,11 +51,11 @@ export default function DistributorProfileMenu({ name, role, onNavigate, onLogou
         <Avatar src={null} name={name} size={32} />
         <div className="text-left">
           <p className="text-sm font-bold text-slate-900 leading-tight">{name}</p>
-          <p className="text-[10px] font-bold uppercase tracking-[0.14em] text-slate-400">
+          <p className="text-[10px] font-bold uppercase tracking-[0.14em] text-slate-500">
             {role || 'Staff'}
           </p>
         </div>
-        <ChevronDown size={16} className={`text-slate-400 transition-transform ${open ? 'rotate-180' : ''}`} />
+        <ChevronDown size={16} className={`text-slate-500 transition-transform ${open ? 'rotate-180' : ''}`} />
       </button>
 
       {open && (

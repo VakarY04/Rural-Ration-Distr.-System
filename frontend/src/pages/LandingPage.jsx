@@ -3,6 +3,8 @@ import heroBackdrop from '../images/india-republic-day-celebration-digital-art-w
 import logoAsset from '../images/E-RATION Logo.png';
 import { swiss, TricolorStrip, TRICOLOR_GRADIENT } from '../components/ui/swiss';
 import { useLandingAnimations } from './landing/useLandingAnimations';
+import SkipLink from '../components/SkipLink';
+import AccessibilityToolbar from '../components/AccessibilityToolbar';
 import { WaveAccent, BannerWaves } from '../components/landing/WaveDecorations';
 import { heroBadges, featureCards } from './landing/landingContent';
 import {
@@ -38,6 +40,7 @@ export default function LandingPage({ onNavigate }) {
 
   return (
     <div ref={mainContainerRef} className="h-screen flex flex-col overflow-hidden selection:bg-orange-100 font-sans">
+      <SkipLink />
 
       <div className="fixed inset-0 z-0 pointer-events-none" aria-hidden="true">
         <img src={heroBackdrop} alt="" className="w-full h-full object-cover" />
@@ -47,8 +50,8 @@ export default function LandingPage({ onNavigate }) {
       <TricolorStrip />
 
       <header className="fixed top-0 left-0 right-0 z-50">
-        <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between gap-4">
-          <div />
+        <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between gap-4 flex-wrap">
+          <AccessibilityToolbar />
           <button onClick={() => onNavigate('admin-login')} type="button" className={`${swiss.btnPrimary} rounded-lg`}>
             <Users size={14} aria-hidden="true" />
             <span>Sign In</span>
@@ -60,7 +63,7 @@ export default function LandingPage({ onNavigate }) {
           (and the logo) stay exactly as before once the header is fixed. */}
       <div aria-hidden="true" className="shrink-0 h-[68px]" />
 
-      <main ref={scrollContainerRef} className="landing-scroll relative z-10 w-full flex-1 overflow-y-auto">
+      <main ref={scrollContainerRef} className="landing-scroll relative z-10 w-full flex-1 overflow-y-auto overscroll-y-contain" id="main-content" tabIndex={-1}>
         <section className="w-full px-6 pt-16 pb-24">
           <div className="max-w-5xl mx-auto flex flex-col items-center text-center space-y-6">
 

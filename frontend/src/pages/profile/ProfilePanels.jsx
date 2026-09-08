@@ -32,7 +32,7 @@ export function AccountPanel({
             </span>
           </button>
           <input ref={fileInputRef} type="file" accept="image/*" className="hidden" onChange={onAvatarPick} />
-          <p className="text-xs text-slate-400">Click to upload a profile picture (max 1.5MB).</p>
+          <p className="text-xs text-slate-500">Click to upload a profile picture (max 1.5MB).</p>
         </div>
 
         <div>
@@ -59,7 +59,7 @@ export function AccountPanel({
             onChange={onPhoneChange}
             placeholder="e.g. 98765 43210"
           />
-          <p className="text-[11px] text-slate-400 mt-1.5 flex items-center gap-1">
+          <p className="text-[11px] text-slate-500 mt-1.5 flex items-center gap-1">
             <CheckCircle2 size={11} /> Link your mobile number to enable OTP login for this account.
           </p>
         </div>
@@ -68,7 +68,7 @@ export function AccountPanel({
             <span className="flex items-center gap-1.5"><Mail size={12} /> Registered Email</span>
           </span>
           <input className={`${swiss.input} disabled:bg-slate-100 disabled:text-slate-500`} value={email || 'Not set'} disabled />
-          <p className="text-[11px] text-slate-400 mt-1.5 flex items-center gap-1">
+          <p className="text-[11px] text-slate-500 mt-1.5 flex items-center gap-1">
             <CheckCircle2 size={11} /> This is tied to how you log in and can't be changed here.
           </p>
         </div>
@@ -107,7 +107,7 @@ export function AddressPanel({ address, setAddress }) {
     <section className={swiss.panel}>
       <div className="border-b border-slate-100 p-5">
         <SectionHead title="Address / Location" />
-        <p className="text-[11px] text-slate-400 mt-1">This determines your local distributor.</p>
+        <p className="text-[11px] text-slate-500 mt-1">This determines your local distributor.</p>
       </div>
       <div className="p-5 grid grid-cols-2 gap-3">
         <div className="col-span-2">
