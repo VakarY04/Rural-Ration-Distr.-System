@@ -151,7 +151,7 @@ export default function AuthOtpForm({ role, accent = 'emerald', onSuccess }) {
         )}
       </button>
 
-      <p className="flex items-center justify-center gap-1.5 text-[10px] font-bold uppercase tracking-[0.14em] text-slate-400">
+      <p className="flex items-center justify-center gap-1.5 text-[10px] font-bold uppercase tracking-[0.14em] text-slate-500">
         <KeyRound size={11} />
         <span>A 6-digit code valid for 5 minutes will be issued</span>
       </p>

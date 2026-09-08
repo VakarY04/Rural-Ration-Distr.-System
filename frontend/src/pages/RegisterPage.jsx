@@ -89,7 +89,7 @@ export default function RegisterPage({ onNavigate }) {
             <div key={id}>
               <label htmlFor={id} className={swiss.label}>{label}</label>
               <div className="relative flex items-center">
-                <Icon className="absolute left-3.5 text-slate-400" size={16} />
+                <Icon className="absolute left-3.5 text-slate-500" size={16} />
                 <input
                   id={id}
                   type={type}
@@ -107,7 +107,7 @@ export default function RegisterPage({ onNavigate }) {
           <div>
             <label htmlFor="reg-password" className={swiss.label}>Security Password</label>
             <div className="relative flex items-center">
-              <Lock className="absolute left-3.5 text-slate-400" size={16} />
+              <Lock className="absolute left-3.5 text-slate-500" size={16} />
               <input
                 id="reg-password"
                 type="password"
@@ -123,7 +123,7 @@ export default function RegisterPage({ onNavigate }) {
           <div>
             <label htmlFor="reg-confirm" className={swiss.label}>Confirm Password</label>
             <div className="relative flex items-center">
-              <KeyRound className="absolute left-3.5 text-slate-400" size={16} />
+              <KeyRound className="absolute left-3.5 text-slate-500" size={16} />
               <input
                 id="reg-confirm"
                 type="password"

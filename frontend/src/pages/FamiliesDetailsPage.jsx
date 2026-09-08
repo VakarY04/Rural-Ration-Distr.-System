@@ -24,7 +24,7 @@ export default function FamiliesDetailsPage({ bookings }) {
       <section aria-label="Booked families" className="space-y-3">
         <div className="flex items-baseline justify-between">
           <h2 className={swiss.sectionTitle}>Booked families</h2>
-          <span className="text-[10px] font-bold uppercase tracking-[0.14em] text-slate-400 tabular-nums">
+          <span className="text-[10px] font-bold uppercase tracking-[0.14em] text-slate-500 tabular-nums">
             {bookings.length} recent
           </span>
         </div>

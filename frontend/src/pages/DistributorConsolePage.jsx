@@ -11,6 +11,8 @@ import DistributorProfileMenu from '../components/distributor/DistributorProfile
 import FamiliesDetailsPage from './FamiliesDetailsPage';
 import RationDetailsPage from './RationDetailsPage';
 import DistributorProfilePage from './DistributorProfilePage';
+import SkipLink from '../components/SkipLink';
+import AccessibilityToolbar from '../components/AccessibilityToolbar';
 
 const FOCUS =
   'focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-orange-500';
@@ -70,6 +72,7 @@ export default function DistributorConsolePage({ currentSubPage = 'home', onNavi
 
   return (
     <div className="min-h-screen font-sans text-[#000080]">
+      <SkipLink />
       {/* Sticky nav — tricolor strip + header stay pinned while scrolling */}
       <div className="sticky top-0 z-40">
         <div
@@ -87,7 +90,7 @@ export default function DistributorConsolePage({ currentSubPage = 'home', onNavi
               <img src={logoAsset} alt="E-Ration" className="w-14 h-14 object-contain p-1 rounded-2xl" />
               <div>
                 <p className="text-base font-extrabold tracking-tight leading-tight">Distributor Console</p>
-                <p className="text-xs font-bold uppercase tracking-[0.14em] text-slate-400">
+                <p className="text-xs font-bold uppercase tracking-[0.14em] text-slate-500">
                   E-Ration Staff Portal
                 </p>
               </div>
@@ -119,9 +122,12 @@ export default function DistributorConsolePage({ currentSubPage = 'home', onNavi
         </header>
       </div>
 
-      <main className="max-w-7xl mx-auto px-6 py-8 space-y-8">
+      <main className="max-w-7xl mx-auto px-6 py-8 space-y-8 overscroll-y-contain" id="main-content" tabIndex={-1}>
+        <div className="flex items-center justify-end">
+          <AccessibilityToolbar />
+        </div>
         {loading && (
-          <p className="py-16 text-center text-sm font-semibold text-slate-400">Loading console data…</p>
+          <p className="py-16 text-center text-sm font-semibold text-slate-500">Loading console data…</p>
         )}
 
         {!loading && (error || !summary) && (
@@ -179,7 +185,7 @@ export default function DistributorConsolePage({ currentSubPage = 'home', onNavi
                     <h2 className="text-sm font-bold tracking-tight">
                       Booked families queue
                     </h2>
-                    <span className="text-[10px] font-bold uppercase tracking-[0.14em] text-slate-400 tabular-nums">
+                    <span className="text-[10px] font-bold uppercase tracking-[0.14em] text-slate-500 tabular-nums">
                       {uniqueBookings.length} recent
                     </span>
                   </div>
@@ -201,7 +207,7 @@ export default function DistributorConsolePage({ currentSubPage = 'home', onNavi
       </main>
 
       <footer className="border-t border-slate-200 bg-white">
-        <p className="w-full px-4 sm:px-6 lg:px-8 py-4 text-[10px] font-bold tracking-wide text-slate-400">
+        <p className="w-full px-4 sm:px-6 lg:px-8 py-4 text-[10px] font-bold tracking-wide text-slate-500">
           E-Ration Portal · Distribution Console v1.0 · Public Distribution System
         </p>
       </footer>

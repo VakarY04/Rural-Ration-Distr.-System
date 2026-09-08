@@ -9,7 +9,7 @@ export default function BookingsTable({ bookings }) {
     return (
       <div className="border border-slate-200 bg-white p-10 text-center">
         <p className="text-sm font-semibold text-slate-900">No bookings yet</p>
-        <p className="text-xs text-slate-400 mt-1">No bookings available — citizen reservations will appear here.</p>
+        <p className="text-xs text-slate-500 mt-1">No bookings available — citizen reservations will appear here.</p>
       </div>
     );
   }
@@ -31,7 +31,7 @@ export default function BookingsTable({ bookings }) {
           key={b.rationCardNumber || b.id}
           className="flex items-center gap-4 px-5 py-3.5 hover:bg-slate-50/60 transition-colors"
         >
-          <span className="text-[11px] font-bold text-slate-400 tabular-nums w-6 shrink-0" aria-hidden="true">
+          <span className="text-[11px] font-bold text-slate-500 tabular-nums w-6 shrink-0" aria-hidden="true">
             {String(i + 1).padStart(2, '0')}
           </span>
           <span className="w-7 h-7 border border-[#198754]/30 bg-[#198754]/10 text-[#198754] flex items-center justify-center shrink-0" title="Booked household location" aria-hidden="true">

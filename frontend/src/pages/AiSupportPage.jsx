@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import {
   Bot,
   CheckCircle2,
@@ -25,6 +25,19 @@ export default function AiSupportPage() {
   const [analysis, setAnalysis] = useState(null);
   const [error, setError] = useState('');
   const [showHelplineModal, setShowHelplineModal] = useState(false);
+  const closeModalRef = useRef(null);
+
+  // Keyboard support for the helpline dialog: Esc closes it and focus lands
+  // on the close button when it opens, so Tab starts inside the dialog.
+  useEffect(() => {
+    if (!showHelplineModal) return undefined;
+    closeModalRef.current?.focus();
+    const onKey = (e) => {
+      if (e.key === 'Escape') setShowHelplineModal(false);
+    };
+    document.addEventListener('keydown', onKey);
+    return () => document.removeEventListener('keydown', onKey);
+  }, [showHelplineModal]);
 
   useEffect(() => {
     // Attempt to load card ID from profile if available
@@ -85,7 +98,7 @@ export default function AiSupportPage() {
             <h1 className="text-2xl md:text-3xl font-extrabold tracking-tight text-slate-900">
               AI Help Desk
             </h1>
-            <p className="text-[11px] text-slate-400 font-medium mt-0.5">AI Help</p>
+            <p className="text-[11px] text-slate-500 font-medium mt-0.5">AI Help</p>
             <p className="text-xs text-slate-500 font-medium mt-1 max-w-md leading-relaxed">
               Submit questions or report issues in your local language.
             </p>
@@ -121,9 +134,9 @@ export default function AiSupportPage() {
               value={issue}
               onChange={(e) => setIssue(e.target.value)}
               placeholder="e.g. Dukandar ne chawala kam diye hai..."
-              className={`w-full bg-slate-50 border border-slate-200 focus:border-slate-900 focus:bg-white px-4 py-4 pr-20 text-sm font-medium text-slate-900 outline-none transition-colors placeholder:text-slate-400 placeholder:font-normal resize-none ${FOCUS}`}
+              className={`w-full bg-slate-50 border border-slate-200 focus:border-slate-900 focus:bg-white px-4 py-4 pr-20 text-sm font-medium text-slate-900 outline-none transition-colors placeholder:text-slate-500 placeholder:font-normal resize-none ${FOCUS}`}
             />
-            <div className="absolute right-4 bottom-3 text-[11px] font-bold text-slate-400 tabular-nums select-none" aria-hidden="true">
+            <div className="absolute right-4 bottom-3 text-[11px] font-bold text-slate-500 tabular-nums select-none" aria-hidden="true">
               {issue.length} / 1000
             </div>
           </div>
@@ -236,10 +249,11 @@ export default function AiSupportPage() {
               </div>
               <button
                 type="button"
+                ref={closeModalRef}
                 onClick={() => setShowHelplineModal(false)}
                 title="Close helpline directory"
                 aria-label="Close helpline directory"
-                className={`text-slate-400 hover:text-slate-900 hover:bg-slate-100 p-1.5 cursor-pointer transition-colors ${FOCUS}`}
+                className={`text-slate-500 hover:text-slate-900 hover:bg-slate-100 p-1.5 cursor-pointer transition-colors ${FOCUS}`}
               >
                 <X size={18} />
               </button>

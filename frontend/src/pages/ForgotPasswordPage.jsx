@@ -34,7 +34,7 @@ export default function ForgotPasswordPage() {
           <div>
             <label htmlFor="forgot-email" className={swiss.label}>Registered Email Address</label>
             <div className="relative flex items-center">
-              <Mail className="absolute left-3.5 text-slate-400" size={16} />
+              <Mail className="absolute left-3.5 text-slate-500" size={16} />
               <input
                 id="forgot-email"
                 type="email"

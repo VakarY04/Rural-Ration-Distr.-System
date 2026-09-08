@@ -37,7 +37,7 @@ export function MembersPanel({
         ) : (
           <table className="w-full text-sm">
             <thead>
-              <tr className="text-left text-[10px] font-bold uppercase tracking-[0.14em] text-slate-400 border-b border-slate-200">
+              <tr className="text-left text-[10px] font-bold uppercase tracking-[0.14em] text-slate-500 border-b border-slate-200">
                 <th scope="col" className="py-2 pr-3 font-bold text-left">Name</th>
                 <th scope="col" className="py-2 pr-3 font-bold text-right">Age</th>
                 <th scope="col" className="py-2 pr-3 font-bold text-left">Relation</th>
@@ -72,7 +72,7 @@ export function MembersPanel({
                           <td className="py-2.5 pr-3">
                             <div className="flex items-center gap-2.5">
                               <Avatar name={m.name || `Member ${i + 1}`} size={28} />
-                              <span className="font-medium text-slate-800">{m.name || <span className="text-slate-400 italic">Unnamed</span>}</span>
+                              <span className="font-medium text-slate-800">{m.name || <span className="text-slate-500 italic">Unnamed</span>}</span>
                             </div>
                           </td>
                           <td className="py-2.5 pr-3 tabular-nums text-slate-600 text-right">{m.age || '—'}</td>
@@ -82,14 +82,14 @@ export function MembersPanel({
                                 {m.relation}
                               </span>
                             ) : (
-                              <span className="text-slate-400 text-xs italic">Not set</span>
+                              <span className="text-slate-500 text-xs italic">Not set</span>
                             )}
                           </td>
                           <td className="py-2.5 text-right whitespace-nowrap">
-                            <button type="button" onClick={() => setEditingIndex(i)} title={`Edit member ${i + 1}`} aria-label={`Edit member ${i + 1}`} className={`text-slate-400 hover:text-[#0D6EFD] p-1.5 hover:bg-[#0D6EFD]/10 cursor-pointer transition-colors ${FOCUS}`}>
+                            <button type="button" onClick={() => setEditingIndex(i)} title={`Edit member ${i + 1}`} aria-label={`Edit member ${i + 1}`} className={`text-slate-500 hover:text-[#0D6EFD] p-1.5 hover:bg-[#0D6EFD]/10 cursor-pointer transition-colors ${FOCUS}`}>
                               <Pencil size={15} />
                             </button>
-                            <button type="button" onClick={() => removeMember(i)} title={`Remove member ${i + 1}`} aria-label={`Remove member ${i + 1}`} className={`text-slate-400 hover:text-[#DC3545] p-1.5 hover:bg-[#DC3545]/10 cursor-pointer transition-colors ${FOCUS}`}>
+                            <button type="button" onClick={() => removeMember(i)} title={`Remove member ${i + 1}`} aria-label={`Remove member ${i + 1}`} className={`text-slate-500 hover:text-[#DC3545] p-1.5 hover:bg-[#DC3545]/10 cursor-pointer transition-colors ${FOCUS}`}>
                               <Trash2 size={15} />
                             </button>
                           </td>
@@ -139,10 +139,10 @@ export function QuotaPanel({ totalMembers, estimatedGrainsKg }) {
           <p className={swiss.micro}>Food grains (rice / wheat / coarse grains)</p>
           <p className="mt-2 text-4xl font-extrabold tracking-tight tabular-nums text-slate-900">
             {estimatedGrainsKg}
-            <span className="text-lg font-bold text-slate-400 ml-1">kg</span>
+            <span className="text-lg font-bold text-slate-500 ml-1">kg</span>
           </p>
         </div>
-        <p className="text-[11px] text-slate-400 mt-3 flex items-start gap-1.5">
+        <p className="text-[11px] text-slate-500 mt-3 flex items-start gap-1.5">
           <Info size={12} className="shrink-0 mt-0.5" />
           <span>This is an estimate based on household size. Your official quota is confirmed on the Terminal Hub.</span>
         </p>
@@ -159,7 +159,7 @@ export function DangerZonePanel({ onDelete }) {
           <ShieldAlert size={18} className="text-[#DC3545]" />
           <h2 className="text-sm font-bold uppercase tracking-[0.1em] text-[#DC3545]">Danger Zone</h2>
         </div>
-        <p className="text-[11px] text-slate-400 mt-1">
+        <p className="text-[11px] text-slate-500 mt-1">
           Deleting your account removes your login and profile permanently. This cannot be undone.
         </p>
       </div>

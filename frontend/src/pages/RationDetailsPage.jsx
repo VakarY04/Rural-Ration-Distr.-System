@@ -30,17 +30,17 @@ export default function RationDetailsPage({ items }) {
             <table className="w-full">
               <thead>
                 <tr>
-                  <th scope="col" className="text-center text-[10px] font-bold uppercase tracking-[0.14em] text-slate-500 pb-2">Item</th>
-                  <th scope="col" className="text-center text-[10px] font-bold uppercase tracking-[0.14em] text-slate-500 pb-2 w-24">Qty</th>
-                  <th scope="col" className="text-center text-[10px] font-bold uppercase tracking-[0.14em] text-slate-500 pb-2 w-16">Unit</th>
+                  <th scope="col" className="text-left text-[10px] font-bold uppercase tracking-[0.14em] text-slate-500 pb-2">Item</th>
+                  <th scope="col" className="text-right text-[10px] font-bold uppercase tracking-[0.14em] text-slate-500 pb-2 w-32 pl-6">Qty</th>
+                  <th scope="col" className="text-left text-[10px] font-bold uppercase tracking-[0.14em] text-slate-500 pb-2 w-24 pl-6">Unit</th>
                 </tr>
               </thead>
               <tbody>
                 {rows.map((item, i) => (
                   <tr key={item.key || item.label || i} className="border-t border-slate-100">
                     <td className="py-2 pr-3 text-sm font-semibold text-slate-900 text-left">{item.label}</td>
-                    <td className="py-2 pr-3 text-sm font-bold text-slate-900 tabular-nums text-right">{item.quantity}</td>
-                    <td className="py-2 pr-3 text-xs font-bold uppercase text-slate-500 text-left">{item.unit}</td>
+                    <td className="py-2 pl-6 pr-3 text-sm font-bold text-slate-900 tabular-nums text-right">{item.quantity}</td>
+                    <td className="py-2 pl-6 pr-3 text-xs font-bold uppercase text-slate-500 text-left">{item.unit}</td>
                   </tr>
                 ))}
               </tbody>
