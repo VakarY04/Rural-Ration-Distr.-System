@@ -77,6 +77,13 @@ export default function BookingPage() {
       return;
     }
 
+    // 5.2 client mirror of the server past-date guard (server re-enforces).
+    const todayStr = new Date().toLocaleDateString('en-CA', { timeZone: 'Asia/Kolkata' });
+    if (selectedDate < todayStr) {
+      setError(t('booking.pastDate'));
+      return;
+    }
+
     setSubmitting(true);
 
     try {
@@ -106,6 +113,12 @@ export default function BookingPage() {
       if (response.ok) {
         setSuccess(t('booking.success'));
         setBookingDetails(data.booking || bookingPayload);
+      } else if (response.status === 409 && data.code === 'SLOT_FULL') {
+        setError(t('booking.slotFull'));
+      } else if (response.status === 409 && data.code === 'ALREADY_BOOKED') {
+        setError(t('booking.alreadyBooked'));
+      } else if (data.code === 'PAST_DATE') {
+        setError(t('booking.pastDate'));
       } else {
         setError(data.message || t('booking.scheduleFailed'));
       }

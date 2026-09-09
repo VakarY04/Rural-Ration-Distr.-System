@@ -2,7 +2,10 @@ import { bookingRepository } from '../repositories/bookingRepository.js';
 import { computeRationBreakdown } from './rationCalculator.js';
 
 // Administrative rule constraints mapping to rural distribution guidelines
-const MAX_FAMILIES_PER_SLOT = 6;  // Hard ceiling to prevent overcrowding at the center
+// Exported so bookingController enforces the SAME cap live (Phase 5.1).
+// Distributor side is incomplete — Phase 7.2 will replace this single
+// default with per-slot editable caps. Until then, one value everywhere.
+export const MAX_FAMILIES_PER_SLOT = 6;  // Hard ceiling to prevent overcrowding at the center
 
 export const allocationService = {
   /**

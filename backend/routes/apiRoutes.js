@@ -1,6 +1,6 @@
 import express from 'express';
 import { getFamilyProfile, updateFamilyProfile } from '../controllers/familyController.js';
-import { createBooking, getUserBookings } from '../controllers/bookingController.js';
+import { createBooking, getActiveBooking, getUserBookings } from '../controllers/bookingController.js';
 import { analyzeGrievance } from '../controllers/aiController.js';
 import { getDashboardSummary } from '../controllers/dashboardController.js';
 import {
@@ -36,6 +36,7 @@ router.delete('/auth/me', protect, deleteMe);
 router.get('/family/profile', protect, getFamilyProfile);
 router.post('/family/profile', protect, updateFamilyProfile);
 router.post('/bookings', protect, createBooking);
+router.get('/bookings/active', protect, getActiveBooking);
 router.get('/bookings', protect, getUserBookings);
 
 // Terminal Hub summary (profile status, quota, next booking, delivery route)
