@@ -1,10 +1,10 @@
 import { useState } from 'react';
 import { PanelLeftClose, PanelLeftOpen, LogOut } from 'lucide-react';
-import logoAsset from '../images/E-RATION Logo.png';
-import terminalHubIcon from '../images/nav/terminal-hub.png';
-import familyProfileIcon from '../images/nav/family-profile.png';
-import rationBookingsIcon from '../images/nav/ration-bookings.png';
-import aiHelpDeskIcon from '../images/nav/ai-help-desk.png';
+import logoAsset from '../images/E-RATION Logo.webp';
+import terminalHubIcon from '../images/nav/terminal-hub.webp';
+import familyProfileIcon from '../images/nav/family-profile.webp';
+import rationBookingsIcon from '../images/nav/ration-bookings.webp';
+import aiHelpDeskIcon from '../images/nav/ai-help-desk.webp';
 import { useAccount } from '../context/AccountContext';
 import { Avatar } from './ui/avatar';
 import { swiss, TricolorStrip } from './ui/swiss';
@@ -48,7 +48,7 @@ export default function DashboardShell({ children, currentSubPage, onSubPageChan
       <aside className={`${navCollapsed ? 'w-20 px-3' : 'w-64 p-5'} bg-slate-900 text-white flex flex-col justify-between py-5 border-r border-slate-800 shrink-0 transition-all duration-200`}>
         <div>
           <div className={`flex items-center gap-3 px-1 mb-4 ${navCollapsed ? 'justify-center px-0' : ''}`}>
-            <img src={logoAsset} alt="E-Ration" className="w-11 h-11 object-contain bg-slate-800 p-1 rounded-2xl" />
+            <img src={logoAsset} alt="E-Ration" width={44} height={44} decoding="async" className="w-11 h-11 object-contain bg-slate-800 p-1 rounded-2xl" />
             {!navCollapsed && (
               <div>
                 <h1 className="text-sm font-bold tracking-tight text-white leading-tight">{t('nav.portalName')}</h1>
@@ -79,7 +79,7 @@ export default function DashboardShell({ children, currentSubPage, onSubPageChan
                     aria-hidden="true"
                     className={`absolute left-0 top-0 h-full w-1 ${active ? 'bg-orange-500' : 'bg-transparent'}`}
                   />
-                  <img src={item.icon} alt="" className="w-7 h-7 object-contain shrink-0" />
+                  <img src={item.icon} alt="" width={28} height={28} decoding="async" className="w-7 h-7 object-contain shrink-0" />
                   {!navCollapsed && <span>{item.label}</span>}
                 </button>
               );

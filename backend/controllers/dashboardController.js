@@ -17,12 +17,20 @@ export const getDashboardSummary = async (req, res) => {
       return res.status(401).json({ message: 'Unauthorized access token.' });
     }
 
-    const [user, profile, latestBooking, settings] = await Promise.all([
+    const [user, profile, upcomingBooking, fallbackBooking, settings] = await Promise.all([
       User.findById(userId),
       Family.findOne({ user: userId }),
+      // Phase 5.5 — "Next collection" must be the nearest upcoming active
+      // booking, never a past/Archived one the archival job has retired.
+      Booking.findOne({
+        user: userId,
+        distributionDate: { $gte: new Date().toLocaleDateString('en-CA', { timeZone: 'Asia/Kolkata' }) },
+        status: { $ne: 'Cancelled' },
+      }).sort({ distributionDate: 1, createdAt: -1 }),
       Booking.findOne({ user: userId }).sort({ createdAt: -1 }),
       getDistributionSettings(),
     ]);
+    const latestBooking = upcomingBooking || fallbackBooking;
 
     // Total members is derived strictly from the registered family members section
     const totalMembers = profile?.members?.length ? profile.members.length : (profile ? 1 : 0);
