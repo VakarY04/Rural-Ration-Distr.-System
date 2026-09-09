@@ -3,10 +3,12 @@ import { ShieldCheck, Lock, Eye, EyeOff } from 'lucide-react';
 import logoAsset from '../images/E-RATION Logo.png';
 import heroBackdrop from '../images/india-republic-day-celebration-digital-art-with-flag.webp';
 import { authApi } from '../services/authApi';
+import { useLanguage } from '../i18n/LanguageContext';
 import { swiss, TricolorStrip } from '../components/ui/swiss';
 import { Alert } from '../components/ui/alert';
 
 export default function ResetPasswordPage({ token, onResetSuccess }) {
+  const { t, lang } = useLanguage();
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
@@ -19,12 +21,12 @@ export default function ResetPasswordPage({ token, onResetSuccess }) {
     setError('');
 
     if (password.length < 4) {
-      setError('Password must be at least 4 characters long.');
+      setError(t('auth.reset.short'));
       return;
     }
 
     if (password !== confirmPassword) {
-      setError('Passwords do not match.');
+      setError(t('auth.reset.mismatch'));
       return;
     }
 
@@ -36,7 +38,7 @@ export default function ResetPasswordPage({ token, onResetSuccess }) {
         if (onResetSuccess) onResetSuccess();
       }, 2500);
     } catch (err) {
-      setError(err.message || 'Authorization verification failed, token expired.');
+      setError(err.message || t('auth.reset.expired'));
     } finally {
       setLoading(false);
     }
@@ -57,8 +59,8 @@ export default function ResetPasswordPage({ token, onResetSuccess }) {
           <div className="flex flex-col items-center text-center space-y-2">
             <img src={logoAsset} alt="E-Ration Brand Logo" className="w-14 h-14 object-contain bg-slate-50 p-1 rounded-2xl" />
             <div>
-              <h2 className="text-xl font-bold tracking-tighter text-slate-900">Update Credentials</h2>
-              <p className="text-[11px] font-medium text-slate-500 mt-0.5">Set a new security access password</p>
+              <h2 className="text-xl font-bold tracking-tighter text-slate-900 break-words min-w-0">{t('auth.reset.title')}</h2>
+              <p className="text-[11px] font-medium text-slate-500 mt-0.5">{t('auth.reset.subtitle')}</p>
             </div>
           </div>
 
@@ -66,15 +68,15 @@ export default function ResetPasswordPage({ token, onResetSuccess }) {
 
           {success && (
             <Alert variant="success">
-              Security credentials updated cleanly!
-              <span className="block text-[10px] text-slate-500 mt-0.5">Redirecting to terminal access interface...</span>
+              {t('auth.reset.success')}
+              <span className="block text-[10px] text-slate-500 mt-0.5">{t('auth.reset.redirecting')}</span>
             </Alert>
           )}
 
           {!success && (
             <form onSubmit={handleSubmit} className="space-y-3.5">
               <div>
-                <label htmlFor="reset-password" className={swiss.label}>New Security Password</label>
+                <label htmlFor="reset-password" className={swiss.label}>{t('auth.reset.newPassword')}</label>
                 <div className="relative flex items-center">
                   <Lock className="absolute left-3.5 text-slate-500" size={16} />
                   <input
@@ -89,8 +91,8 @@ export default function ResetPasswordPage({ token, onResetSuccess }) {
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
-                    title={showPassword ? 'Hide password' : 'Show password'}
-                    aria-label={showPassword ? 'Hide password' : 'Show password'}
+                    title={showPassword ? t('auth.reset.hide') : t('auth.reset.show')}
+                    aria-label={showPassword ? t('auth.reset.hide') : t('auth.reset.show')}
                     className="absolute right-3.5 text-slate-500 hover:text-slate-900 cursor-pointer focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-orange-500"
                   >
                     {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
@@ -99,7 +101,7 @@ export default function ResetPasswordPage({ token, onResetSuccess }) {
               </div>
 
               <div>
-                <label htmlFor="reset-confirm" className={swiss.label}>Confirm New Password</label>
+                <label htmlFor="reset-confirm" className={swiss.label}>{t('auth.reset.confirm')}</label>
                 <div className="relative flex items-center">
                   <Lock className="absolute left-3.5 text-slate-500" size={16} />
                   <input
@@ -114,15 +116,15 @@ export default function ResetPasswordPage({ token, onResetSuccess }) {
                 </div>
               </div>
 
-              <button type="submit" disabled={loading} className={`${swiss.btnPrimary} w-full py-3.5 mt-2`}>
-                {loading ? 'Processing Registry Update...' : 'Commit New Password'}
+              <button type="submit" disabled={loading} className={`${swiss.btnPrimary} w-full py-3.5 mt-2 break-words`}>
+                {loading ? t('auth.reset.processing') : t('auth.reset.submit')}
               </button>
             </form>
           )}
 
           <div className="flex items-center justify-center gap-2 pt-2 border-t border-slate-200">
             <ShieldCheck size={13} className="text-[#198754]" />
-            <span className={swiss.micro}>Encrypted Password Overwrite Terminal Active</span>
+            <span className={swiss.micro}>{t('auth.reset.secureNote')}</span>
           </div>
         </div>
       </main>

@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { KeyRound, Loader2, RefreshCw, Smartphone, ShieldCheck } from 'lucide-react';
 import { saveSession } from '../../services/session';
 import { authApi } from '../../services/authApi';
+import { useLanguage } from '../../i18n/LanguageContext';
 import { swiss } from '../ui/swiss';
 import { getAccentHover } from '../ui/authStyles';
 import { Alert } from '../ui/alert';
@@ -9,6 +10,7 @@ import { Alert } from '../ui/alert';
 const RESEND_COOLDOWN_SECONDS = 10;
 
 export default function AuthOtpForm({ role, accent = 'emerald', onSuccess }) {
+  const { t } = useLanguage();
   const hoverAccent = getAccentHover(accent);
   const [phone, setPhone] = useState('');
   const [otp, setOtp] = useState('');
@@ -29,14 +31,14 @@ export default function AuthOtpForm({ role, accent = 'emerald', onSuccess }) {
     setError('');
     setInfo('');
     if (!phone || phone.trim().length < 10) {
-      setError('Please enter a valid 10-digit mobile number.');
+      setError(t('auth.otp.invalidPhone'));
       return;
     }
     setLoading(true);
     try {
       await authApi.sendOtp(phone, role);
       setOtpSent(true);
-      setInfo(isResend ? 'A fresh OTP code has been dispatched.' : 'OTP dispatched to your mobile number.');
+      setInfo(isResend ? t('auth.otp.resent') : t('auth.otp.sent'));
       if (isResend) setCooldown(RESEND_COOLDOWN_SECONDS);
     } catch (err) {
       setError(err.message || 'Could not reach the authentication server.');
@@ -49,7 +51,7 @@ export default function AuthOtpForm({ role, accent = 'emerald', onSuccess }) {
     e.preventDefault();
     setError('');
     if (!otp || otp.trim().length !== 6) {
-      setError('Please enter the complete 6-digit OTP code.');
+      setError(t('auth.otp.incomplete'));
       return;
     }
     setLoading(true);
@@ -58,7 +60,7 @@ export default function AuthOtpForm({ role, accent = 'emerald', onSuccess }) {
       saveSession({ token: data.token, name: data.data?.name, role: data.data?.role });
       onSuccess(data.data);
     } catch (err) {
-      setError(err.message || 'Invalid or expired OTP code.');
+      setError(err.message || t('auth.otp.invalid'));
       setLoading(false);
     }
   };
@@ -70,7 +72,7 @@ export default function AuthOtpForm({ role, accent = 'emerald', onSuccess }) {
 
       <div>
         <label htmlFor={`otp-code-${role}`} className={swiss.label}>
-          One-Time Password
+          {t('auth.otp.label')}
         </label>
         <input
           id={`otp-code-${role}`}
@@ -78,7 +80,7 @@ export default function AuthOtpForm({ role, accent = 'emerald', onSuccess }) {
           inputMode="numeric"
           maxLength={6}
           required
-          placeholder="6-digit OTP code"
+          placeholder={t('auth.otp.placeholder')}
           value={otp}
           onChange={(e) => setOtp(e.target.value.replace(/\D/g, ''))}
           className={`${swiss.input} text-center text-lg font-extrabold tracking-[0.5em] placeholder:text-sm placeholder:font-medium placeholder:tracking-normal`}
@@ -93,12 +95,12 @@ export default function AuthOtpForm({ role, accent = 'emerald', onSuccess }) {
         {loading ? (
           <>
             <Loader2 size={15} className="animate-spin" />
-            <span>Validating Code...</span>
+            <span>{t('auth.otp.validating')}</span>
           </>
         ) : (
           <>
             <ShieldCheck size={15} />
-            <span>Verify & Sign In</span>
+            <span>{t('auth.otp.verify')}</span>
           </>
         )}
       </button>
@@ -107,10 +109,10 @@ export default function AuthOtpForm({ role, accent = 'emerald', onSuccess }) {
         type="button"
         onClick={() => handleSendOtp(true)}
         disabled={cooldown > 0}
-        className="w-full flex items-center justify-center gap-1.5 text-[10px] font-bold uppercase tracking-[0.14em] text-slate-500 hover:text-slate-900 transition-colors cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-orange-500"
+        className="w-full flex items-center justify-center gap-1.5 text-[10px] font-bold uppercase tracking-[0.14em] text-slate-500 hover:text-slate-900 transition-colors cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-orange-500 break-words"
       >
         <RefreshCw size={12} />
-        <span>{cooldown > 0 ? `Resend available in ${cooldown}s` : 'Resend OTP code'}</span>
+        <span>{cooldown > 0 ? t('auth.otp.resendIn', { seconds: cooldown }) : t('auth.otp.resend')}</span>
       </button>
     </form>
   ) : (
@@ -119,13 +121,13 @@ export default function AuthOtpForm({ role, accent = 'emerald', onSuccess }) {
 
       <div>
         <label htmlFor={`otp-phone-${role}`} className={swiss.label}>
-          Registered Mobile
+          {t('auth.otp.mobile')}
         </label>
         <input
           id={`otp-phone-${role}`}
           type="tel"
           required
-          placeholder="98765 43210"
+          placeholder={t('auth.otp.mobilePh')}
           value={phone}
           onChange={(e) => setPhone(e.target.value)}
           className={swiss.input}
@@ -141,19 +143,19 @@ export default function AuthOtpForm({ role, accent = 'emerald', onSuccess }) {
         {loading ? (
           <>
             <Loader2 size={15} className="animate-spin" />
-            <span>Dispatching OTP...</span>
+            <span>{t('auth.otp.sending')}</span>
           </>
         ) : (
           <>
             <Smartphone size={15} />
-            <span>Send OTP Code</span>
+            <span>{t('auth.otp.send')}</span>
           </>
         )}
       </button>
 
-      <p className="flex items-center justify-center gap-1.5 text-[10px] font-bold uppercase tracking-[0.14em] text-slate-500">
+      <p className="flex items-center justify-center gap-1.5 text-[10px] font-bold uppercase tracking-[0.14em] text-slate-500 break-words">
         <KeyRound size={11} />
-        <span>A 6-digit code valid for 5 minutes will be issued</span>
+        <span>{t('auth.otp.hint')}</span>
       </p>
     </form>
   );

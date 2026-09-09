@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { GripVertical, X } from 'lucide-react';
 import { loadA11y, applyA11y, A11Y_MIN_INDEX, A11Y_MAX_INDEX, A11Y_DEFAULT_INDEX } from '../utils/a11y';
+import { useLanguage } from '../i18n/LanguageContext';
 
 // Edge-docked accessibility widget (GIGW A). A small half-circle tab sits
 // attached to the left or right viewport edge; hover peeks it out, click
@@ -29,6 +30,7 @@ const loadDock = () => {
 const clampY = (y) => Math.min(Math.max(y, TOP_MIN), Math.max(TOP_MIN, window.innerHeight - BOTTOM_PAD));
 
 export default function AccessibilityToolbar({ className = '' }) {
+  const { t } = useLanguage();
   const [prefs, setPrefs] = useState(loadA11y);
   const [dock, setDock] = useState(loadDock);
   const [open, setOpen] = useState(false);
@@ -107,8 +109,8 @@ export default function AccessibilityToolbar({ className = '' }) {
         <button
           type="button"
           onPointerDown={beginDrag}
-          title="Accessibility options — click to open, drag to move"
-          aria-label="Accessibility options — click to open, drag to move"
+          title={t('a11y.options')}
+          aria-label={t('a11y.options')}
           aria-expanded="false"
           className={`w-11 h-11 text-white bg-[#FF9933] hover:bg-[#e68a00] shadow-lg flex items-center cursor-grab active:cursor-grabbing select-none touch-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-slate-900 transition-all duration-150 ${
             onRight
@@ -123,7 +125,7 @@ export default function AccessibilityToolbar({ className = '' }) {
         // as the tab, with text selection locked so dragging never highlights.
         <div
           role="toolbar"
-          aria-label="Accessibility options"
+          aria-label={t('a11y.options')}
           className={`w-40 rounded-2xl bg-[#FF9933] text-white shadow-xl p-2 space-y-1.5 select-none ${
             onRight ? 'mr-2' : 'ml-2'
           }`}
@@ -131,53 +133,53 @@ export default function AccessibilityToolbar({ className = '' }) {
           <div
             className="flex items-center gap-1 px-1 pt-0.5 cursor-grab active:cursor-grabbing select-none touch-none"
             onPointerDown={beginDrag}
-            title="Drag to move — release to stick to an edge"
+            title={t('a11y.options')}
           >
             <GripVertical size={14} className="text-white/70 shrink-0" aria-hidden="true" />
             <span className="flex-1 text-[10px] font-bold uppercase tracking-[0.14em] text-white">
-              Access
+              {t('a11y.access')}
             </span>
             <button
               type="button"
               onClick={() => setOpen(false)}
-              title="Collapse accessibility panel"
-              aria-label="Collapse accessibility panel"
+              title={t('a11y.collapse')}
+              aria-label={t('a11y.collapse')}
               className="text-white hover:bg-white/20 p-1 cursor-pointer focus-visible:outline focus-visible:outline-2 focus-visible:outline-slate-900 rounded"
             >
               <X size={14} aria-hidden="true" />
             </button>
           </div>
-          <div className="flex items-center gap-1" role="group" aria-label="Text size">
-            <button type="button" className={`${tBtn} flex-1 ${off}`} title="Decrease text size" aria-label="Decrease text size"
+          <div className="flex items-center gap-1" role="group" aria-label={t('a11y.textSize')}>
+            <button type="button" className={`${tBtn} flex-1 ${off}`} title={t('a11y.decrease')} aria-label={t('a11y.decrease')}
               disabled={prefs.scaleIndex <= A11Y_MIN_INDEX}
               onClick={() => set({ scaleIndex: Math.max(A11Y_MIN_INDEX, prefs.scaleIndex - 1) })}>
               A−
             </button>
-            <button type="button" className={`${tBtn} flex-1 ${off}`} title="Reset text size" aria-label="Reset text size"
+            <button type="button" className={`${tBtn} flex-1 ${off}`} title={t('a11y.reset')} aria-label={t('a11y.reset')}
               onClick={() => set({ scaleIndex: A11Y_DEFAULT_INDEX })}>
               A
             </button>
-            <button type="button" className={`${tBtn} flex-1 ${off}`} title="Increase text size" aria-label="Increase text size"
+            <button type="button" className={`${tBtn} flex-1 ${off}`} title={t('a11y.increase')} aria-label={t('a11y.increase')}
               disabled={prefs.scaleIndex >= A11Y_MAX_INDEX}
               onClick={() => set({ scaleIndex: Math.min(A11Y_MAX_INDEX, prefs.scaleIndex + 1) })}>
               A+
             </button>
           </div>
-          <div className="flex flex-col gap-1" role="group" aria-label="Display modes">
-            <button type="button" className={rowBtn(prefs.contrast)} title="High contrast text"
-              aria-label="High contrast text" aria-pressed={prefs.contrast}
+          <div className="flex flex-col gap-1" role="group" aria-label={t('a11y.displayModes')}>
+            <button type="button" className={rowBtn(prefs.contrast)} title={t('a11y.contrast')}
+              aria-label={t('a11y.contrast')} aria-pressed={prefs.contrast}
               onClick={() => set({ contrast: !prefs.contrast })}>
-              Contrast
+              {t('a11y.contrast')}
             </button>
-            <button type="button" className={rowBtn(prefs.links)} title="Highlight links"
-              aria-label="Highlight links" aria-pressed={prefs.links}
+            <button type="button" className={rowBtn(prefs.links)} title={t('a11y.links')}
+              aria-label={t('a11y.links')} aria-pressed={prefs.links}
               onClick={() => set({ links: !prefs.links })}>
-              Links
+              {t('a11y.links')}
             </button>
-            <button type="button" className={rowBtn(prefs.images)} title="Hide images"
-              aria-label="Hide images" aria-pressed={prefs.images}
+            <button type="button" className={rowBtn(prefs.images)} title={t('a11y.images')}
+              aria-label={t('a11y.images')} aria-pressed={prefs.images}
               onClick={() => set({ images: !prefs.images })}>
-              Images
+              {t('a11y.images')}
             </button>
           </div>
         </div>

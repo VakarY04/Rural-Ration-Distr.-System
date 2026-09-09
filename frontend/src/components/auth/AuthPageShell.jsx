@@ -6,6 +6,8 @@ import HoverSplitBackdrop from './HoverSplitBackdrop';
 import { swiss } from '../ui/swiss';
 import SkipLink from '../SkipLink';
 import AccessibilityToolbar from '../AccessibilityToolbar';
+import LanguageToggle from '../LanguageToggle';
+import { useLanguage } from '../../i18n/LanguageContext';
 
 // Shared full-page shell for the single centred-card auth screens
 // (registration, account recovery, …). Encapsulates the split backdrop,
@@ -16,9 +18,11 @@ export function AuthPageShell({
   title,
   subtitle,
   children,
-  footerLabel = 'Secure Endpoint Active',
+  footerLabel,
   cardClassName = 'hover:-translate-y-1 hover:shadow-2xl hover:border-[#FF9933]/40',
 }) {
+  const { t } = useLanguage();
+  const resolvedFooter = footerLabel ?? t('auth.secureEndpoint');
   const [activeSide, setActiveSide] = useState(null);
   const [cardHovered, setCardHovered] = useState(false);
 
@@ -33,7 +37,8 @@ export function AuthPageShell({
         <div className="absolute inset-y-0 right-0 w-1/2" onMouseEnter={() => setActiveSide('right')} />
       </div>
 
-      <div className="absolute top-4 right-4 z-20">
+      <div className="absolute top-4 right-4 z-20 flex items-center gap-2">
+        <LanguageToggle />
         <AccessibilityToolbar />
       </div>
 
@@ -55,7 +60,7 @@ export function AuthPageShell({
 
           <div className="flex items-center justify-center gap-2 pt-2 border-t border-slate-200">
             <ShieldCheck size={13} className="text-[#138808]" />
-            <span className={swiss.micro}>{footerLabel}</span>
+            <span className={swiss.micro}>{resolvedFooter}</span>
           </div>
         </div>
       </main>

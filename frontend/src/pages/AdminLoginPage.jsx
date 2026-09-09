@@ -7,31 +7,40 @@ import AuthOtpForm from '../components/auth/AuthOtpForm';
 import heroBackdrop from '../images/india-republic-day-celebration-digital-art-with-flag.webp';
 import SkipLink from '../components/SkipLink';
 import AccessibilityToolbar from '../components/AccessibilityToolbar';
+import LanguageToggle from '../components/LanguageToggle';
+import { useLanguage } from '../i18n/LanguageContext';
 
 const PORTALS = [
   {
     key: 'citizen',
     side: 'left',
-    title: 'User Login',
-    subtitle: 'Ration card holders — manage your household entitlements',
     icon: Users,
     accent: 'emerald',
     iconBox: 'border-[#138808] text-[#138808] bg-green-50',
-    methodHint: 'Sign in with email or a mobile OTP',
   },
   {
     key: 'distributor',
     side: 'right',
-    title: 'Distributor Login',
-    subtitle: 'Fair Price Shop staff & department administrators',
     icon: Building2,
     accent: 'amber',
     iconBox: 'border-[#FF9933] text-[#FF9933] bg-orange-50',
-    methodHint: 'Staff accounts work with both sign-in methods',
   },
 ];
 
 export default function AdminLoginPage({ onNavigate, onAuthSuccess }) {
+  const { t } = useLanguage();
+  const portalText = {
+    citizen: {
+      title: t('auth.userLogin'),
+      subtitle: t('auth.userLoginSub'),
+      methodHint: t('auth.methodHintCitizen'),
+    },
+    distributor: {
+      title: t('auth.distributorLogin'),
+      subtitle: t('auth.distributorLoginSub'),
+      methodHint: t('auth.methodHintStaff'),
+    },
+  };
   const [activeSide, setActiveSide] = useState(null);
   const [method, setMethod] = useState({ citizen: 'email', distributor: 'email' });
 
@@ -50,20 +59,24 @@ export default function AdminLoginPage({ onNavigate, onAuthSuccess }) {
 
       <div className="relative z-20 pt-16 pb-6 shrink-0 text-center px-6 pointer-events-none">
         <h1 className="text-3xl md:text-4xl font-bold tracking-tighter text-white">
-          E-Ration Access Portal
+          {t('auth.accessPortal')}
         </h1>
         <p className="text-xl font-medium tracking-normal text-slate-200 mt-2">
-          Choose your gateway
+          {t('auth.chooseGateway')}
         </p>
       </div>
 
       <div className="relative z-20 flex justify-center px-6 pb-2 shrink-0">
+        <div className="flex items-center gap-2 flex-wrap justify-center">
+          <LanguageToggle />
+        </div>
         <AccessibilityToolbar />
       </div>
 
       <div className="relative z-20 flex flex-col md:flex-row items-stretch justify-center flex-1 py-6" role="main" id="main-content" tabIndex={-1}>
         {PORTALS.map((portal) => {
           const Icon = portal.icon;
+          const txt = portalText[portal.key];
           const isActive = activeSide === portal.side;
           return (
             <section
@@ -85,10 +98,10 @@ export default function AdminLoginPage({ onNavigate, onAuthSuccess }) {
                   </div>
                   <div>
                     <h2 className="text-xl font-medium tracking-tight text-[#000080]">
-                      {portal.title}
+                      {txt.title}
                     </h2>
                     <p className="text-[11px] font-medium text-slate-500 mt-0.5 leading-snug">
-                      {portal.subtitle}
+                      {txt.subtitle}
                     </p>
                   </div>
                 </div>
@@ -116,18 +129,18 @@ export default function AdminLoginPage({ onNavigate, onAuthSuccess }) {
 
                 {portal.key === 'citizen' ? (
                   <p className="text-center text-[11px] font-semibold text-slate-500 pt-3">
-                    New to the portal?{' '}
+                    {t('auth.newToPortal')}{' '}
                     <button
                       type="button"
                       onClick={() => onNavigate && onNavigate('auth-register')}
                       className="text-[#138808] hover:text-[#FF9933] font-bold cursor-pointer transition-colors"
                     >
-                      Create a citizen account
+                      {t('auth.createAccount')}
                     </button>
                   </p>
                 ) : (
                   <p className="text-center text-[10px] font-medium text-slate-500 tracking-wide pt-3">
-                    Staff accounts are provisioned by the Food & Civil Supplies department
+                    {t('auth.staffProvisioned')}
                   </p>
                 )}
               </div>

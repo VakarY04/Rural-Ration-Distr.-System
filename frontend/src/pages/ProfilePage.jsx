@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { CheckCircle2, AlertCircle, Info, Loader2, Save } from 'lucide-react';
 import { useAccount } from '../context/AccountContext';
+import { useLanguage } from '../i18n/LanguageContext';
 import { API_URL } from '../services/api';
 import { computeTotalQuotaKg } from '../utils/ration';
 import { swiss } from '../components/ui/swiss';
@@ -11,6 +12,7 @@ const emptyMember = () => ({ name: '', age: '', relation: '' });
 
 export default function ProfilePage({ onAccountDeleted }) {
   const { refresh: refreshAccount } = useAccount();
+  const { t } = useLanguage();
   const fileInputRef = useRef(null);
 
   const [loading, setLoading] = useState(true);
@@ -66,7 +68,7 @@ export default function ProfilePage({ onAccountDeleted }) {
     const file = e.target.files?.[0];
     if (!file) return;
     if (file.size > 1_500_000) {
-      setMsg({ error: 'Please choose an image smaller than 1.5MB.' });
+      setMsg({ error: t('profile.avatarTooBig') });
       return;
     }
     const reader = new FileReader();
@@ -99,7 +101,7 @@ export default function ProfilePage({ onAccountDeleted }) {
     const errors = {};
     members.forEach((m, i) => {
       if (!m.name?.trim() || m.age === '' || m.age === null || Number(m.age) < 0) {
-        errors[i] = 'Add a name and a valid age for this member, or remove the row.';
+        errors[i] = t('profile.rowInvalid');
       }
     });
     setRowErrors(errors);
@@ -111,7 +113,7 @@ export default function ProfilePage({ onAccountDeleted }) {
     setMsg({ error: '', success: '' });
 
     if (!validateMembers()) {
-      setMsg({ error: 'Please fix the highlighted family member row(s) before saving.' });
+      setMsg({ error: t('profile.fixRows') });
       return;
     }
 
@@ -133,7 +135,7 @@ export default function ProfilePage({ onAccountDeleted }) {
             rationCardNumber: card,
             headOfFamily: head,
             address,
-            members: members.map((m) => ({ ...m, age: Number(m.age) || 0, relation: m.relation?.trim() || 'Dependent' })),
+            members: members.map((m) => ({ ...m, age: Number(m.age) || 0, relation: m.relation?.trim() || t('profile.defaultRelation') })),
           }),
         }),
       ]);
@@ -141,10 +143,10 @@ export default function ProfilePage({ onAccountDeleted }) {
       const accountData = await accountRes.json();
       const familyData = await familyRes.json();
 
-      if (!accountRes.ok) throw new Error(accountData.message || 'Failed to save account details.');
-      if (!familyRes.ok) throw new Error(familyData.message || 'Failed to save household details.');
+      if (!accountRes.ok) throw new Error(accountData.message || t('profile.saveAccountFailed'));
+      if (!familyRes.ok) throw new Error(familyData.message || t('profile.saveHouseholdFailed'));
 
-      setMsg({ success: 'Your account and household profile were saved successfully.' });
+      setMsg({ success: t('profile.saved') });
       setEditingIndex(null);
       refreshAccount(); // keep the top-bar avatar/name/card chip in sync everywhere
     } catch (err) {
@@ -155,7 +157,7 @@ export default function ProfilePage({ onAccountDeleted }) {
   };
 
   const handleDeleteAccount = async () => {
-    if (!window.confirm('Are you sure? Your account and profile will be permanently deleted.')) {
+    if (!window.confirm(t('profile.deleteConfirm'))) {
       return;
     }
 
@@ -185,7 +187,7 @@ export default function ProfilePage({ onAccountDeleted }) {
   if (loading) {
     return (
       <div className="max-w-6xl mx-auto py-24 text-center">
-        <p className={swiss.micro}>Loading your profile…</p>
+        <p className={swiss.micro}>{t('profile.loading')}</p>
       </div>
     );
   }
@@ -194,20 +196,20 @@ export default function ProfilePage({ onAccountDeleted }) {
     <div className="max-w-6xl mx-auto space-y-6 font-sans">
       <header className="flex flex-col md:flex-row md:items-start justify-between gap-4">
         <div>
-          <p className={swiss.micro}>Citizen records</p>
+          <p className={swiss.micro}>{t('profile.eyebrow')}</p>
           <div className="flex items-baseline gap-3 mt-1">
-            <h1 className={swiss.headline}>Family Profile</h1>
+            <h1 className={swiss.headline}>{t('profile.title')}</h1>
           </div>
           <p className="text-sm text-slate-500 mt-2">
-            Manage your account, family members and get accurate ration entitlement.
+            {t('profile.subtitle')}
           </p>
         </div>
         <div className="flex items-start gap-2 bg-[#0D6EFD]/10 border border-[#0D6EFD]/30 px-4 py-3 max-w-sm">
           <Info size={16} className="text-[#0D6EFD] shrink-0 mt-0.5" />
           <div>
-            <p className="text-xs font-bold text-[#0D6EFD]">Coming soon: Family auto-sync</p>
+            <p className="text-xs font-bold text-[#0D6EFD]">{t('profile.autoSyncTitle')}</p>
             <p className="text-[11px] text-[#0D6EFD] mt-0.5">
-              We'll soon fetch your family members automatically from your ration card.
+              {t('profile.autoSyncBody')}
             </p>
           </div>
         </div>
@@ -261,7 +263,7 @@ export default function ProfilePage({ onAccountDeleted }) {
           className={`${swiss.btnPrimary} w-full`}
         >
           {saving ? <Loader2 size={16} className="animate-spin" /> : <Save size={16} />}
-          {saving ? 'Saving…' : 'Save Changes'}
+          {saving ? t('profile.saving') : t('profile.save')}
         </button>
       </form>
 

@@ -6,6 +6,7 @@ import {
 import DeliveryRouteMap from '../components/DeliveryRouteMap';
 import { API_URL } from '../services/api';
 import { swiss, SectionHead } from '../components/ui/swiss';
+import { useLanguage } from '../i18n/LanguageContext';
 
 const FOCUS =
   'focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-orange-500';
@@ -27,6 +28,7 @@ function IconChip({ icon: Icon, tone }) {
 }
 
 export default function DashboardHome({ onNavigate }) {
+  const { t, lang } = useLanguage();
   const [summary, setSummary] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
@@ -50,7 +52,7 @@ export default function DashboardHome({ onNavigate }) {
   if (loading) {
     return (
       <div className="max-w-7xl mx-auto py-24 text-center">
-        <p className={swiss.micro}>Loading your terminal hub…</p>
+        <p className={swiss.micro}>{t('dashboard.loading')}</p>
       </div>
     );
   }
@@ -58,7 +60,7 @@ export default function DashboardHome({ onNavigate }) {
   if (error || !summary) {
     return (
       <div className="max-w-7xl mx-auto py-24 text-center text-sm font-medium text-slate-500">
-        Couldn't load your terminal hub right now. Please refresh the page.
+        {t('dashboard.loadFailed')}
       </div>
     );
   }
@@ -69,61 +71,61 @@ export default function DashboardHome({ onNavigate }) {
   return (
     <div className="max-w-7xl mx-auto space-y-6 font-sans">
       <header>
-        <p className={swiss.micro}>Namaste, {name}</p>
+        <p className={swiss.micro}>{t('dashboard.greeting', { name })}</p>
         <div className="flex items-baseline gap-3 mt-1">
-          <h1 className={swiss.headline}>Terminal Hub</h1>
+          <h1 className={swiss.headline}>{t('dashboard.title')}</h1>
         </div>
         <p className="text-sm text-slate-500 mt-2">
           {hasProfile
-            ? `Ration card ${profile.rationCardNumber} · Household of ${profile.totalMembers} member${profile.totalMembers === 1 ? '' : 's'}`
-            : 'No household profile on file yet'}
+            ? t('dashboard.subtitle', { id: profile.rationCardNumber, count: profile.totalMembers })
+            : t('dashboard.subtitleEmpty')}
         </p>
         {summary.updatedAt && (
           <p className="text-[11px] text-slate-500 mt-1 tabular-nums">
-            Last reviewed {new Date(summary.updatedAt).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })}
+            {t('dashboard.lastReviewed', { date: new Date(summary.updatedAt).toLocaleDateString(lang === 'hi' ? 'hi-IN' : 'en-IN', { day: 'numeric', month: 'short', year: 'numeric' }) })}
           </p>
         )}
       </header>
 
       <section className={`${swiss.panel} grid grid-cols-1 sm:grid-cols-3 divide-y sm:divide-y-0 sm:divide-x divide-slate-200`}>
         <div className="p-6 min-w-0 overflow-hidden">
-          <p className={swiss.micro}>Profile status</p>
+          <p className={swiss.micro}>{t('dashboard.profileStatus')}</p>
           <p className={`mt-2 text-2xl sm:text-3xl md:text-4xl font-extrabold tracking-tight tabular-nums break-words ${hasProfile ? 'text-[#198754]' : 'text-amber-600'}`}>
-            {hasProfile ? 'Complete' : 'Incomplete'}
+            {hasProfile ? t('dashboard.complete') : t('dashboard.incomplete')}
           </p>
-          <p className="text-xs text-slate-500 mt-1">{hasProfile ? 'All details are up to date' : 'Some details are missing'}</p>
+          <p className="text-xs text-slate-500 mt-1">{hasProfile ? t('dashboard.upToDate') : t('dashboard.missing')}</p>
         </div>
         <div className="p-6 min-w-0 overflow-hidden">
-          <p className={swiss.micro}>Next collection</p>
+          <p className={swiss.micro}>{t('dashboard.nextCollection')}</p>
           <p className={`mt-2 text-2xl sm:text-3xl md:text-4xl font-extrabold tracking-tight tabular-nums break-words ${booking ? 'text-slate-900' : 'text-slate-500'}`}>
-            {booking ? booking.distributionDate : 'Not scheduled'}
+            {booking ? booking.distributionDate : t('dashboard.notScheduled')}
           </p>
-          <p className="text-xs text-slate-500 mt-1">{booking ? booking.timeSlot : 'Book a slot to see it here'}</p>
+          <p className="text-xs text-slate-500 mt-1">{booking ? booking.timeSlot : t('dashboard.bookHint')}</p>
         </div>
         <div className="p-6 min-w-0 overflow-hidden flex flex-wrap items-end justify-between gap-4">
           <div className="min-w-0">
-            <p className={swiss.micro}>Monthly quota</p>
+            <p className={swiss.micro}>{t('dashboard.monthlyQuota')}</p>
             <p className="mt-2 text-3xl md:text-5xl font-extrabold tracking-tight tabular-nums text-slate-900 break-words">
               {ration.totalKg}
               <span className="text-lg font-bold text-slate-500 ml-1">kg</span>
             </p>
-            <p className="text-xs text-slate-500 mt-1">Total entitlement</p>
+            <p className="text-xs text-slate-500 mt-1">{t('dashboard.totalEntitlement')}</p>
           </div>
           <IconChip icon={ShoppingBag} tone="orange" />
         </div>
       </section>
 
       <div className="grid grid-cols-1 lg:grid-cols-[1fr_300px] gap-6 items-stretch">
-        <div className={`${swiss.panel} overflow-hidden h-[360px]`} title="Delivery route map — use + / − controls to zoom">
+        <div className={`${swiss.panel} overflow-hidden h-[360px]`} title={t('dashboard.mapTitle')}>
           <DeliveryRouteMap origin={delivery.from} destination={delivery.to} />
         </div>
 
         <div className="space-y-4">
           <div className={`${swiss.panel} p-5`}>
-            <SectionHead title="Delivery details" />
+            <SectionHead title={t('dashboard.deliveryDetails')} />
             <div className="space-y-4 mt-4">
               <div>
-                <p className="text-[10px] font-bold uppercase tracking-[0.14em] text-slate-500">From warehouse</p>
+                <p className="text-[10px] font-bold uppercase tracking-[0.14em] text-slate-500">{t('dashboard.fromWarehouse')}</p>
                 <div className="mt-1.5 flex items-start gap-2">
                   <MapPin size={14} className="text-orange-600 mt-0.5 shrink-0" aria-hidden="true" />
                   <div className="min-w-0">
@@ -133,7 +135,7 @@ export default function DashboardHome({ onNavigate }) {
                 </div>
               </div>
               <div>
-                <p className="text-[10px] font-bold uppercase tracking-[0.14em] text-slate-500">To collection centre</p>
+                <p className="text-[10px] font-bold uppercase tracking-[0.14em] text-slate-500">{t('dashboard.toCentre')}</p>
                 <div className="mt-1.5 flex items-start gap-2">
                   <MapPin size={14} className="text-orange-600 mt-0.5 shrink-0" aria-hidden="true" />
                   <div className="min-w-0">
@@ -144,7 +146,7 @@ export default function DashboardHome({ onNavigate }) {
               </div>
             </div>
             <p className="text-[11px] text-slate-500 mt-4">
-              Assigned by your registered district — collect your ration from here.
+              {t('dashboard.assignedNote')}
             </p>
           </div>
         </div>
@@ -156,41 +158,41 @@ export default function DashboardHome({ onNavigate }) {
             <span className="w-8 h-8 border border-slate-200 bg-slate-50 text-slate-600 flex items-center justify-center shrink-0" aria-hidden="true">
               <Users size={15} />
             </span>
-            <SectionHead title="Household registry profile" />
+            <SectionHead title={t('dashboard.householdProfile')} />
           </div>
           {hasProfile ? (
             <div className="space-y-2 text-sm">
               <div className="flex justify-between py-1.5 border-b border-slate-100">
-                <span className="text-slate-500">Ration card ID</span>
+                <span className="text-slate-500">{t('dashboard.cardId')}</span>
                 <span className="font-semibold text-slate-800 tabular-nums">{profile.rationCardNumber}</span>
               </div>
               <div className="flex justify-between py-1.5 border-b border-slate-100">
-                <span className="text-slate-500">Head of family</span>
+                <span className="text-slate-500">{t('dashboard.head')}</span>
                 <span className="font-semibold text-slate-800">{profile.headOfFamily}</span>
               </div>
               <div className="flex justify-between py-1.5 border-b border-slate-100">
-                <span className="text-slate-500">Registered family members</span>
-                <span className="font-semibold text-slate-800 tabular-nums">{profile.totalMembers || 1} member(s)</span>
+                <span className="text-slate-500">{t('dashboard.members')}</span>
+                <span className="font-semibold text-slate-800 tabular-nums">{t('dashboard.memberCount', { count: profile.totalMembers || 1 })}</span>
               </div>
               <div className="flex justify-between items-center py-1.5">
-                <span className="text-slate-500">Record status</span>
-                <span className={`${chip} border-[#198754] bg-[#198754]/10 text-[#198754]`}>Active household record</span>
+                <span className="text-slate-500">{t('dashboard.recordStatus')}</span>
+                <span className={`${chip} border-[#198754] bg-[#198754]/10 text-[#198754]`}>{t('dashboard.activeRecord')}</span>
               </div>
             </div>
           ) : (
             <div className="bg-amber-50 border border-amber-300 p-5 space-y-2">
               <div className="flex items-center gap-2 text-amber-700 font-semibold text-sm">
                 <AlertCircle size={18} />
-                <span>Profile setup required</span>
+                <span>{t('dashboard.setupRequired')}</span>
               </div>
               <p className="text-sm text-amber-800">
-                Add your household members to establish your distribution quota.
+                {t('dashboard.setupBody')}
               </p>
             </div>
           )}
 
           <button onClick={() => onNavigate('profile')} className={`${swiss.btnSecondary} w-full`}>
-            <span>{hasProfile ? 'Manage household profile' : 'Set up household profile'}</span>
+            <span>{hasProfile ? t('dashboard.manageProfile') : t('dashboard.setupProfile')}</span>
             <ArrowRight size={14} />
           </button>
         </div>
@@ -200,31 +202,31 @@ export default function DashboardHome({ onNavigate }) {
             <span className="w-8 h-8 border border-[#0D6EFD]/30 bg-[#0D6EFD]/10 text-[#0D6EFD] flex items-center justify-center shrink-0" aria-hidden="true">
               <Clock size={15} />
             </span>
-            <SectionHead title="Collection window appointment" />
+            <SectionHead title={t('dashboard.collectionAppt')} />
           </div>
           {booking ? (
             <div className="space-y-2 text-sm">
               <div className="flex justify-between py-1.5 border-b border-slate-100">
-                <span className="text-slate-500">Status</span>
-                <span className={`${chip} border-[#0D6EFD] bg-[#0D6EFD]/10 text-[#0D6EFD]`}>{booking.status || 'Confirmed'}</span>
+                <span className="text-slate-500">{t('dashboard.status')}</span>
+                <span className={`${chip} border-[#0D6EFD] bg-[#0D6EFD]/10 text-[#0D6EFD]`}>{booking.status || t('dashboard.confirmed')}</span>
               </div>
               <div className="flex justify-between py-1.5 border-b border-slate-100">
-                <span className="text-slate-500 flex items-center gap-1.5"><Calendar size={13} /> Date</span>
+                <span className="text-slate-500 flex items-center gap-1.5"><Calendar size={13} /> {t('dashboard.date')}</span>
                 <span className="font-semibold text-slate-800 tabular-nums">{booking.distributionDate}</span>
               </div>
               <div className="flex justify-between py-1.5 border-b border-slate-100">
-                <span className="text-slate-500 flex items-center gap-1.5"><Clock size={13} /> Time slot</span>
+                <span className="text-slate-500 flex items-center gap-1.5"><Clock size={13} /> {t('dashboard.timeSlot')}</span>
                 <span className="font-semibold text-slate-800 tabular-nums">{booking.timeSlot}</span>
               </div>
               <div className="flex justify-between py-1.5">
-                <span className="text-slate-500 flex items-center gap-1.5"><Building2 size={13} /> Distribution center</span>
+                <span className="text-slate-500 flex items-center gap-1.5"><Building2 size={13} /> {t('dashboard.distCentre')}</span>
                 <span className="font-semibold text-slate-800 text-right">{delivery.to.label}</span>
               </div>
             </div>
           ) : (
             <div className={`${swiss.panel} p-5 text-slate-500 text-sm flex items-center gap-3`}>
               <Calendar size={20} className="shrink-0 text-slate-500" />
-              <span>No collection window is currently scheduled.</span>
+              <span>{t('dashboard.noWindow')}</span>
             </div>
           )}
 
@@ -232,16 +234,16 @@ export default function DashboardHome({ onNavigate }) {
             onClick={() => onNavigate('booking')}
             className={`w-full bg-[#0D6EFD] hover:bg-[#0B5ED7] text-white text-xs font-semibold tracking-wide px-4 py-2.5 transition-colors cursor-pointer inline-flex items-center justify-center gap-2 ${FOCUS}`}
           >
-            <span>{booking ? 'Reschedule allocation' : 'Book a collection slot'}</span>
+            <span>{booking ? t('dashboard.reschedule') : t('dashboard.bookSlot')}</span>
             <ArrowRight size={14} />
           </button>
         </div>
       </div>
 
       {booking && (
-        <div className="bg-amber-50 border border-amber-300 px-4 py-2.5 flex items-center gap-2.5" role="status" title="Booking status notification">
+        <div className="bg-amber-50 border border-amber-300 px-4 py-2.5 flex items-center gap-2.5" role="status" title={t('dashboard.bookingStatusTitle')}>
           <Bell size={16} className="text-amber-500 shrink-0" aria-hidden="true" />
-          <p className="text-sm text-slate-700">Your next collection window is confirmed.</p>
+          <p className="text-sm text-slate-700">{t('dashboard.nextConfirmed')}</p>
         </div>
       )}
     </div>

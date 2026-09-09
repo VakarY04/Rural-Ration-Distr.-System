@@ -1,5 +1,6 @@
 import { AlertCircle, CheckCircle2, RefreshCw, ShieldCheck, Lock, Calendar, Clock } from 'lucide-react';
 import { swiss, SectionHead } from '../../components/ui/swiss';
+import { useLanguage } from '../../i18n/LanguageContext';
 
 const FOCUS =
   'focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-orange-500';
@@ -18,6 +19,7 @@ export default function BookingForm({
   submitting,
   timeSlots,
 }) {
+  const { t } = useLanguage();
   return (
     <>
       {/* Dynamic Alerts */}
@@ -36,7 +38,7 @@ export default function BookingForm({
           </div>
           {bookingDetails && (
             <p className="text-[11px] font-medium text-[#198754] pl-6 tabular-nums">
-              Confirmed distribution slot on <strong>{bookingDetails.distributionDate}</strong> during <strong>{bookingDetails.timeSlot}</strong>.
+              {t('booking.form.confirmedOn', { date: bookingDetails.distributionDate, slot: bookingDetails.timeSlot })}
             </p>
           )}
         </div>
@@ -44,12 +46,12 @@ export default function BookingForm({
 
       {/* Booking Form */}
       <form onSubmit={onSubmit} className="space-y-6 border-t border-slate-200 pt-6">
-        <SectionHead title="Select Slot" />
+        <SectionHead title={t('booking.form.selectSlot')} />
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
           {/* Date Picker */}
           <div className="space-y-1.5">
-            <label htmlFor="distribution-date" className={swiss.label}><span className="flex items-center gap-1.5"><Calendar size={12} aria-hidden="true" /> Distribution Date</span></label>
+            <label htmlFor="distribution-date" className={swiss.label}><span className="flex items-center gap-1.5"><Calendar size={12} aria-hidden="true" /> {t('booking.form.date')}</span></label>
             <input
               id="distribution-date"
               type="date"
@@ -59,12 +61,12 @@ export default function BookingForm({
               onChange={(e) => onDateChange(e.target.value)}
               className={`${swiss.input} cursor-pointer ${FOCUS}`}
             />
-            <p className="text-[10px] md:text-[12px] text-slate-500 font-medium">Choose a future date for ration collection.</p>
+            <p className="text-[10px] md:text-[12px] text-slate-500 font-medium">{t('booking.form.dateHint')}</p>
           </div>
 
           {/* Time Slot Selector */}
           <div className="space-y-1.5">
-            <label htmlFor="time-slot" className={swiss.label}><span className="flex items-center gap-1.5"><Clock size={12} aria-hidden="true" /> Terminal Time Slot</span></label>
+            <label htmlFor="time-slot" className={swiss.label}><span className="flex items-center gap-1.5"><Clock size={12} aria-hidden="true" /> {t('booking.form.slot')}</span></label>
             <select
               id="time-slot"
               required
@@ -72,12 +74,12 @@ export default function BookingForm({
               onChange={(e) => onSlotChange(e.target.value)}
               className={`${swiss.input} cursor-pointer ${FOCUS}`}
             >
-              <option value="">-- Choose Time Window --</option>
+              <option value="">{t('booking.form.chooseSlot')}</option>
               {timeSlots.map((slot, i) => (
                 <option key={i} value={slot}>{slot}</option>
               ))}
             </select>
-            <p className="text-[10px] md:text-[12px] text-slate-500 font-medium">Select an available time window at your terminal.</p>
+            <p className="text-[10px] md:text-[12px] text-slate-500 font-medium">{t('booking.form.slotHint')}</p>
           </div>
         </div>
 
@@ -88,7 +90,7 @@ export default function BookingForm({
               i
             </span>
             <p>
-              <strong className="font-bold text-slate-900">Please ensure</strong> you carry your ration card and Aadhaar card at the time of collection.
+              <strong className="font-bold text-slate-900">{t('booking.form.carryPrefix')}</strong> {t('booking.form.carryNote')}
             </p>
           </div>
 
@@ -107,12 +109,12 @@ export default function BookingForm({
           {submitting ? (
             <>
               <RefreshCw size={16} className="animate-spin" />
-              <span>Confirming Window Allocation...</span>
+              <span>{t('booking.form.confirming')}</span>
             </>
           ) : (
             <>
               <ShieldCheck size={16} />
-              <span>Confirm Distribution Booking</span>
+              <span>{t('booking.form.confirm')}</span>
             </>
           )}
         </button>
@@ -121,7 +123,7 @@ export default function BookingForm({
         <div className="border border-slate-200 bg-white px-4 py-3 text-xs font-semibold text-slate-600 flex items-center justify-between gap-3">
           <div className="flex items-center gap-2.5">
             <ShieldCheck size={16} className="text-[#198754] shrink-0" />
-            <span>Your booking is safe and secure. You will receive a confirmation once the slot is booked successfully.</span>
+            <span>{t('booking.form.secureNote')}</span>
           </div>
           <Lock size={14} className="text-slate-500 shrink-0" />
         </div>

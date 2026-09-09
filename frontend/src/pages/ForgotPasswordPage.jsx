@@ -2,10 +2,12 @@ import { useState } from 'react';
 import { Mail } from 'lucide-react';
 import { AuthPageShell } from '../components/auth/AuthPageShell';
 import { authApi } from '../services/authApi';
+import { useLanguage } from '../i18n/LanguageContext';
 import { swiss } from '../components/ui/swiss';
 import { Alert } from '../components/ui/alert';
 
 export default function ForgotPasswordPage() {
+  const { t } = useLanguage();
   const [forgotEmail, setForgotEmail] = useState('');
   const [forgotSuccess, setForgotSuccess] = useState(false);
   const [forgotError, setForgotError] = useState('');
@@ -20,19 +22,19 @@ export default function ForgotPasswordPage() {
       await authApi.forgotPassword(forgotEmail);
       setForgotSuccess(true);
     } catch (err) {
-      setForgotError(err.message || 'Error executing credential delivery loop.');
+      setForgotError(err.message || t('auth.forgot.failed'));
       setLoading(false);
     }
   };
 
   return (
-    <AuthPageShell title="Account Recovery" subtitle="Recover registry credentials via email">
+    <AuthPageShell title={t('auth.forgot.title')} subtitle={t('auth.forgot.subtitle')}>
       {forgotError && <Alert variant="error">{forgotError}</Alert>}
 
       {!forgotSuccess ? (
         <form onSubmit={handleSendResetEmail} className="space-y-4">
           <div>
-            <label htmlFor="forgot-email" className={swiss.label}>Registered Email Address</label>
+            <label htmlFor="forgot-email" className={swiss.label}>{t('auth.forgot.email')}</label>
             <div className="relative flex items-center">
               <Mail className="absolute left-3.5 text-slate-500" size={16} />
               <input
@@ -46,15 +48,15 @@ export default function ForgotPasswordPage() {
               />
             </div>
           </div>
-          <button type="submit" disabled={loading} className={`${swiss.btnPrimary} w-full py-3.5 rounded-xl`}>
-            {loading ? 'Sending...' : 'Send Password Reset Link'}
+          <button type="submit" disabled={loading} className={`${swiss.btnPrimary} w-full py-3.5 rounded-xl break-words`}>
+            {loading ? t('auth.forgot.sending') : t('auth.forgot.submit')}
           </button>
         </form>
       ) : (
         <Alert variant="success">
-          Recovery email successfully dispatched!
+          {t('auth.forgot.success')}
           <span className="block text-[11px] text-slate-500 mt-0.5">
-            Please check your email client inbox for authentication credentials.
+            {t('auth.forgot.checkInbox')}
           </span>
         </Alert>
       )}

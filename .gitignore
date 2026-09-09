@@ -10,6 +10,8 @@ Tips.md
 
 # Dependencies
 node_modules/
+.pnp
+.pnp.js
 
 # Environment files (never commit secrets)
 .env
