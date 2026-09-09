@@ -1,15 +1,12 @@
 import { Plus, Trash2, Wheat } from 'lucide-react';
 import EditorShell from './EditorShell';
+import { useLanguage } from '../../i18n/LanguageContext';
 import { useEditableSection } from './useEditableSection';
 
 // "Ration items & quantity" editor — the second citizen-facing configuration
 // beside delivery details. Each row is a name + quantity + unit where the
 // unit is chosen (not typed) from KG or Litre, so citizen hubs always show a
 // clean, consistent unit. Mirrors DeliveryDetailsEditor behaviour exactly.
-const UNITS = [
-  { value: 'kg', label: 'KG' },
-  { value: 'litre', label: 'Litre' },
-];
 
 const MAX_ITEMS = 12;
 const FOCUS =
@@ -26,6 +23,11 @@ function cleanRow(row) {
 }
 
 export default function RationItemsEditor({ items, onSaved }) {
+  const { t } = useLanguage();
+  const UNITS = [
+    { value: 'kg', label: t('items.kg') },
+    { value: 'litre', label: t('items.litre') },
+  ];
   const initial = Array.isArray(items) && items.length
     ? items.map(cleanRow)
     : [{ label: '', quantity: 0, unit: 'kg' }];
@@ -43,7 +45,7 @@ export default function RationItemsEditor({ items, onSaved }) {
 
   return (
     <EditorShell
-      title="Ration items & quantity"
+      title={t('items.title')}
       editing={section.editing}
       saving={section.saving}
       onEdit={section.startEditing}
@@ -52,7 +54,7 @@ export default function RationItemsEditor({ items, onSaved }) {
       error={section.error}
     >
       {!editing && draft.filter((r) => r.label).length === 0 && (
-        <p className="text-sm font-semibold text-slate-900">No ration items configured.</p>
+        <p className="text-sm font-semibold text-slate-900 break-words">{t('items.empty')}</p>
       )}
 
       <ul className="divide-y divide-slate-100">
@@ -61,14 +63,14 @@ export default function RationItemsEditor({ items, onSaved }) {
             {editing ? (
               <>
                 <input
-                  aria-label={`Item ${i + 1} name`}
+                  aria-label={t('items.nameAria', { n: i + 1 })}
                   value={row.label}
                   onChange={(e) => updateRow(i, { label: e.target.value })}
-                  placeholder="e.g. Rice"
+                  placeholder={t('items.namePh')}
                   className={`${inputClass} flex-1 min-w-0`}
                 />
                 <input
-                  aria-label={`Item ${i + 1} quantity`}
+                  aria-label={t('items.qtyAria', { n: i + 1 })}
                   type="number"
                   min={0}
                   value={row.quantity}
@@ -76,10 +78,10 @@ export default function RationItemsEditor({ items, onSaved }) {
                   className={`${inputClass} w-20 tabular-nums`}
                 />
                 <select
-                  aria-label={`Item ${i + 1} unit`}
+                  aria-label={t('items.unitAria', { n: i + 1 })}
                   value={row.unit}
                   onChange={(e) => updateRow(i, { unit: e.target.value })}
-                  title={`Unit for item ${i + 1} — KG or Litre`}
+                  title={t('items.unitTitle', { n: i + 1 })}
                   className={`${inputClass} cursor-pointer w-24`}
                 >
                   {UNITS.map((u) => (
@@ -89,8 +91,8 @@ export default function RationItemsEditor({ items, onSaved }) {
                 <button
                   type="button"
                   onClick={() => setDraft(draft.filter((_, j) => j !== i))}
-                  title={`Remove item ${i + 1}`}
-                  aria-label={`Remove item ${i + 1}`}
+                  title={t('items.remove', { n: i + 1 })}
+                  aria-label={t('items.remove', { n: i + 1 })}
                   className={`text-slate-400 hover:text-red-600 p-1.5 hover:bg-red-50 cursor-pointer transition-colors shrink-0 ${FOCUS}`}
                 >
                   <Trash2 size={15} aria-hidden="true" />
@@ -118,7 +120,7 @@ export default function RationItemsEditor({ items, onSaved }) {
           className={`mt-3 w-full flex items-center justify-center gap-2 border border-dashed border-slate-300 hover:border-slate-900 hover:bg-slate-50 text-slate-500 hover:text-slate-900 text-xs font-semibold tracking-wide py-2.5 transition-colors cursor-pointer ${FOCUS}`}
         >
           <Plus size={14} aria-hidden="true" />
-          Add Item
+          {t('items.add')}
         </button>
       )}
     </EditorShell>

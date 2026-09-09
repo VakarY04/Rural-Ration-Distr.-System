@@ -67,7 +67,7 @@ export const POLICIES = {
       {
         h: 'Known limits',
         p: [
-          'The interface is currently English-first with Hindi arriving next; map tiles come from OpenStreetMap with text alternatives in the delivery panel. An automated accessibility scan is still pending before any official submission.',
+          'The interface is available in English and Hindi via the header toggle, with Noto Sans Devanagari support; map tiles come from OpenStreetMap with text alternatives in the delivery panel. An automated accessibility scan is still pending before any official submission.',
         ],
       },
       {

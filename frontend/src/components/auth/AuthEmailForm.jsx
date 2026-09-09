@@ -2,11 +2,13 @@ import { useState } from 'react';
 import { ShieldCheck, Loader2 } from 'lucide-react';
 import { saveSession } from '../../services/session';
 import { authApi } from '../../services/authApi';
+import { useLanguage } from '../../i18n/LanguageContext';
 import { swiss } from '../ui/swiss';
 import { getAccentHover } from '../ui/authStyles';
 import { Alert } from '../ui/alert';
 
 export default function AuthEmailForm({ role, accent = 'emerald', onSuccess, onForgotPassword }) {
+  const { t } = useLanguage();
   const hoverAccent = getAccentHover(accent);
   const [identifier, setIdentifier] = useState('');
   const [password, setPassword] = useState('');
@@ -22,7 +24,7 @@ export default function AuthEmailForm({ role, accent = 'emerald', onSuccess, onF
       saveSession({ token: data.token, name: data.data?.name, role: data.data?.role });
       onSuccess(data.data);
     } catch (err) {
-      setError(err.message || 'Could not reach the authentication server.');
+      setError(err.message || t('auth.email.serverUnreachable'));
       setLoading(false);
     }
   };
@@ -33,7 +35,7 @@ export default function AuthEmailForm({ role, accent = 'emerald', onSuccess, onF
 
       <div>
         <label htmlFor={`login-email-${role}`} className={swiss.label}>
-          Registered Email
+          {t('auth.email.registeredEmail')}
         </label>
         <input
           id={`login-email-${role}`}
@@ -49,7 +51,7 @@ export default function AuthEmailForm({ role, accent = 'emerald', onSuccess, onF
 
       <div>
         <label htmlFor={`login-password-${role}`} className={swiss.label}>
-          Password
+          {t('auth.email.password')}
         </label>
         <input
           id={`login-password-${role}`}
@@ -71,12 +73,12 @@ export default function AuthEmailForm({ role, accent = 'emerald', onSuccess, onF
         {loading ? (
           <>
             <Loader2 size={15} className="animate-spin" />
-            <span>Verifying Credentials...</span>
+            <span>{t('auth.email.verifying')}</span>
           </>
         ) : (
           <>
             <ShieldCheck size={15} />
-            <span>Sign In Securely</span>
+            <span>{t('auth.email.signIn')}</span>
           </>
         )}
       </button>
@@ -85,9 +87,9 @@ export default function AuthEmailForm({ role, accent = 'emerald', onSuccess, onF
         <button
           type="button"
           onClick={onForgotPassword}
-          className="block mx-auto text-[10px] font-bold uppercase tracking-[0.14em] text-slate-500 hover:text-orange-600 transition-colors cursor-pointer focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-orange-500"
+          className="block mx-auto text-[10px] font-bold uppercase tracking-[0.14em] text-slate-500 hover:text-orange-600 transition-colors cursor-pointer focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-orange-500 break-words"
         >
-          Forgot password?
+          {t('auth.email.forgot')}
         </button>
       )}
     </form>

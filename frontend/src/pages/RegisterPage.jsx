@@ -2,16 +2,17 @@ import { useState } from 'react';
 import { Lock, Mail, User, Phone, KeyRound } from 'lucide-react';
 import { AuthPageShell } from '../components/auth/AuthPageShell';
 import { authApi } from '../services/authApi';
+import { useLanguage } from '../i18n/LanguageContext';
 import { swiss } from '../components/ui/swiss';
 import { Alert } from '../components/ui/alert';
 
-const FIELDS = [
-  { id: 'reg-name', label: 'Full Name', type: 'text', icon: User, key: 'name', placeholder: 'John Doe' },
-  { id: 'reg-email', label: 'Email Address', type: 'email', icon: Mail, key: 'email', placeholder: 'citizen@workspace.com' },
-  { id: 'reg-phone', label: 'Mobile Number', type: 'tel', icon: Phone, key: 'phone', placeholder: '98765 43210', maxLength: 12 },
-];
-
 export default function RegisterPage({ onNavigate }) {
+  const { t } = useLanguage();
+  const FIELDS = [
+    { id: 'reg-name', label: t('auth.register.fullName'), type: 'text', icon: User, key: 'name', placeholder: 'John Doe' },
+    { id: 'reg-email', label: t('auth.register.email'), type: 'email', icon: Mail, key: 'email', placeholder: 'citizen@workspace.com' },
+    { id: 'reg-phone', label: t('auth.register.phone'), type: 'tel', icon: Phone, key: 'phone', placeholder: '98765 43210', maxLength: 12 },
+  ];
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [phone, setPhone] = useState('');
@@ -35,13 +36,13 @@ export default function RegisterPage({ onNavigate }) {
     setSuccess(false);
 
     if (password !== confirmPassword) {
-      setError("Passwords do not match!");
+      setError(t('auth.register.mismatch'));
       return;
     }
 
     const digits = phone.replace(/\D/g, '');
     if (digits.length < 10) {
-      setError('Please enter a valid 10-digit mobile number.');
+      setError(t('auth.register.badPhone'));
       return;
     }
 
@@ -65,20 +66,20 @@ export default function RegisterPage({ onNavigate }) {
         onNavigate('admin-login');
       }, 3000);
     } catch (err) {
-      setError(err.message || 'Error establishing registry footprint.');
+      setError(err.message || t('auth.register.failed'));
       setLoading(false);
     }
   };
 
   return (
-    <AuthPageShell title="Registration Terminal" subtitle="Create a new citizen credential">
+    <AuthPageShell title={t('auth.register.title')} subtitle={t('auth.register.subtitle')}>
       {error && <Alert variant="error">{error}</Alert>}
 
       {success && (
         <Alert variant="success">
-          Account Created Successfully!
+          {t('auth.register.success')}
           <span className="block text-[10px] text-[#000080] font-medium animate-pulse pt-1">
-            Redirecting to login...
+            {t('auth.register.redirecting')}
           </span>
         </Alert>
       )}
@@ -105,7 +106,7 @@ export default function RegisterPage({ onNavigate }) {
           ))}
 
           <div>
-            <label htmlFor="reg-password" className={swiss.label}>Security Password</label>
+            <label htmlFor="reg-password" className={swiss.label}>{t('auth.register.password')}</label>
             <div className="relative flex items-center">
               <Lock className="absolute left-3.5 text-slate-500" size={16} />
               <input
@@ -121,7 +122,7 @@ export default function RegisterPage({ onNavigate }) {
           </div>
 
           <div>
-            <label htmlFor="reg-confirm" className={swiss.label}>Confirm Password</label>
+            <label htmlFor="reg-confirm" className={swiss.label}>{t('auth.register.confirm')}</label>
             <div className="relative flex items-center">
               <KeyRound className="absolute left-3.5 text-slate-500" size={16} />
               <input
@@ -136,8 +137,8 @@ export default function RegisterPage({ onNavigate }) {
             </div>
           </div>
 
-          <button type="submit" disabled={loading} className={`${swiss.btnPrimary} w-full py-3.5 mt-2`}>
-            {loading ? 'Processing...' : 'Register Account'}
+          <button type="submit" disabled={loading} className={`${swiss.btnPrimary} w-full py-3.5 mt-2 break-words`}>
+            {loading ? t('auth.register.processing') : t('auth.register.submit')}
           </button>
         </form>
       )}

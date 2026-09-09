@@ -2,6 +2,7 @@ import { useEffect, useRef } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import SplitType from 'split-type';
+import { useLanguage } from '../../i18n/LanguageContext';
 import {
   HERO_BADGE_BOX,
   HERO_BADGE_TITLE,
@@ -22,6 +23,11 @@ const bidirectional = (trigger, start, end, scroller) => ({
 });
 
 export function useLandingAnimations() {
+  const { lang } = useLanguage();
+  // Devanagari shaping breaks when SplitType splits per-character (matras and
+  // conjuncts detach), so in Hindi we animate per-word only. Latin keeps the
+  // original per-character effect.
+  const isHi = lang === 'hi';
   const mainContainerRef = useRef(null);
   const scrollContainerRef = useRef(null);
   const brandTitleRef = useRef(null);
@@ -39,9 +45,9 @@ export function useLandingAnimations() {
 
     let ctx = gsap.context(() => {
       if (brandTitleRef.current) {
-        const titleSplit = new SplitType(brandTitleRef.current, { types: 'chars' });
+        const titleSplit = new SplitType(brandTitleRef.current, { types: isHi ? 'words' : 'chars' });
         gsap.fromTo(
-          titleSplit.chars,
+          isHi ? titleSplit.words : titleSplit.chars,
           { opacity: 0, y: 25, rotateX: -90 },
           {
             opacity: 1,
@@ -72,9 +78,9 @@ export function useLandingAnimations() {
       }
 
       if (sloganRef.current) {
-        const sloganSplit = new SplitType(sloganRef.current, { types: 'lines, words, chars' });
+        const sloganSplit = new SplitType(sloganRef.current, { types: isHi ? 'lines, words' : 'lines, words, chars' });
         gsap.fromTo(
-          sloganSplit.chars,
+          isHi ? sloganSplit.words : sloganSplit.chars,
           { opacity: 0, y: 50, rotateX: -80, scale: 0.8 },
           {
             opacity: 1,
@@ -140,9 +146,9 @@ export function useLandingAnimations() {
 
         const badgeTitles = badgesContainerRef.current.querySelectorAll(`.${HERO_BADGE_TITLE}`);
         badgeTitles.forEach((el) => {
-          const split = new SplitType(el, { types: 'chars' });
+          const split = new SplitType(el, { types: isHi ? 'words' : 'chars' });
           gsap.fromTo(
-            split.chars,
+            isHi ? split.words : split.chars,
             { opacity: 0, y: 10 },
             {
               opacity: 1,
@@ -175,9 +181,9 @@ export function useLandingAnimations() {
 
         const cardHeadings = cardsGridRef.current.querySelectorAll(`.${FEATURE_CARD_HEADING}`);
         cardHeadings.forEach((heading) => {
-          const hSplit = new SplitType(heading, { types: 'chars, words' });
+          const hSplit = new SplitType(heading, { types: isHi ? 'words' : 'chars, words' });
           gsap.fromTo(
-            hSplit.chars,
+            isHi ? hSplit.words : hSplit.chars,
             { opacity: 0, y: 20, rotateX: -90 },
             {
               opacity: 1,
@@ -225,9 +231,9 @@ export function useLandingAnimations() {
 
         const trustText = trustFooterRef.current.querySelector(`.${TRUST_FOOTER_TEXT}`);
         if (trustText) {
-          const trustSplit = new SplitType(trustText, { types: 'words, chars' });
+          const trustSplit = new SplitType(trustText, { types: isHi ? 'words' : 'words, chars' });
           gsap.fromTo(
-            trustSplit.chars,
+            isHi ? trustSplit.words : trustSplit.chars,
             { opacity: 0, y: 10 },
             {
               opacity: 1,
@@ -243,7 +249,9 @@ export function useLandingAnimations() {
     }, mainContainerRef);
 
     return () => ctx.revert();
-  }, []);
+    // Re-split on language switch: translated strings replace the DOM text,
+    // and Hindi must use word-level splits (see isHi above).
+  }, [lang, isHi]);
 
   return {
     mainContainerRef,

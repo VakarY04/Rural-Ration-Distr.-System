@@ -10,13 +10,16 @@ import { Avatar } from './ui/avatar';
 import { swiss, TricolorStrip } from './ui/swiss';
 import SkipLink from './SkipLink';
 import AccessibilityToolbar from './AccessibilityToolbar';
+import LanguageToggle from './LanguageToggle';
 import SiteFooter from './SiteFooter';
+import { useLanguage } from '../i18n/LanguageContext';
 
 const FOCUS =
   'focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-orange-500';
 
 export default function DashboardShell({ children, currentSubPage, onSubPageChange, onNavigate, onLogout }) {
   const { account } = useAccount();
+  const { t } = useLanguage();
   // Collapsible navigation — persisted so the choice survives reloads. Gives
   // zoomed/low-width viewports room by collapsing to icon-only rails.
   const [navCollapsed, setNavCollapsed] = useState(
@@ -33,10 +36,10 @@ export default function DashboardShell({ children, currentSubPage, onSubPageChan
     });
   };
   const navItems = [
-    { id: 'home', label: 'Terminal hub', icon: terminalHubIcon },
-    { id: 'profile', label: 'Family profile', icon: familyProfileIcon },
-    { id: 'booking', label: 'Ration bookings', icon: rationBookingsIcon },
-    { id: 'ai-support', label: 'AI help desk', icon: aiHelpDeskIcon },
+    { id: 'home', label: t('nav.terminalHub'), icon: terminalHubIcon },
+    { id: 'profile', label: t('nav.familyProfile'), icon: familyProfileIcon },
+    { id: 'booking', label: t('nav.rationBookings'), icon: rationBookingsIcon },
+    { id: 'ai-support', label: t('nav.aiHelpDesk'), icon: aiHelpDeskIcon },
   ];
 
   return (
@@ -48,15 +51,15 @@ export default function DashboardShell({ children, currentSubPage, onSubPageChan
             <img src={logoAsset} alt="E-Ration" className="w-11 h-11 object-contain bg-slate-800 p-1 rounded-2xl" />
             {!navCollapsed && (
               <div>
-                <h1 className="text-sm font-bold tracking-tight text-white leading-tight">E-ration portal</h1>
-                <p className="text-[10px] font-bold uppercase tracking-[0.14em] text-slate-400">Citizen workspace</p>
+                <h1 className="text-sm font-bold tracking-tight text-white leading-tight">{t('nav.portalName')}</h1>
+                <p className="text-[10px] font-bold uppercase tracking-[0.14em] text-slate-400">{t('nav.citizenWorkspace')}</p>
               </div>
             )}
           </div>
 
           <TricolorStrip className="h-[3px] mb-5" />
 
-          <nav className="space-y-1" aria-label="Citizen workspace">
+          <nav className="space-y-1" aria-label={t('nav.workspaceLabel')}>
             {navItems.map((item) => {
               const active = currentSubPage === item.id;
               return (
@@ -89,19 +92,19 @@ export default function DashboardShell({ children, currentSubPage, onSubPageChan
             type="button"
             onClick={() => onSubPageChange('profile')}
             aria-current={currentSubPage === 'profile' ? 'page' : undefined}
-            title="Family profile"
+            title={t('nav.familyProfile')}
             className={`relative w-full flex items-center gap-3 py-2.5 text-sm font-semibold transition-colors cursor-pointer ${FOCUS} ${navCollapsed ? 'justify-center px-2' : 'px-3'} ${
               currentSubPage === 'profile'
                 ? 'bg-slate-950 text-white'
                 : 'text-slate-300 hover:text-white hover:bg-slate-800'
             }`}
           >
-            <Avatar src={account?.avatar} name={account?.name || 'Citizen'} size={32} />
+            <Avatar src={account?.avatar} name={account?.name || t('nav.citizen')} size={32} />
             {!navCollapsed && (
               <div className="text-left min-w-0">
-                <p className="text-sm font-bold leading-tight truncate">{account?.name || 'Citizen'}</p>
+                <p className="text-sm font-bold leading-tight truncate">{account?.name || t('nav.citizen')}</p>
                 <p className="text-[10px] font-bold uppercase tracking-[0.14em] text-slate-400 truncate">
-                  {account?.rationCardNumber ? `Ration card: ${account.rationCardNumber}` : 'Citizen workspace'}
+                  {account?.rationCardNumber ? t('nav.rationCard', { id: account.rationCardNumber }) : t('nav.citizenWorkspace')}
                 </p>
               </div>
             )}
@@ -109,11 +112,11 @@ export default function DashboardShell({ children, currentSubPage, onSubPageChan
 
           <button
             onClick={onLogout}
-            title={navCollapsed ? 'Log out' : undefined}
+            title={navCollapsed ? t('nav.logout') : undefined}
             className={`w-full flex items-center justify-center gap-2 border border-slate-700 hover:border-slate-600 hover:bg-slate-800 text-slate-300 hover:text-white py-3 text-sm font-semibold transition-colors cursor-pointer ${FOCUS}`}
           >
             <LogOut size={18} className="shrink-0" aria-hidden="true" />
-            {!navCollapsed && <span>Log out</span>}
+            {!navCollapsed && <span>{t('nav.logout')}</span>}
           </button>
         </div>
       </aside>
@@ -124,19 +127,22 @@ export default function DashboardShell({ children, currentSubPage, onSubPageChan
             type="button"
             onClick={toggleNav}
             aria-expanded={!navCollapsed}
-            aria-label={navCollapsed ? 'Expand navigation' : 'Collapse navigation'}
-            title={navCollapsed ? 'Expand navigation' : 'Collapse navigation'}
+            aria-label={navCollapsed ? t('nav.expandNav') : t('nav.collapseNav')}
+            title={navCollapsed ? t('nav.expandNav') : t('nav.collapseNav')}
             className={`inline-flex items-center gap-2 border border-slate-300 hover:border-slate-900 hover:bg-slate-900 hover:text-white text-slate-600 px-3 py-1.5 text-xs font-semibold tracking-wide transition-colors cursor-pointer bg-white ${FOCUS}`}
           >
             {navCollapsed ? <PanelLeftOpen size={14} /> : <PanelLeftClose size={14} />}
-            <span>{navCollapsed ? 'Expand' : 'Collapse'}</span>
+            <span>{navCollapsed ? t('nav.expand') : t('nav.collapse')}</span>
           </button>
+          <div className="flex items-center gap-2 flex-wrap">
+            <LanguageToggle />
+          </div>
           <AccessibilityToolbar />
         </div>
         {account?.rationCardNumber && (
           <div className="flex items-center justify-between flex-wrap gap-3 px-8 pt-6">
             <p className="text-[10px] font-bold uppercase tracking-[0.14em] text-slate-500">
-              Public Distribution System
+              {t('nav.pds')}
             </p>
           </div>
         )}

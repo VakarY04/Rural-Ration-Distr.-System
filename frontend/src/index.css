@@ -23,6 +23,15 @@
   font-style: normal;
   font-display: swap;
 }
+/* Phase 3.3 — SemiBold (600) closes the flagged font gap: semibold utilities
+   previously synthesised from Medium/Bold. Self-hosted latin subset. */
+@font-face {
+  font-family: 'Noto Sans';
+  src: url('/fonts/NotoSans-SemiBold.woff2') format('woff2');
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
 @font-face {
   font-family: 'Noto Sans';
   src: url('/fonts/NotoSans-Bold.woff2') format('woff2');
@@ -43,6 +52,19 @@
   font-weight: 900;
   font-style: normal;
   font-display: swap;
+}
+/* Phase 3.3 — Devanagari subset (variable 100–900, unicode-range limited to
+   Devanagari + related blocks) so Hindi text renders in Noto Sans instead of
+   a system fallback. Same family name → no stack change needed; the browser
+   picks this file for U+0900–097F etc. and the latin files above for the
+   rest (GIGW Q13 + DBIM §4.2). */
+@font-face {
+  font-family: 'Noto Sans';
+  src: url('/fonts/NotoSans-Devanagari.woff2') format('woff2');
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+  unicode-range: U+0900-097F, U+1CD0-1CF9, U+200C-200D, U+20A8, U+20B9, U+20F0, U+25CC, U+A830-A839, U+A8E0-A8FF, U+11B00-11B09;
 }
 
 

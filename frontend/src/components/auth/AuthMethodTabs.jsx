@@ -1,12 +1,13 @@
 import { Mail, Smartphone } from 'lucide-react';
+import { useLanguage } from '../../i18n/LanguageContext';
 import { getActiveTabClass } from '../ui/authStyles';
 
-const TABS = [
-  { key: 'email', label: 'Email & Password', icon: Mail },
-  { key: 'otp', label: 'Phone OTP', icon: Smartphone },
-];
-
 export default function AuthMethodTabs({ value, onChange, accent = 'emerald' }) {
+  const { t } = useLanguage();
+  const TABS = [
+    { key: 'email', label: t('auth.tab.email'), icon: Mail },
+    { key: 'otp', label: t('auth.tab.otp'), icon: Smartphone },
+  ];
   const activeTab = getActiveTabClass(accent);
 
   return (

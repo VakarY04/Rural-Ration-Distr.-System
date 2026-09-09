@@ -1,43 +1,32 @@
 import { CalendarCheck, Users, Bot, PhoneCall } from 'lucide-react';
+import { useLanguage } from '../../i18n/LanguageContext';
 import { swiss } from '../../components/ui/swiss';
 import InfoShell from './InfoShell';
 
-const GUIDES = [
-  {
-    icon: Users,
-    title: 'Set up your household (first visit)',
-    steps: [
-      'Sign in, then open Family Profile.',
-      'Fill Account Details, Ration Card Details and Address — the address decides your local distributor.',
-      'Add every family member with name, age and relation, then Save Changes.',
-    ],
-  },
-  {
-    icon: CalendarCheck,
-    title: 'Book a collection slot',
-    steps: [
-      'Open Ration Bookings and check your monthly quota at the top.',
-      'Pick a future date and an available time window.',
-      'Confirm — carry your ration card and Aadhaar to the Fair Price Shop.',
-    ],
-  },
-  {
-    icon: Bot,
-    title: 'Get help from the AI Help Desk',
-    steps: [
-      'Describe the issue in any local language and submit for analysis.',
-      'Note the ticket summary for follow-up.',
-      'For urgent issues call 1967 / 1800-180-2087 (toll-free, all scheduled languages).',
-    ],
-  },
-];
-
 export default function HelpPage({ onNavigate }) {
+  const { t } = useLanguage();
+  const GUIDES = [
+    {
+      icon: Users,
+      title: t('help.guide1.title'),
+      steps: [t('help.guide1.s1'), t('help.guide1.s2'), t('help.guide1.s3')],
+    },
+    {
+      icon: CalendarCheck,
+      title: t('help.guide2.title'),
+      steps: [t('help.guide2.s1'), t('help.guide2.s2'), t('help.guide2.s3')],
+    },
+    {
+      icon: Bot,
+      title: t('help.guide3.title'),
+      steps: [t('help.guide3.s1'), t('help.guide3.s2'), t('help.guide3.s3')],
+    },
+  ];
   return (
     <InfoShell
-      eyebrow="Help & how-to"
-      title="Help"
-      intro="Short guides for the tasks citizens do most. If something here doesn't match what you see, send Feedback so it can be corrected."
+      eyebrow={t('help.eyebrow')}
+      title={t('help.title')}
+      intro={t('help.intro')}
       onNavigate={onNavigate}
     >
       {GUIDES.map(({ icon: Icon, title, steps }) => (
@@ -47,7 +36,7 @@ export default function HelpPage({ onNavigate }) {
               <Icon size={17} />
             </span>
             <div className="min-w-0">
-              <h2 className="text-base font-bold text-slate-900">{title}</h2>
+              <h2 className="text-base font-bold text-slate-900 break-words">{title}</h2>
               <ol className="mt-2 space-y-1.5 text-sm text-slate-600 list-decimal list-inside">
                 {steps.map((s) => (
                   <li key={s}>{s}</li>
@@ -59,8 +48,8 @@ export default function HelpPage({ onNavigate }) {
       ))}
       <section className={`${swiss.panel} p-5 flex items-center gap-3`}>
         <PhoneCall size={18} className="text-orange-600 shrink-0" aria-hidden="true" />
-        <p className="text-sm text-slate-600">
-          Urgent or unresolved? Call the toll-free helpline <strong className="text-slate-900 tabular-nums">1967</strong> any time.
+        <p className="text-sm text-slate-600 break-words min-w-0">
+          {t('help.urgent')}
         </p>
       </section>
     </InfoShell>

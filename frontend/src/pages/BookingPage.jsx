@@ -3,10 +3,12 @@ import { AlertCircle, RefreshCw, CreditCard } from 'lucide-react';
 import { computeAllocatedItems, computeTotalQuotaKg } from '../utils/ration';
 import { API_URL } from '../services/api';
 import { swiss } from '../components/ui/swiss';
+import { useLanguage } from '../i18n/LanguageContext';
 import { QuotaPanel, ActiveBookingTicket } from './booking/BookingSections';
 import BookingForm from './booking/BookingForm';
 
 export default function BookingPage() {
+  const { t, lang } = useLanguage();
   const [profile, setProfile] = useState(null);
   const [loadingProfile, setLoadingProfile] = useState(true);
   const [selectedDate, setSelectedDate] = useState('');
@@ -31,7 +33,7 @@ export default function BookingPage() {
     try {
       const token = localStorage.getItem('ration_user_token');
       if (!token) {
-        setError('Authorization session expired. Please log in again.');
+        setError(t('booking.sessionExpired'));
         setLoadingProfile(false);
         return;
       }
@@ -54,7 +56,7 @@ export default function BookingPage() {
       }
     } catch (err) {
       console.error('Error verifying household profile:', err);
-      setError('Could not connect to authentication server to verify profile.');
+      setError(t('booking.connectFailed'));
     } finally {
       setLoadingProfile(false);
     }
@@ -71,7 +73,7 @@ export default function BookingPage() {
     setSuccess('');
 
     if (!selectedDate || !selectedSlot) {
-      setError('Please select both a distribution date and time slot.');
+      setError(t('booking.selectBoth'));
       return;
     }
 
@@ -102,14 +104,14 @@ export default function BookingPage() {
       const data = await response.json();
 
       if (response.ok) {
-        setSuccess('Ration distribution window scheduled successfully!');
+        setSuccess(t('booking.success'));
         setBookingDetails(data.booking || bookingPayload);
       } else {
-        setError(data.message || 'Failed to schedule booking slot.');
+        setError(data.message || t('booking.scheduleFailed'));
       }
     } catch (err) {
       console.error('Booking submission error:', err);
-      setError('Could not connect to the booking service endpoint.');
+      setError(t('booking.serviceFailed'));
     } finally {
       setSubmitting(false);
     }
@@ -120,7 +122,7 @@ export default function BookingPage() {
     return (
       <div className="flex flex-col items-center justify-center min-h-[400px] gap-3 font-sans">
         <RefreshCw size={24} className="text-slate-900 animate-spin" />
-        <p className={swiss.micro}>Verifying Household Profile Registry...</p>
+        <p className={swiss.micro}>{t('booking.verifying')}</p>
       </div>
     );
   }
@@ -135,9 +137,15 @@ export default function BookingPage() {
           <AlertCircle size={24} />
         </div>
         <div>
-          <h3 className="text-base md:text-xl font-extrabold tracking-tight text-slate-900">Household Profile Required</h3>
+          <h3 className="text-base md:text-xl font-extrabold tracking-tight text-slate-900">{t('booking.profileRequired')}</h3>
           <p className="text-xs text-slate-500 font-medium mt-1 leading-relaxed">
-            Please complete your household information profile details under the <strong className="text-slate-700">Family Profiles</strong> tab before scheduling a delivery allocation window.
+            {(() => {
+              const body = t('booking.profileRequiredBody');
+              const label = t('booking.familyProfiles');
+              const parts = body.split(label);
+              if (parts.length < 2) return body;
+              return (<>{parts[0]}<strong className="text-slate-700">{label}</strong>{parts.slice(1).join(label)}</>);
+            })()}
           </p>
         </div>
       </div>
@@ -158,23 +166,23 @@ export default function BookingPage() {
         {/* Header Info */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-200 pb-5">
           <div>
-            <p className={`${swiss.micro} mb-1`}>Distribution Scheduling</p>
+            <p className={`${swiss.micro} mb-1`}>{t('booking.scheduling')}</p>
             <h1 className="text-2xl md:text-4xl font-bold tracking-tighter text-slate-900">
-              Ration Bookings
+              {t('booking.title')}
             </h1>
             <p className="text-xs text-slate-500 font-medium mt-1 max-w-md leading-relaxed">
-              Select an available time window at your designated Fair Price Shop (FPS) terminal.
+              {t('booking.subtitle')}
             </p>
             {profile?.updatedAt && (
               <p className="text-[11px] text-slate-500 font-medium mt-1 tabular-nums">
-                Profile last reviewed {new Date(profile.updatedAt).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })}
+                {t('booking.lastReviewed', { date: new Date(profile.updatedAt).toLocaleDateString(lang === 'hi' ? 'hi-IN' : 'en-IN', { day: 'numeric', month: 'short', year: 'numeric' }) })}
               </p>
             )}
           </div>
 
           <div className="flex items-center gap-2 bg-white text-slate-900 border border-slate-300 px-3 py-1.5 text-xs font-bold tabular-nums w-fit shrink-0">
             <CreditCard size={15} className="text-orange-600" />
-            <span>Card ID: {cardId}</span>
+            <span>{t('booking.cardId', { id: cardId })}</span>
           </div>
         </div>
 

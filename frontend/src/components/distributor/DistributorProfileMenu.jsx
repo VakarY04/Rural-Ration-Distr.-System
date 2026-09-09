@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
 import { ChevronDown } from 'lucide-react';
+import { useLanguage } from '../../i18n/LanguageContext';
 import { Avatar } from '../ui/avatar';
 
 const FOCUS =
@@ -9,6 +10,7 @@ const FOCUS =
 // used in the citizen DashboardShell, but adds a dropdown with "Go to
 // Profile" and "Logout".
 export default function DistributorProfileMenu({ name, role, onNavigate, onLogout }) {
+  const { t } = useLanguage();
   const [open, setOpen] = useState(false);
   const rootRef = useRef(null);
 
@@ -48,11 +50,11 @@ export default function DistributorProfileMenu({ name, role, onNavigate, onLogou
         aria-expanded={open}
         className={`flex items-center gap-3 bg-white border border-slate-200 hover:border-slate-400 px-4 py-2.5 transition-colors cursor-pointer ${FOCUS}`}
       >
-        <Avatar src={null} name={name} size={32} />
-        <div className="text-left">
-          <p className="text-sm font-bold text-slate-900 leading-tight">{name}</p>
-          <p className="text-[10px] font-bold uppercase tracking-[0.14em] text-slate-500">
-            {role || 'Staff'}
+        <Avatar src={null} name={name || t('staffMenu.fallback')} size={32} />
+        <div className="text-left min-w-0">
+          <p className="text-sm font-bold text-slate-900 leading-tight truncate">{name || t('staffMenu.fallback')}</p>
+          <p className="text-[10px] font-bold uppercase tracking-[0.14em] text-slate-500 break-words">
+            {role || t('staffMenu.fallback')}
           </p>
         </div>
         <ChevronDown size={16} className={`text-slate-500 transition-transform ${open ? 'rotate-180' : ''}`} />
@@ -67,17 +69,17 @@ export default function DistributorProfileMenu({ name, role, onNavigate, onLogou
             type="button"
             role="menuitem"
             onClick={goToProfile}
-            className="w-full text-left px-4 py-3 text-sm font-semibold text-slate-900 hover:bg-slate-50 transition-colors cursor-pointer border-b border-slate-100"
+            className="w-full text-left px-4 py-3 text-sm font-semibold text-slate-900 hover:bg-slate-50 transition-colors cursor-pointer border-b border-slate-100 break-words"
           >
-            Go to Profile
+            {t('staffMenu.profile')}
           </button>
           <button
             type="button"
             role="menuitem"
             onClick={handleLogout}
-            className="w-full text-left px-4 py-3 text-sm font-semibold text-slate-900 hover:bg-slate-50 transition-colors cursor-pointer"
+            className="w-full text-left px-4 py-3 text-sm font-semibold text-slate-900 hover:bg-slate-50 transition-colors cursor-pointer break-words"
           >
-            Logout
+            {t('staffMenu.logout')}
           </button>
         </div>
       )}

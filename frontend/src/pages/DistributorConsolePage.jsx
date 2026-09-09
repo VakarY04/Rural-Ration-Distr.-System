@@ -15,6 +15,8 @@ import DistributorProfilePage from './DistributorProfilePage';
 import SiteFooter from '../components/SiteFooter';
 import SkipLink from '../components/SkipLink';
 import AccessibilityToolbar from '../components/AccessibilityToolbar';
+import LanguageToggle from '../components/LanguageToggle';
+import { useLanguage } from '../i18n/LanguageContext';
 
 const FOCUS =
   'focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-orange-500';
@@ -22,7 +24,8 @@ const FOCUS =
 // Distributor / Admin console — Swiss-grid dashboard showing booking demand
 // and the two citizen-facing configurations an admin can edit.
 export default function DistributorConsolePage({ currentSubPage = 'home', onNavigate, onLogout }) {
-  const storedName = localStorage.getItem('ration_user_name') || 'Distributor';
+  const { t } = useLanguage();
+  const storedName = localStorage.getItem('ration_user_name') || t('console.fallbackName');
   const [summary, setSummary] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
@@ -47,7 +50,7 @@ export default function DistributorConsolePage({ currentSubPage = 'home', onNavi
   }, [loadSummary]);
 
   const name = summary?.name || storedName;
-  const role = summary?.role || localStorage.getItem('ration_user_role') || 'Staff';
+  const role = summary?.role || localStorage.getItem('ration_user_role') || t('console.fallbackRole');
 
   // Deduplicate booked families by their unique ration card number so the
   // queue + the "recent" count reflect genuinely distinct households. Families
@@ -67,9 +70,9 @@ export default function DistributorConsolePage({ currentSubPage = 'home', onNavi
     : [];
 
   const NAV = [
-    { id: 'families-details', label: 'Families Details' },
-    { id: 'ration-details', label: 'Ration Details' },
-    { id: 'profile', label: 'Profile' },
+    { id: 'families-details', label: t('console.navFamilies') },
+    { id: 'ration-details', label: t('console.navRation') },
+    { id: 'profile', label: t('console.navProfile') },
   ];
 
   return (
@@ -90,16 +93,16 @@ export default function DistributorConsolePage({ currentSubPage = 'home', onNavi
               className={`flex items-center gap-3 text-left cursor-pointer rounded ${FOCUS}`}
             >
               <img src={logoAsset} alt="E-Ration" className="w-14 h-14 object-contain p-1 rounded-2xl" />
-              <div>
-                <p className="text-base font-extrabold tracking-tight leading-tight">Distributor Console</p>
-                <p className="text-xs font-bold uppercase tracking-[0.14em] text-slate-500">
-                  E-Ration Staff Portal
+              <div className="min-w-0">
+                <p className="text-base font-extrabold tracking-tight leading-tight break-words">{t('console.title')}</p>
+                <p className="text-xs font-bold uppercase tracking-[0.14em] text-slate-500 break-words">
+                  {t('console.portal')}
                 </p>
               </div>
             </button>
 
             <div className="flex items-center gap-3 sm:gap-5 flex-wrap justify-end">
-              <nav className="flex items-center gap-1 sm:gap-2" aria-label="Distributor navigation">
+              <nav className="flex items-center gap-1 sm:gap-2" aria-label={t('console.navLabel')}>
                 {NAV.map((item) => {
                   const active = currentSubPage === item.id;
                   return (
@@ -125,23 +128,24 @@ export default function DistributorConsolePage({ currentSubPage = 'home', onNavi
       </div>
 
       <main className="max-w-7xl mx-auto px-6 py-8 space-y-8 overscroll-y-contain" id="main-content" tabIndex={-1}>
-        <div className="flex items-center justify-end">
+        <div className="flex items-center justify-end gap-2 flex-wrap">
+          <LanguageToggle />
           <AccessibilityToolbar />
         </div>
         {loading && (
-          <p className="py-16 text-center text-sm font-semibold text-slate-500">Loading console data…</p>
+          <p className="py-16 text-center text-sm font-semibold text-slate-500">{t('common.loading')}</p>
         )}
 
         {!loading && (error || !summary) && (
           <div className="border border-slate-300 bg-white p-10 text-center">
-            <p className="text-sm font-bold">Couldn't load the console right now.</p>
+            <p className="text-sm font-bold">{t('common.loadFailed')}</p>
             <button
               type="button"
               onClick={() => { setLoading(true); loadSummary().finally(() => setLoading(false)); }}
               className="mt-4 bg-slate-900 hover:bg-orange-600 text-white text-[11px] font-bold uppercase tracking-wider px-5 py-2.5 transition-colors cursor-pointer inline-flex items-center gap-2"
             >
               <RefreshCw size={13} aria-hidden="true" />
-              Retry
+              {t('common.retry')}
             </button>
           </div>
         )}
@@ -162,9 +166,9 @@ export default function DistributorConsolePage({ currentSubPage = 'home', onNavi
           <>
             {/* Masthead — Swiss asymmetric headline block */}
             <section>
-              <p className="text-sm font-medium text-slate-500">Namaste, {name}</p>
-              <h1 className="text-4xl md:text-5xl font-extrabold tracking-tighter mt-1">
-                Distribution Control
+              <p className="text-sm font-medium text-slate-500 break-words">{t('console.greeting', { name })}</p>
+              <h1 className="text-4xl md:text-5xl font-extrabold tracking-tighter mt-1 break-words min-w-0">
+                {t('console.heading')}
               </h1>
             </section>
 
@@ -173,22 +177,22 @@ export default function DistributorConsolePage({ currentSubPage = 'home', onNavi
             <div className="grid grid-cols-1 lg:grid-cols-[1fr_380px] gap-6 items-start">
               {/* Delivery route map + booking queue */}
               <div className="space-y-6">
-                <section aria-label="Delivery route map" className="space-y-3">
+                <section aria-label={t('console.mapLabel')} className="space-y-3">
                   <div className="flex items-center justify-between">
-                    <h2 className="text-sm font-bold tracking-tight flex items-center gap-1.5"><MapPin size={13} className="text-[#198754]" aria-hidden="true" /> Delivery route</h2>
+                    <h2 className="text-sm font-bold tracking-tight flex items-center gap-1.5 break-words min-w-0"><MapPin size={13} className="text-[#198754]" aria-hidden="true" /> {t('console.routeTitle')}</h2>
                   </div>
-                  <div className="border border-slate-200 bg-white h-[360px] overflow-hidden isolate" title="Delivery route map — use + / − controls to zoom">
+                  <div className="border border-slate-200 bg-white h-[360px] overflow-hidden isolate" title={t('console.mapTitle')}>
                     <DeliveryRouteMap origin={summary.delivery.from} destination={summary.delivery.to} />
                   </div>
                 </section>
 
-                <section aria-label="Booking queue" className="space-y-3">
+                <section aria-label={t('console.queueLabel')} className="space-y-3">
                   <div className="flex items-baseline justify-between">
-                    <h2 className="text-sm font-bold tracking-tight">
-                      Booked families queue
+                    <h2 className="text-sm font-bold tracking-tight break-words min-w-0">
+                      {t('console.queueTitle')}
                     </h2>
                     <span className="text-[10px] font-bold uppercase tracking-[0.14em] text-slate-500 tabular-nums">
-                      {uniqueBookings.length} recent
+                      {t('console.recent', { count: uniqueBookings.length })}
                     </span>
                   </div>
                   <BookingsTable bookings={uniqueBookings} />
