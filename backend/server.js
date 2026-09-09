@@ -4,6 +4,7 @@ import dotenv from 'dotenv';
 import { connectDB } from './config/db.js'; // DNS pinning + IPv4 handled inside
 import apiRoutes from './routes/apiRoutes.js';
 import { errorHandler } from './middleware/errorHandler.js';
+import { archivePastBookings } from './services/archivalService.js';
 
 dotenv.config();
 
@@ -25,6 +26,22 @@ app.use(errorHandler);
 const server = app.listen(PORT, () => {
   console.log(`[Server] Live in ${process.env.NODE_ENV} environment configuration running on port ${PORT}`);
 });
+
+// Phase 5.5 — nightly archival (GIGW Q8): past Confirmed bookings become
+// Archived so live pages never act on outdated slots. No scheduler dep:
+// one delayed first run (lets Mongo connect) + every 24h. Idempotent and
+// failure-isolated — a DB outage logs instead of crashing the server.
+const DAY_MS = 24 * 60 * 60 * 1000;
+const runArchival = async () => {
+  try {
+    const count = await archivePastBookings();
+    if (count > 0) console.log(`[Archive] Archived ${count} past booking(s).`);
+  } catch (error) {
+    console.error('[Archive] Scheduled run failed:', error.message);
+  }
+};
+setTimeout(runArchival, 60 * 1000);
+setInterval(runArchival, DAY_MS);
 
 // Fail loudly (and let nodemon exit cleanly) instead of silently hanging on
 // "app crashed — waiting for file changes" when the port is already taken

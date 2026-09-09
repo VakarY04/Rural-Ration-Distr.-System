@@ -1,6 +1,6 @@
 import { ArrowRight, Users, ShieldCheck } from 'lucide-react';
 import heroBackdrop from '../images/india-republic-day-celebration-digital-art-with-flag.webp';
-import logoAsset from '../images/E-RATION Logo.png';
+import logoAsset from '../images/E-RATION Logo.webp';
 import { swiss, TricolorStrip, TRICOLOR_GRADIENT } from '../components/ui/swiss';
 import { useLandingAnimations } from './landing/useLandingAnimations';
 import SkipLink from '../components/SkipLink';
@@ -71,7 +71,7 @@ export default function LandingPage({ onNavigate }) {
       <AccessibilityToolbar />
 
       <div className="fixed inset-0 z-0 pointer-events-none" aria-hidden="true">
-        <img src={heroBackdrop} alt="" className="w-full h-full object-cover" />
+        <img src={heroBackdrop} alt="" fetchpriority="high" decoding="async" className="w-full h-full object-cover" />
         <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-black/30 to-black/50" />
       </div>
 
@@ -98,7 +98,7 @@ export default function LandingPage({ onNavigate }) {
           <div className="max-w-5xl mx-auto flex flex-col items-center text-center space-y-6">
 
             <div className="flex flex-col items-center gap-3">
-              <img src={logoAsset} alt="E-Ration Logo" className="w-20 h-20 object-contain rounded-2xl" />
+              <img src={logoAsset} alt="E-Ration Logo" width={80} height={80} decoding="async" className="w-20 h-20 object-contain rounded-2xl" />
               <h1 ref={brandTitleRef} className="text-3xl md:text-4xl font-extrabold tracking-tighter text-white uppercase leading-none drop-shadow-lg">
                 {t('landing.brandTitle')}
               </h1>

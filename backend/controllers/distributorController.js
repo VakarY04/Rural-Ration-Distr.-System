@@ -49,6 +49,9 @@ export const getDistributorSummary = async (req, res) => {
     );
 
     const recentBookings = [...bookings]
+      // Phase 5.5 — Archived slots leave the live queue (GIGW Q8); they
+      // remain in history via stats, never as actionable rows.
+      .filter((b) => b.status !== 'Archived')
       .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
       .slice(0, 30);
 

@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { RefreshCw, MapPin } from 'lucide-react';
-import logoAsset from '../images/E-RATION Logo.png';
+import logoAsset from '../images/E-RATION Logo.webp';
 import { api } from '../services/api';
 import { TRICOLOR_GRADIENT } from '../components/ui/swiss';
 import DeliveryRouteMap from '../components/DeliveryRouteMap';
@@ -92,7 +92,7 @@ export default function DistributorConsolePage({ currentSubPage = 'home', onNavi
               onClick={() => onNavigate('distributor-console', { subPage: 'home' })}
               className={`flex items-center gap-3 text-left cursor-pointer rounded ${FOCUS}`}
             >
-              <img src={logoAsset} alt="E-Ration" className="w-14 h-14 object-contain p-1 rounded-2xl" />
+              <img src={logoAsset} alt="E-Ration" width={56} height={56} decoding="async" className="w-14 h-14 object-contain p-1 rounded-2xl" />
               <div className="min-w-0">
                 <p className="text-base font-extrabold tracking-tight leading-tight break-words">{t('console.title')}</p>
                 <p className="text-xs font-bold uppercase tracking-[0.14em] text-slate-500 break-words">

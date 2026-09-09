@@ -26,13 +26,13 @@ export default function HoverSplitBackdrop({ image, activeSide, reveal = false }
     <>
       {/* Half A — top (mobile) / left (desktop) */}
       <div className="absolute inset-x-0 top-0 h-1/2 overflow-hidden pointer-events-none md:inset-y-0 md:left-0 md:right-auto md:h-full md:w-1/2">
-        <img src={image} alt="" aria-hidden="true" className={imgClass('left')} />
+        <img src={image} alt="" aria-hidden="true" decoding="async" className={imgClass('left')} />
         <div className={tintClass('left')} />
       </div>
 
       {/* Half B — bottom (mobile) / right (desktop) */}
       <div className="absolute inset-x-0 bottom-0 h-1/2 overflow-hidden pointer-events-none md:inset-y-0 md:right-0 md:left-auto md:h-full md:w-1/2">
-        <img src={image} alt="" aria-hidden="true" className={imgClass('right')} />
+        <img src={image} alt="" aria-hidden="true" decoding="async" className={imgClass('right')} />
         <div className={tintClass('right')} />
       </div>
     </>

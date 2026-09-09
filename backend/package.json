@@ -9,7 +9,8 @@
     "dev": "nodemon server.js",
     "prod": "node server.js",
     "seed:distributor": "node scripts/createDistributor.js",
-    "prune:bookings": "node scripts/pruneOrphanBookings.js"
+    "prune:bookings": "node scripts/pruneOrphanBookings.js",
+    "archive:bookings": "node scripts/archivePastBookings.js"
   },
   "keywords": [],
   "author": "",
