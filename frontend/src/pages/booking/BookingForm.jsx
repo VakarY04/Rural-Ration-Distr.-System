@@ -18,6 +18,7 @@ export default function BookingForm({
   onSlotChange,
   submitting,
   timeSlots,
+  availability = {},
 }) {
   const { t } = useLanguage();
   return (
@@ -75,9 +76,24 @@ export default function BookingForm({
               className={`${swiss.input} cursor-pointer ${FOCUS}`}
             >
               <option value="">{t('booking.form.chooseSlot')}</option>
-              {timeSlots.map((slot, i) => (
-                <option key={i} value={slot}>{slot}</option>
-              ))}
+              {timeSlots.map((slot, i) => {
+                const info = availability[slot];
+                const closed = info?.isOpen === false;
+                const full = info?.isFull === true;
+                const disabled = closed || full;
+                const suffix = closed
+                  ? ` — ${t('slots.closed')}`
+                  : full
+                    ? ` — ${t('slots.full')}`
+                    : info && Number.isFinite(info.remaining)
+                      ? ` — ${t('slots.left', { n: info.remaining })}`
+                      : '';
+                return (
+                  <option key={i} value={slot} disabled={disabled}>
+                    {slot}{suffix}
+                  </option>
+                );
+              })}
             </select>
             <p className="text-[10px] md:text-[12px] text-slate-500 font-medium">{t('booking.form.slotHint')}</p>
           </div>

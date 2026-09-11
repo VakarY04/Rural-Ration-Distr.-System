@@ -37,6 +37,7 @@ export const sessionPayload = (user) => ({
   email: user.email || null,
   phone: user.phone || null,
   role: user.role,
+  shopId: user.shopId || null,
 });
 
 // Emits the standard auth-success response (token + session payload) used by
@@ -51,4 +52,5 @@ export const publicUser = (user) => ({
   phone: user.phone || null,
   email: user.email || null,
   role: user.role,
+  shopId: user.shopId || null,
 });

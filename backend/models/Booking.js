@@ -17,9 +17,8 @@ const bookingSchema = new mongoose.Schema(
 // One active booking per user per date, and per ration card per date, so a
 // double-click, replay, or second account on the same card cannot create two
 // ledger entries. Slot-capacity (count per date+slot) is enforced in the
-// controller against MAX_FAMILIES_PER_SLOT; the index below keeps that count
-// query fast. Distributor side is still incomplete (Phase 7.2 will make
-// per-slot caps editable) — until then a single default cap applies.
+// controller against the admin-managed DistributionSettings.slots template
+// (7.2); the index below keeps that count query fast.
 bookingSchema.index({ user: 1, distributionDate: 1 }, { unique: true });
 bookingSchema.index({ rationCardNumber: 1, distributionDate: 1 }, { unique: true });
 bookingSchema.index({ distributionDate: 1, timeSlot: 1 });

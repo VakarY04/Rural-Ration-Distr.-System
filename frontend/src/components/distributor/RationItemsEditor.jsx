@@ -22,7 +22,7 @@ function cleanRow(row) {
   };
 }
 
-export default function RationItemsEditor({ items, onSaved }) {
+export default function RationItemsEditor({ items, onSaved, canEdit = false }) {
   const { t } = useLanguage();
   const UNITS = [
     { value: 'kg', label: t('items.kg') },
@@ -42,6 +42,33 @@ export default function RationItemsEditor({ items, onSaved }) {
   const { editing, draft, setDraft } = section;
   const updateRow = (index, patch) =>
     setDraft(draft.map((r, i) => (i === index ? { ...r, ...patch } : r)));
+
+  // 7.1 matrix: distributors see the list read-only; only admins get Edit.
+  if (!canEdit) {
+    return (
+      <EditorShell title={t('items.title')} readOnly>
+        {draft.filter((r) => r.label).length === 0 && (
+          <p className="text-sm font-semibold text-slate-900 break-words">{t('items.empty')}</p>
+        )}
+        <ul className="divide-y divide-slate-100">
+          {draft.filter((r) => r.label).map((row, i) => (
+            <li key={i} className="flex items-center gap-3 py-2.5 first:pt-0 last:pb-0">
+              <span className="w-8 h-8 border border-amber-200 bg-amber-50 text-amber-600 flex items-center justify-center shrink-0" aria-hidden="true">
+                <Wheat size={14} />
+              </span>
+              <span className="flex-1 min-w-0 text-sm font-semibold text-slate-900 truncate">{row.label}</span>
+              <span className="text-sm font-extrabold tracking-tight tabular-nums text-slate-900 shrink-0">
+                {row.quantity} {row.unit === 'litre' ? 'L' : 'kg'}
+              </span>
+            </li>
+          ))}
+        </ul>
+        <p className="mt-4 border border-amber-200 bg-amber-50 text-amber-800 text-xs font-semibold px-3 py-2">
+          {t('editor.adminOnly')}
+        </p>
+      </EditorShell>
+    );
+  }
 
   return (
     <EditorShell

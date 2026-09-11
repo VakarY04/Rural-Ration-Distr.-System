@@ -8,6 +8,9 @@ import StatBlocks from '../components/distributor/StatBlocks';
 import BookingsTable from '../components/distributor/BookingsTable';
 import DeliveryDetailsEditor from '../components/distributor/DeliveryDetailsEditor';
 import RationItemsEditor from '../components/distributor/RationItemsEditor';
+import SlotManager from '../components/distributor/SlotManager';
+import GrievanceQueue from '../components/distributor/GrievanceQueue';
+import ReportsPanel from '../components/distributor/ReportsPanel';
 import DistributorProfileMenu from '../components/distributor/DistributorProfileMenu';
 import FamiliesDetailsPage from './FamiliesDetailsPage';
 import RationDetailsPage from './RationDetailsPage';
@@ -50,7 +53,16 @@ export default function DistributorConsolePage({ currentSubPage = 'home', onNavi
   }, [loadSummary]);
 
   const name = summary?.name || storedName;
-  const role = summary?.role || localStorage.getItem('ration_user_role') || t('console.fallbackRole');
+  const rawRole = summary?.role || localStorage.getItem('ration_user_role') || 'distributor';
+  const isAdmin = rawRole === 'admin';
+  // 7.1 matrix: backend permissions are authoritative; role fallback keeps
+  // older cached summaries working until the next refresh.
+  const permissions = summary?.permissions;
+  const canEditDelivery = permissions?.canEditDelivery ?? isAdmin;
+  const canEditItems = permissions?.canEditItems ?? isAdmin;
+  const canManageSlots = permissions?.canManageSlots ?? isAdmin;
+  const shopId = summary?.shopId || null;
+  const role = isAdmin ? t('console.roleAdmin') : t('console.roleDistributor');
 
   // Deduplicate booked families by their unique ration card number so the
   // queue + the "recent" count reflect genuinely distinct households. Families
@@ -159,7 +171,7 @@ export default function DistributorConsolePage({ currentSubPage = 'home', onNavi
         )}
 
         {!loading && currentSubPage === 'profile' && (
-          <DistributorProfilePage name={name} role={role} />
+          <DistributorProfilePage name={name} role={role} shopId={shopId} isAdmin={isAdmin} />
         )}
 
         {!loading && summary && (currentSubPage === 'home' || !currentSubPage) && (
@@ -170,9 +182,28 @@ export default function DistributorConsolePage({ currentSubPage = 'home', onNavi
               <h1 className="text-4xl md:text-5xl font-extrabold tracking-tighter mt-1 break-words min-w-0">
                 {t('console.heading')}
               </h1>
+              <p className="mt-2 inline-flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.14em]">
+                <span className={`px-2.5 py-1 rounded-full border ${isAdmin ? 'border-[#000080]/30 bg-[#000080]/5 text-[#000080]' : 'border-[#198754]/30 bg-[#198754]/10 text-[#198754]'}`}>
+                  {role}{shopId ? ` · ${shopId}` : ''}
+                </span>
+              </p>
             </section>
 
             <StatBlocks stats={summary.stats} />
+
+            {/* 7.2 — slot windows & capacity (admin-managed, full width) */}
+            <SlotManager
+              key={`slots-${summary.updatedAt || 'init'}`}
+              slots={summary.slots}
+              canEdit={canManageSlots}
+              onSaved={loadSummary}
+            />
+
+            {/* 7.3 — grievance queue wired to AI triage (staff assign/track/resolve) */}
+            <GrievanceQueue />
+
+            {/* 7.4 — entitlement vs allocation vs collection per district */}
+            <ReportsPanel />
 
             <div className="grid grid-cols-1 lg:grid-cols-[1fr_380px] gap-6 items-start">
               {/* Delivery route map + booking queue */}
@@ -199,17 +230,19 @@ export default function DistributorConsolePage({ currentSubPage = 'home', onNavi
                 </section>
               </div>
 
-              {/* Read-only delivery configuration — remounts on fresh server data */}
+              {/* Role-gated configuration — 7.1 matrix: distributors read-only */}
               <div className="space-y-6">
                 <DeliveryDetailsEditor
                   key={`delivery-${summary.updatedAt || 'init'}`}
                   delivery={summary.delivery}
                   onSaved={loadSummary}
+                  canEdit={canEditDelivery}
                 />
                 <RationItemsEditor
                   key={`items-${summary.updatedAt || 'init'}`}
                   items={summary.items}
                   onSaved={loadSummary}
+                  canEdit={canEditItems}
                 />
               </div>
             </div>

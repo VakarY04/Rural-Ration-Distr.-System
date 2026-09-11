@@ -8,7 +8,15 @@ import {
   updateDeliveryDetails,
   updateRationItems,
 } from '../controllers/distributorController.js';
-import { requireStaff } from '../middleware/staffMiddleware.js';
+import { getSlots, getSlotAvailability, updateSlots } from '../controllers/slotController.js';
+import {
+  fileGrievance,
+  getMyGrievances,
+  getGrievanceQueue,
+  updateGrievance,
+} from '../controllers/grievanceController.js';
+import { getReports, exportReports } from '../controllers/reportController.js';
+import { requireStaff, requireAdmin } from '../middleware/staffMiddleware.js';
 import { protect } from '../middleware/authMiddleware.js';
 import { dbGate } from '../middleware/dbGate.js';
 import { register, login, sendOtp, verifyOtp, getMe, updateMe, deleteMe } from '../controllers/authController.js';
@@ -43,9 +51,30 @@ router.get('/bookings', protect, getUserBookings);
 router.get('/dashboard/summary', protect, getDashboardSummary);
 
 // Distributor / Admin console (staff only)
+// Reads stay staff-wide; global-config writes are admin-only per the 7.1
+// roles matrix (distributors are read-only until per-shop scoping lands).
 router.get('/distributor/summary', protect, requireStaff, getDistributorSummary);
-router.put('/distributor/delivery', protect, requireStaff, updateDeliveryDetails);
-router.put('/distributor/items', protect, requireStaff, updateRationItems);
+router.put('/distributor/delivery', protect, requireAdmin, updateDeliveryDetails);
+router.put('/distributor/items', protect, requireAdmin, updateRationItems);
+
+// Slot windows (7.2) — reads for every signed-in user (citizens book from
+// them); writes are admin-only. Availability counts live bookings per window.
+router.get('/slots', protect, getSlots);
+router.get('/slots/availability', protect, getSlotAvailability);
+router.put('/slots', protect, requireAdmin, updateSlots);
+
+// Grievance queue (7.3) — filing + citizen tracking for everyone signed in;
+// the full queue + assign/track/resolve for staff. Resolving notifies the
+// citizen in-app (resolution field) and by email when SMTP is configured.
+router.post('/grievances', protect, fileGrievance);
+router.get('/grievances/mine', protect, getMyGrievances);
+router.get('/grievances', protect, requireStaff, getGrievanceQueue);
+router.patch('/grievances/:id', protect, requireStaff, updateGrievance);
+
+// Reports (7.4) — entitlement vs allocation vs collection per district.
+// Staff only; JSON for the console panel + CSV for download.
+router.get('/reports', protect, requireStaff, getReports);
+router.get('/reports/export', protect, requireStaff, exportReports);
 
 // Citizen feedback inbox (stored always, emailed to owner when SMTP is set)
 router.post('/feedback', protect, submitFeedback);

@@ -12,12 +12,18 @@ const REGISTRY_PATH = path.join(
   'distributorRegistry.js'
 );
 
+// Staff registry helpers — the government registry file
+// (backend/data/distributorRegistry.js) is the source of truth for staff
+// access. Nobody can self-register as staff; a person may sign in through
+// the Staff gateway only if their email/phone appears there with a matching
+// role ('admin' via the Admin choice, 'distributor' via the Distributor
+// choice — admins may also use the Distributor choice as supervisors).
 // Normalizes an identifier for comparison (case/whitespace insensitive).
 const normalize = (value) => String(value || '').trim().toLowerCase();
 
 // Finds the provisioned registry entry matching an email OR mobile number.
 // Returns null when the identifier does not belong to any government-
-// provisioned distributor.
+// provisioned staff member.
 export const findRegistryEntry = ({ email, phone }) => {
   const identifier = normalize(email || phone);
   if (!identifier) return null;
@@ -59,15 +65,38 @@ export const syncRegistryUserToDb = async (UserModel, entry) => {
   const email = normalize(entry.email);
   let user = await UserModel.findOne({ $or: [{ email }, { phone: entry.phone }] });
 
+  const wantedRole = entry.role === 'admin' ? 'admin' : 'distributor';
+
   if (!user) {
     user = await UserModel.create({
       name: entry.name,
       email,
       phone: entry.phone,
       password: entry.password, // hashed automatically by the schema hook
-      role: entry.role === 'admin' ? 'admin' : 'distributor',
+      role: wantedRole,
+      shopId: entry.shopId || null,
     });
+    return user;
   }
+
+  // Keep an existing mirror in lock-step with the registry (role/shop/name
+  // may change when the department re-provisions a shop). Never touches the
+  // stored password hash here — login/reset flows own that.
+  let dirty = false;
+  if (user.role !== wantedRole) {
+    user.role = wantedRole;
+    dirty = true;
+  }
+  const wantedShop = entry.shopId || null;
+  if ((user.shopId || null) !== wantedShop) {
+    user.shopId = wantedShop;
+    dirty = true;
+  }
+  if (entry.name && user.name !== entry.name) {
+    user.name = entry.name;
+    dirty = true;
+  }
+  if (dirty) await user.save();
 
   return user;
 };

@@ -17,14 +17,15 @@ export default function BookingPage() {
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
   const [bookingDetails, setBookingDetails] = useState(null);
-
-  // Available Time Slots
-  const timeSlots = [
+  // 7.2 — live slot windows from the admin-managed template (fallback to the
+  // legacy four windows when the endpoint is unreachable, e.g. old backend).
+  const [timeSlots, setTimeSlots] = useState([
     '09:00 AM - 11:00 AM',
     '11:00 AM - 01:00 PM',
     '02:00 PM - 04:00 PM',
     '04:00 PM - 06:00 PM'
-  ];
+  ]);
+  const [availability, setAvailability] = useState({});
 
   // Fetch Family Profile & Active Booking on Component Mount
   const fetchProfileAndBooking = async () => {
@@ -40,9 +41,10 @@ export default function BookingPage() {
 
       const headers = { Authorization: `Bearer ${token}` };
 
-      const [profileRes, bookingRes] = await Promise.all([
+      const [profileRes, bookingRes, slotsRes] = await Promise.all([
         fetch(API_URL + '/family/profile', { headers }).then((r) => (r.ok ? r.json() : null)),
         fetch(API_URL + '/bookings/active', { headers }).then((r) => (r.ok ? r.json() : null)).catch(() => null),
+        fetch(API_URL + '/slots', { headers }).then((r) => (r.ok ? r.json() : null)).catch(() => null),
       ]);
 
       if (profileRes) {
@@ -53,6 +55,10 @@ export default function BookingPage() {
 
       if (bookingRes?.booking) {
         setBookingDetails(bookingRes.booking);
+      }
+
+      if (Array.isArray(slotsRes?.slots) && slotsRes.slots.length) {
+        setTimeSlots(slotsRes.slots.filter((s) => s?.label).map((s) => s.label));
       }
     } catch (err) {
       console.error('Error verifying household profile:', err);
@@ -65,6 +71,39 @@ export default function BookingPage() {
   useEffect(() => {
     Promise.resolve().then(fetchProfileAndBooking);
   }, []);
+
+  // 7.2 — live per-window occupancy for the picked date (drives Full/Closed
+  // disabling in the slot dropdown). Clears when the date is cleared.
+  useEffect(() => {
+    if (!selectedDate) {
+      setAvailability({});
+      return;
+    }
+    let active = true;
+    const token = localStorage.getItem('ration_user_token');
+    if (!token) return undefined;
+    fetch(`${API_URL}/slots/availability?date=${encodeURIComponent(selectedDate)}`, {
+      headers: { Authorization: `Bearer ${token}` },
+    })
+      .then((r) => (r.ok ? r.json() : null))
+      .then((data) => {
+        if (!active || !data) return;
+        const map = {};
+        for (const s of data.slots || []) map[s.label] = s;
+        setAvailability(map);
+        // Drop a now-invalid selection (closed window renamed/closed).
+        setSelectedSlot((prev) => {
+          if (!prev) return prev;
+          const info = map[prev];
+          if (!info || info.isOpen === false || info.isFull) return '';
+          return prev;
+        });
+      })
+      .catch(() => {});
+    return () => {
+      active = false;
+    };
+  }, [selectedDate]);
 
   // Handle Booking Submission
   const handleCreateBooking = async (e) => {
@@ -115,6 +154,10 @@ export default function BookingPage() {
         setBookingDetails(data.booking || bookingPayload);
       } else if (response.status === 409 && data.code === 'SLOT_FULL') {
         setError(t('booking.slotFull'));
+      } else if (response.status === 409 && data.code === 'SLOT_CLOSED') {
+        setError(t('booking.slotClosed'));
+      } else if (response.status === 400 && data.code === 'UNKNOWN_SLOT') {
+        setError(t('booking.unknownSlot'));
       } else if (response.status === 409 && data.code === 'ALREADY_BOOKED') {
         setError(t('booking.alreadyBooked'));
       } else if (data.code === 'PAST_DATE') {
@@ -213,6 +256,7 @@ export default function BookingPage() {
           onSlotChange={setSelectedSlot}
           submitting={submitting}
           timeSlots={timeSlots}
+          availability={availability}
         />
       </section>
 

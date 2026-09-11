@@ -25,6 +25,8 @@ export default function AiSupportPage() {
   const [issue, setIssue] = useState('');
   const [loading, setLoading] = useState(false);
   const [analysis, setAnalysis] = useState(null);
+  const [ticket, setTicket] = useState('');
+  const [mine, setMine] = useState([]);
   const [error, setError] = useState('');
   const [showHelplineModal, setShowHelplineModal] = useState(false);
   const closeModalRef = useRef(null);
@@ -58,7 +60,32 @@ export default function AiSupportPage() {
         })
         .catch(() => {});
     }
+    // 7.3 — citizen's own tracked tickets (status + staff resolution).
+    if (token) {
+      fetch(API_URL + '/grievances/mine', {
+        headers: { Authorization: `Bearer ${token}` }
+      })
+        .then((r) => (r.ok ? r.json() : null))
+        .then((data) => {
+          if (Array.isArray(data?.grievances)) setMine(data.grievances);
+        })
+        .catch(() => {});
+    }
   }, [account]);
+
+  const refreshMine = async () => {
+    const token = localStorage.getItem('ration_user_token');
+    if (!token) return;
+    try {
+      const res = await fetch(API_URL + '/grievances/mine', {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      const data = await res.json();
+      if (res.ok && Array.isArray(data.grievances)) setMine(data.grievances);
+    } catch {
+      // Tracking list is best-effort; filing result above is authoritative.
+    }
+  };
 
   const handleAnalyze = async (e) => {
     e.preventDefault();
@@ -66,10 +93,13 @@ export default function AiSupportPage() {
     setLoading(true);
     setError('');
     setAnalysis(null);
+    setTicket('');
 
     try {
       const token = localStorage.getItem('ration_user_token');
-      const res = await fetch(API_URL + '/ai/grievance', {
+      // 7.3 — filing endpoint triages + persists; the result doubles as the
+      // analysis display. Falls back to analysis-only when offline-old backend.
+      let res = await fetch(API_URL + '/grievances', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -77,10 +107,25 @@ export default function AiSupportPage() {
         },
         body: JSON.stringify({ issue })
       });
-
-      const data = await res.json();
+      let data = await res.json().catch(() => ({}));
+      if (res.status === 404) {
+        res = await fetch(API_URL + '/ai/grievance', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`
+          },
+          body: JSON.stringify({ issue })
+        });
+        data = await res.json();
+      }
       if (!res.ok) throw new Error(data.message || t('helpdesk.aiFailed'));
-      setAnalysis(data);
+      setAnalysis(data.analysis || data);
+      if (data.grievance?.id) {
+        setTicket(String(data.grievance.id).slice(-6).toUpperCase());
+        setIssue('');
+        refreshMine();
+      }
     } catch (err) {
       setError(err.message || t('helpdesk.bridgeFailed'));
     } finally {
@@ -184,6 +229,12 @@ export default function AiSupportPage() {
               </span>
             </div>
 
+            {ticket && (
+              <p className="bg-[#198754]/10 border border-[#198754]/30 text-[#198754] text-xs font-bold px-3 py-2">
+                {t('helpdesk.ticketFiled', { ticket })}
+              </p>
+            )}
+
             {analysis.response ? (
               <div className="bg-white border border-slate-200 p-4 text-xs font-medium text-slate-800 whitespace-pre-wrap leading-relaxed">
                 {analysis.response}
@@ -206,6 +257,41 @@ export default function AiSupportPage() {
             )}
           </div>
         )}
+
+        {/* Citizen tracking — own tickets with staff status + resolution */}
+        <section className={`${swiss.panel} p-6 space-y-4`}>
+          <h2 className="text-sm font-extrabold tracking-tight text-slate-900">{t('helpdesk.trackTitle')}</h2>
+          {mine.length === 0 ? (
+            <p className="text-xs text-slate-500 font-medium">{t('helpdesk.trackEmpty')}</p>
+          ) : (
+            <ol className="divide-y divide-slate-100 border border-slate-200">
+              {mine.map((g) => (
+                <li key={g.id} className="p-4 space-y-2">
+                  <div className="flex items-center gap-2 flex-wrap">
+                    <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 border border-slate-300 text-slate-600">
+                      #{String(g.id).slice(-6).toUpperCase()}
+                    </span>
+                    <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 border border-slate-300 text-slate-600">
+                      {g.status}
+                    </span>
+                    <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 border border-slate-300 text-slate-600">
+                      {g.category}
+                    </span>
+                  </div>
+                  <p className="text-xs font-semibold text-slate-900 break-words">{g.issue}</p>
+                  {g.assignedTo && (
+                    <p className="text-[11px] text-slate-500">{t('helpdesk.assigned', { who: g.assignedTo })}</p>
+                  )}
+                  {g.resolution && (
+                    <p className="text-xs bg-[#198754]/10 border border-[#198754]/30 text-[#198754] font-semibold px-3 py-2 break-words">
+                      {t('helpdesk.resolution')}: {g.resolution}
+                    </p>
+                  )}
+                </li>
+              ))}
+            </ol>
+          )}
+        </section>
       </section>
 
       {/* Bottom Help Desk Card */}
