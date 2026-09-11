@@ -13,6 +13,13 @@ import { useLanguage } from '../i18n/LanguageContext';
 const FOCUS =
   'focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-orange-500';
 
+// Fixed viewport page (no body scroll): the two gateway cards share one row
+// and scroll internally only if the viewport is too short for their content.
+// All three states (User Login, Staff picker, role form) share one card size.
+const CARD =
+  'w-full bg-white border rounded-xl transition-all duration-500 flex flex-col max-h-full overflow-y-auto';
+const CARD_COMPACT = 'max-w-sm p-8 space-y-5';
+
 export default function AdminLoginPage({ onNavigate, onAuthSuccess }) {
   const { t } = useLanguage();
   const [activeSide, setActiveSide] = useState(null);
@@ -24,6 +31,12 @@ export default function AdminLoginPage({ onNavigate, onAuthSuccess }) {
 
   const activate = (side) => setActiveSide(side);
   const deactivate = () => setActiveSide(null);
+  // Keep the split backdrop stable while tabbing between controls inside one
+  // gateway: only clear the hover when focus truly leaves the section, so the
+  // artwork effect matches a mouse hover exactly.
+  const handleBlur = (e) => {
+    if (!e.currentTarget.contains(e.relatedTarget)) deactivate();
+  };
 
   const handleSuccess = (portalKey, user) => {
     if (!onAuthSuccess) return;
@@ -37,37 +50,37 @@ export default function AdminLoginPage({ onNavigate, onAuthSuccess }) {
       : t('auth.staffLogin');
 
   return (
-    <div className="relative min-h-screen font-sans bg-slate-950 text-white overflow-x-hidden flex flex-col">
+    <div className="relative h-screen overflow-hidden font-sans bg-slate-950 text-white flex flex-col">
       <SkipLink />
       <HoverSplitBackdrop image={heroBackdrop} activeSide={activeSide} />
 
-      <div className="relative z-20 pt-16 pb-6 shrink-0 text-center px-6 pointer-events-none">
-        <h1 className="text-3xl md:text-4xl font-bold tracking-tighter text-white">
+      <div className="relative z-20 pt-8 pb-3 shrink-0 text-center px-6 pointer-events-none">
+        <h1 className="text-2xl md:text-3xl font-bold tracking-tighter text-white">
           {t('auth.accessPortal')}
         </h1>
-        <p className="text-xl font-medium tracking-normal text-slate-200 mt-2">
+        <p className="text-base font-medium tracking-normal text-slate-200 mt-1">
           {t('auth.chooseGateway')}
         </p>
       </div>
 
-      <div className="relative z-20 flex justify-center px-6 pb-2 shrink-0">
+      <div className="relative z-20 flex justify-center px-6 pb-1 shrink-0">
         <div className="flex items-center gap-2 flex-wrap justify-center">
           <LanguageToggle />
         </div>
         <AccessibilityToolbar />
       </div>
 
-      <div className="relative z-20 flex flex-col md:flex-row items-stretch justify-center flex-1 py-6" role="main" id="main-content" tabIndex={-1}>
-        {/* Citizen gateway — unchanged */}
+      <div className="relative z-20 flex flex-col md:flex-row items-stretch justify-center flex-1 min-h-0 py-4" role="main" id="main-content" tabIndex={-1}>
+        {/* Citizen gateway */}
         <section
           onMouseEnter={() => activate('left')}
           onMouseLeave={deactivate}
           onFocus={() => activate('left')}
-          onBlur={deactivate}
-          className="flex-1 flex items-center justify-center p-5 md:p-10 transition-opacity duration-700"
+          onBlur={handleBlur}
+          className="flex-1 min-h-0 flex items-center justify-center p-4 md:p-6 transition-opacity duration-700"
         >
           <div
-            className={`w-full max-w-sm bg-white border rounded-xl p-8 space-y-5 transition-all duration-500 ${
+            className={`${CARD} ${CARD_COMPACT} ${
               activeSide === 'left' ? 'border-[#FF9933] -translate-y-1 shadow-xl' : 'border-slate-200 hover:shadow-lg hover:-translate-y-0.5'
             }`}
           >
@@ -75,14 +88,9 @@ export default function AdminLoginPage({ onNavigate, onAuthSuccess }) {
               <div className="w-12 h-12 flex items-center justify-center border shrink-0 border-[#138808] text-[#138808] bg-green-50">
                 <Users size={22} />
               </div>
-              <div>
-                <h2 className="text-xl font-medium tracking-tight text-[#000080]">
-                  {t('auth.userLogin')}
-                </h2>
-                <p className="text-[11px] font-medium text-slate-500 mt-0.5 leading-snug">
-                  {t('auth.userLoginSub')}
-                </p>
-              </div>
+              <h2 className="text-xl font-medium tracking-tight text-[#000080]">
+                {t('auth.userLogin')}
+              </h2>
             </div>
 
             <AuthMethodTabs
@@ -106,7 +114,7 @@ export default function AdminLoginPage({ onNavigate, onAuthSuccess }) {
               />
             )}
 
-            <p className="text-center text-[11px] font-semibold text-slate-500 pt-3">
+            <p className="text-center text-[11px] font-semibold text-slate-500 pt-3 mt-auto">
               {t('auth.newToPortal')}{' '}
               <button
                 type="button"
@@ -124,11 +132,11 @@ export default function AdminLoginPage({ onNavigate, onAuthSuccess }) {
           onMouseEnter={() => activate('right')}
           onMouseLeave={deactivate}
           onFocus={() => activate('right')}
-          onBlur={deactivate}
-          className="flex-1 flex items-center justify-center p-5 md:p-10 transition-opacity duration-700"
+          onBlur={handleBlur}
+          className="flex-1 min-h-0 flex items-center justify-center p-4 md:p-6 transition-opacity duration-700"
         >
           <div
-            className={`w-full max-w-sm bg-white border rounded-xl p-8 space-y-5 transition-all duration-500 ${
+            className={`${CARD} ${CARD_COMPACT} ${
               activeSide === 'right' ? 'border-[#FF9933] -translate-y-1 shadow-xl' : 'border-slate-200 hover:shadow-lg hover:-translate-y-0.5'
             }`}
           >
@@ -136,27 +144,22 @@ export default function AdminLoginPage({ onNavigate, onAuthSuccess }) {
               <div className="w-12 h-12 flex items-center justify-center border shrink-0 border-[#FF9933] text-[#FF9933] bg-orange-50">
                 <Building2 size={22} />
               </div>
-              <div>
-                <h2 className="text-xl font-medium tracking-tight text-[#000080]">
-                  {staffTitle}
-                </h2>
-                <p className="text-[11px] font-medium text-slate-500 mt-0.5 leading-snug">
-                  {t('auth.staffLoginSub')}
-                </p>
-              </div>
+              <h2 className="text-xl font-medium tracking-tight text-[#000080]">
+                {staffTitle}
+              </h2>
             </div>
 
             {staffRole === null ? (
-              <div className="space-y-3">
+              <div className="space-y-3 flex-1 flex flex-col justify-center">
                 <p className="text-[11px] font-semibold text-slate-500 leading-snug">
                   {t('auth.chooseStaffRole')}
                 </p>
                 <button
                   type="button"
                   onClick={() => setStaffRole('admin')}
-                  className={`w-full flex items-center gap-3 border border-slate-300 hover:border-[#FF9933] hover:bg-orange-50/50 px-4 py-3.5 text-left transition-colors cursor-pointer ${FOCUS}`}
+                  className={`w-full flex items-center gap-3 border border-slate-300 hover:border-[#FF9933] hover:bg-orange-50 px-4 py-3.5 text-left transition-colors cursor-pointer group ${FOCUS}`}
                 >
-                  <ShieldCheck size={20} className="text-[#000080] shrink-0" aria-hidden="true" />
+                  <ShieldCheck size={20} className="text-slate-400 group-hover:text-[#FF9933] shrink-0 transition-colors" aria-hidden="true" />
                   <span>
                     <span className="block text-sm font-bold text-slate-900">{t('auth.adminRole')}</span>
                     <span className="block text-[11px] font-medium text-slate-500">{t('auth.adminRoleSub')}</span>
@@ -165,17 +168,14 @@ export default function AdminLoginPage({ onNavigate, onAuthSuccess }) {
                 <button
                   type="button"
                   onClick={() => setStaffRole('distributor')}
-                  className={`w-full flex items-center gap-3 border border-slate-300 hover:border-[#FF9933] hover:bg-orange-50/50 px-4 py-3.5 text-left transition-colors cursor-pointer ${FOCUS}`}
+                  className={`w-full flex items-center gap-3 border border-slate-300 hover:border-[#138808] hover:bg-green-50 px-4 py-3.5 text-left transition-colors cursor-pointer group ${FOCUS}`}
                 >
-                  <Building2 size={20} className="text-[#FF9933] shrink-0" aria-hidden="true" />
+                  <Building2 size={20} className="text-slate-400 group-hover:text-[#138808] shrink-0 transition-colors" aria-hidden="true" />
                   <span>
                     <span className="block text-sm font-bold text-slate-900">{t('auth.distributorRole')}</span>
                     <span className="block text-[11px] font-medium text-slate-500">{t('auth.distributorRoleSub')}</span>
                   </span>
                 </button>
-                <p className="text-center text-[10px] font-medium text-slate-500 tracking-wide pt-3">
-                  {t('auth.staffProvisioned')}
-                </p>
               </div>
             ) : (
               <div className="space-y-5">
@@ -210,10 +210,6 @@ export default function AdminLoginPage({ onNavigate, onAuthSuccess }) {
                     onSuccess={(user) => handleSuccess(staffRole, user)}
                   />
                 )}
-
-                <p className="text-center text-[10px] font-medium text-slate-500 tracking-wide pt-3">
-                  {t('auth.staffProvisioned')}
-                </p>
               </div>
             )}
           </div>
