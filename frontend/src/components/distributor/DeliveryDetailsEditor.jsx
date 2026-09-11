@@ -44,7 +44,7 @@ function RouteField({ side, value, onChange, editing }) {
   );
 }
 
-export default function DeliveryDetailsEditor({ delivery, onSaved }) {
+export default function DeliveryDetailsEditor({ delivery, onSaved, canEdit = false }) {
   const { t } = useLanguage();
   const initial = delivery?.from ? delivery : EMPTY;
 
@@ -55,11 +55,47 @@ export default function DeliveryDetailsEditor({ delivery, onSaved }) {
     onSaved,
   });
 
+  // 7.1 matrix: distributors are read-only on global delivery config.
+  if (!canEdit) {
+    return (
+      <EditorShell title={t('delivery.title')} readOnly>
+        <dl className="space-y-4">
+          <RouteField side={t('delivery.from')} value={section.draft.from} onChange={() => {}} editing={false} />
+          <RouteField side={t('delivery.to')} value={section.draft.to} onChange={() => {}} editing={false} />
+        </dl>
+        <p className="mt-4 border border-amber-200 bg-amber-50 text-amber-800 text-xs font-semibold px-3 py-2">
+          {t('editor.adminOnly')}
+        </p>
+      </EditorShell>
+    );
+  }
+
+  const updateSide = (key, patch) =>
+    section.setDraft({ ...section.draft, [key]: { ...section.draft[key], ...patch } });
+
   return (
-    <EditorShell title={t('delivery.title')} readOnly>
+    <EditorShell
+      title={t('delivery.title')}
+      editing={section.editing}
+      saving={section.saving}
+      onEdit={section.startEditing}
+      onSave={section.save}
+      onCancel={section.cancelEditing}
+      error={section.error}
+    >
       <dl className="space-y-4">
-        <RouteField side={t('delivery.from')} value={section.draft.from} onChange={() => {}} editing={false} />
-        <RouteField side={t('delivery.to')} value={section.draft.to} onChange={() => {}} editing={false} />
+        <RouteField
+          side={t('delivery.from')}
+          value={section.draft.from}
+          onChange={(next) => updateSide('from', next)}
+          editing={section.editing}
+        />
+        <RouteField
+          side={t('delivery.to')}
+          value={section.draft.to}
+          onChange={(next) => updateSide('to', next)}
+          editing={section.editing}
+        />
       </dl>
     </EditorShell>
   );

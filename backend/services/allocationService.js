@@ -2,9 +2,9 @@ import { bookingRepository } from '../repositories/bookingRepository.js';
 import { computeRationBreakdown } from './rationCalculator.js';
 
 // Administrative rule constraints mapping to rural distribution guidelines
-// Exported so bookingController enforces the SAME cap live (Phase 5.1).
-// Distributor side is incomplete — Phase 7.2 will replace this single
-// default with per-slot editable caps. Until then, one value everywhere.
+// 7.2: per-slot editable caps live in DistributionSettings.slots and are
+// enforced in bookingController. This constant remains as the fallback default
+// for slots without a stored capacity + for legacy callers/tests.
 export const MAX_FAMILIES_PER_SLOT = 6;  // Hard ceiling to prevent overcrowding at the center
 
 export const allocationService = {

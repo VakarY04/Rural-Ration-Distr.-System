@@ -33,6 +33,11 @@ const userSchema = new mongoose.Schema(
       enum: ['citizen', 'distributor', 'admin'],
       default: 'citizen',
     },
+    shopId: {
+      type: String, // FPS identifier from the government registry (e.g. FPS-1001); null for citizens
+      trim: true,
+      default: null,
+    },
     otp: {
       type: String,
       default: undefined,

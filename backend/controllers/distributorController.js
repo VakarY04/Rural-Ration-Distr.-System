@@ -1,10 +1,13 @@
 import Booking from '../models/Booking.js';
 import User from '../models/User.js';
+import Grievance from '../models/Grievance.js';
 import {
   getDistributionSettings,
   DEFAULT_WAREHOUSE,
   DEFAULT_COLLECTION_CENTRE,
+  DEFAULT_SLOTS,
 } from '../models/DistributionSettings.js';
+import { permissionsFor } from '../middleware/staffMiddleware.js';
 import { sendError } from '../utils/httpError.js';
 
 // Pulls the numeric kg out of an allocatedItems entry like "35 kg".
@@ -28,7 +31,7 @@ const publicBooking = (b) => ({
 
 // Aggregated snapshot powering the distributor console dashboard:
 // headline stats (families booked etc.), recent booking queue, and the
-// current editable delivery details + ration items configuration.
+// current editable delivery details + ration items + slot windows.
 export const getDistributorSummary = async (req, res) => {
   try {
     const settings = await getDistributionSettings();
@@ -60,9 +63,26 @@ export const getDistributorSummary = async (req, res) => {
     ];
     const confirmedBookings = bookings.filter((b) => b.status === 'Confirmed').length;
 
+    // 7.3 — grievance headline counts for the console (failure-isolated: a
+    // grievance-collection hiccup must never break the whole summary).
+    let grievanceStats = { Open: 0, 'In Review': 0, Resolved: 0, total: 0 };
+    try {
+      const counts = await Grievance.aggregate([
+        { $group: { _id: '$status', n: { $sum: 1 } } },
+      ]);
+      for (const c of counts) {
+        if (grievanceStats[c._id] !== undefined) grievanceStats[c._id] = c.n;
+        grievanceStats.total += c.n;
+      }
+    } catch {
+      grievanceStats = { Open: 0, 'In Review': 0, Resolved: 0, total: 0 };
+    }
+
     return res.status(200).json({
       name: req.user?.name || 'Staff',
       role: req.user?.role,
+      shopId: req.user?.shopId || null,
+      permissions: permissionsFor(req.user?.role),
       stats: {
         familiesBooked: bookedCards.length,
         totalBookings: bookings.length,
@@ -77,6 +97,8 @@ export const getDistributorSummary = async (req, res) => {
         to: { ...settings.delivery.to, lat: DEFAULT_COLLECTION_CENTRE.lat, lng: DEFAULT_COLLECTION_CENTRE.lng },
       },
       items: settings.items,
+      slots: Array.isArray(settings.slots) && settings.slots.length ? settings.slots : DEFAULT_SLOTS,
+      grievanceStats,
       updatedAt: settings.updatedAt,
     });
   } catch (error) {

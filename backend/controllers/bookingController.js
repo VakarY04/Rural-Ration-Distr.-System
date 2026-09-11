@@ -1,14 +1,13 @@
 import Booking from '../models/Booking.js';
 import { getRequestUserId } from '../utils/requestUser.js';
 import { sendError } from '../utils/httpError.js';
-import { MAX_FAMILIES_PER_SLOT } from '../services/allocationService.js';
+import { getDistributionSettings, DEFAULT_SLOTS, DEFAULT_SLOT_CAPACITY } from '../models/DistributionSettings.js';
 
 // Phase 5.1 + 5.2 — server-side guards. The client has matching checks, but
 // curl/Postman bypass them, so every rule is re-enforced here.
-// Distributor side is incomplete: per-slot editable caps (Phase 7.2) do not
-// exist yet, so a single default cap (MAX_FAMILIES_PER_SLOT) applies to all
-// windows. Unique indexes in models/Booking.js backstop the duplicate checks
-// against concurrent requests.
+// Phase 7.2 — per-slot editable caps: the window list + capacity + open flag
+// come from DistributionSettings.slots (admin-managed). Unique indexes in
+// models/Booking.js backstop the duplicate checks against concurrent requests.
 const DATE_RE = /^\d{4}-\d{2}-\d{2}$/;
 const todayIST = () =>
   new Date().toLocaleDateString('en-CA', { timeZone: 'Asia/Kolkata' }); // YYYY-MM-DD
@@ -40,13 +39,24 @@ export const createBooking = async (req, res) => {
       return res.status(409).json({ message: 'A booking already exists for this household on the selected date.', code: 'ALREADY_BOOKED' });
     }
 
-    // 5.1 slot-capacity guard.
+    // 5.1 slot-capacity guard — 7.2 dynamic version. The requested window
+    // must exist in the admin-managed template, be open, and have room left.
+    const settings = await getDistributionSettings();
+    const templates = Array.isArray(settings.slots) && settings.slots.length ? settings.slots : DEFAULT_SLOTS;
+    const slot = templates.find((s) => s.label === timeSlot);
+    if (!slot) {
+      return res.status(400).json({ message: 'Unknown time slot. Please choose a current window.', code: 'UNKNOWN_SLOT' });
+    }
+    if (slot.isOpen === false) {
+      return res.status(409).json({ message: `The ${timeSlot} window is currently closed. Please choose another slot.`, code: 'SLOT_CLOSED' });
+    }
+    const cap = Number.isFinite(Number(slot.capacity)) ? Number(slot.capacity) : DEFAULT_SLOT_CAPACITY;
     const occupancy = await Booking.countDocuments({
       distributionDate,
       timeSlot,
       status: { $ne: 'Cancelled' },
     });
-    if (occupancy >= MAX_FAMILIES_PER_SLOT) {
+    if (occupancy >= cap) {
       return res.status(409).json({ message: `The ${timeSlot} window on ${distributionDate} is full. Please choose another slot.`, code: 'SLOT_FULL' });
     }
 
