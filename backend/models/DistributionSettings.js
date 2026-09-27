@@ -56,11 +56,13 @@ const slotSchema = new mongoose.Schema(
   { _id: false }
 );
 
-// Singleton configuration document (key = 'global'). Holds the three things
+// Singleton configuration document (key = 'global'). Holds the four things
 // an admin edits from the distributor console:
-//   1. delivery  → "Ration Delivery Details" (warehouse → collection centre)
-//   2. items     → "Ration Items & Quantity" shown on citizen hubs
-//   3. slots     → "Slot windows & capacity" (7.2) driving booking guards
+//   1. delivery        → "Ration Delivery Details" (warehouse → collection centre)
+//   2. items           → "Ration Items & Quantity" shown on citizen hubs
+//   3. slots           → "Slot windows & capacity" (7.2) driving booking guards
+//   4. distributionDate → fixed YYYY-MM-DD ration day; when set, citizens can
+//                        only pick a time slot — never the date.
 const distributionSettingsSchema = new mongoose.Schema(
   {
     key: { type: String, unique: true, default: 'global' },
@@ -76,6 +78,7 @@ const distributionSettingsSchema = new mongoose.Schema(
     },
     items: { type: [itemSchema], default: DEFAULT_ITEMS },
     slots: { type: [slotSchema], default: DEFAULT_SLOTS },
+    distributionDate: { type: String, default: '', trim: true },
   },
   { timestamps: true }
 );

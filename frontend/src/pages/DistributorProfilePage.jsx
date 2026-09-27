@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { Camera, CheckCircle2, AlertCircle, Loader2, Save, ShieldCheck, Store } from 'lucide-react';
+import { Camera, CheckCircle2, AlertCircle, Loader2, Save, ShieldCheck } from 'lucide-react';
 import { swiss } from '../components/ui/swiss';
 import { Avatar } from '../components/ui/avatar';
 import { useLanguage } from '../i18n/LanguageContext';
@@ -10,8 +10,8 @@ const EMPTY_ADDRESS = { village: '', block: '', district: '', state: '', pincode
 // Staff profile — editable by its owner only. Admins edit their own profile,
 // distributors edit their own (PUT /auth/me is scoped to the signed-in
 // account, so no role can touch another role's record). Fields: name, role
-// (read-only), profile pic, phone, email (read-only), shop + home address.
-export default function DistributorProfilePage({ name, role, shopId, isAdmin, summary, onSaved }) {
+// (read-only), profile pic, phone, email (read-only) + home address.
+export default function DistributorProfilePage({ name, role, isAdmin, summary, onSaved }) {
   const { t } = useLanguage();
   const fileInputRef = useRef(null);
 
@@ -175,15 +175,6 @@ export default function DistributorProfilePage({ name, role, shopId, isAdmin, su
               <input className={`${swiss.input} disabled:bg-slate-100 disabled:text-slate-500`} value={role || t('staff.fallback')} disabled />
               <p className="text-[11px] text-slate-500 mt-1.5">{t('staffProfile.roleHint')}</p>
             </div>
-
-            {shopId && (
-              <div>
-                <span className={swiss.label}>
-                  <span className="flex items-center gap-1.5"><Store size={12} /> {t('staffProfile.shop')}</span>
-                </span>
-                <input className={`${swiss.input} disabled:bg-slate-100 disabled:text-slate-500 tabular-nums`} value={shopId} disabled />
-              </div>
-            )}
           </div>
         </section>
 

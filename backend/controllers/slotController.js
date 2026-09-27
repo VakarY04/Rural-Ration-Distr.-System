@@ -16,7 +16,7 @@ const publicSlots = (settings) =>
 export const getSlots = async (req, res) => {
   try {
     const settings = await getDistributionSettings();
-    return res.status(200).json({ slots: publicSlots(settings) });
+    return res.status(200).json({ slots: publicSlots(settings), distributionDate: settings.distributionDate || '' });
   } catch (error) {
     return sendError(res, error, {
       message: 'Failed to load slot windows.',
@@ -62,6 +62,9 @@ const cleanLabel = (value, max = 40) => String(value ?? '').trim().slice(0, max)
 
 // PUT /slots — admin only (7.1 matrix). Replaces the whole template list:
 // create windows (add rows), set per-slot caps, close bookings (isOpen false).
+// Also carries the fixed distribution date: YYYY-MM-DD locks citizens to that
+// day (time slots only); '' clears it back to free date choice. When the key
+// is absent the stored date is left untouched (legacy callers).
 export const updateSlots = async (req, res) => {
   try {
     const raw = Array.isArray(req.body?.slots) ? req.body.slots : [];
@@ -92,9 +95,23 @@ export const updateSlots = async (req, res) => {
 
     const settings = await getDistributionSettings();
     settings.slots = slots;
+
+    if (req.body?.distributionDate !== undefined) {
+      const fixed = String(req.body.distributionDate ?? '').trim();
+      if (fixed !== '') {
+        if (!DATE_RE.test(fixed)) {
+          return res.status(400).json({ message: 'Distribution date must be YYYY-MM-DD, or empty to clear it.' });
+        }
+        const today = new Date().toLocaleDateString('en-CA', { timeZone: 'Asia/Kolkata' });
+        if (fixed < today) {
+          return res.status(400).json({ message: 'Distribution date cannot be in the past.' });
+        }
+      }
+      settings.distributionDate = fixed;
+    }
     await settings.save();
 
-    return res.status(200).json({ message: 'Slot windows updated.', slots: publicSlots(settings) });
+    return res.status(200).json({ message: 'Slot windows updated.', slots: publicSlots(settings), distributionDate: settings.distributionDate || '' });
   } catch (error) {
     return sendError(res, error, {
       message: 'Failed to update slot windows.',

@@ -4,10 +4,12 @@ import BookingsTable from '../components/distributor/BookingsTable';
 import { useLanguage } from '../i18n/LanguageContext';
 
 // Families Details view — unique booked families from the shared distributor
-// summary. The "View" action opens the household record (members as entered
-// in the citizen's Family Profile + computed ration entitlement) via the
-// `onView` handler owned by the console, so admins and distributors share it.
-export default function FamiliesDetailsPage({ bookings, onView }) {
+// summary. "View" opens the household record (members as entered in the
+// citizen's Family Profile + computed ration entitlement) via the `onView`
+// handler owned by the console. Distributors additionally get the
+// "family has taken the ration" action; admins see the resulting status
+// read-only.
+export default function FamiliesDetailsPage({ bookings, onView, canMarkCollected = false, markingId = '', onMarkCollected, onUnmarkCollected }) {
   const { t } = useLanguage();
   return (
     <div className="space-y-6 font-sans">
@@ -31,7 +33,14 @@ export default function FamiliesDetailsPage({ bookings, onView }) {
             {t('families.recent', { count: bookings.length })}
           </span>
         </div>
-        <BookingsTable bookings={bookings} onView={onView} />
+        <BookingsTable
+          bookings={bookings}
+          onView={onView}
+          canMarkCollected={canMarkCollected}
+          markingId={markingId}
+          onMarkCollected={onMarkCollected}
+          onUnmarkCollected={onUnmarkCollected}
+        />
       </section>
     </div>
   );

@@ -3,20 +3,25 @@ import { swiss } from '../components/ui/swiss';
 import { useLanguage } from '../i18n/LanguageContext';
 import DeliveryDetailsEditor from '../components/distributor/DeliveryDetailsEditor';
 import RationItemsEditor from '../components/distributor/RationItemsEditor';
+import SlotManager from '../components/distributor/SlotManager';
 
-// Ration Details view — the two editable configurations (ration items +
-// delivery details) that used to live on the staff Home page. Admins can edit
-// both here; distributors see both read-only.
+// Ration Details view — the three editable configurations (ration items,
+// delivery details + slot windows for the next ration availability) that used
+// to live on the staff Home page. Admins can edit all three here;
+// distributors see everything read-only.
 export default function RationDetailsPage({
   items,
   delivery,
+  slots,
+  distributionDate = '',
   updatedAt,
   canEditItems = false,
   canEditDelivery = false,
+  canManageSlots = false,
   onSaved,
 }) {
   const { t, lang } = useLanguage();
-  const canEditAny = canEditItems || canEditDelivery;
+  const canEditAny = canEditItems || canEditDelivery || canManageSlots;
 
   return (
     <div className="space-y-6 font-sans">
@@ -55,6 +60,16 @@ export default function RationDetailsPage({
           />
         </div>
       )}
+
+      {/* Slot windows — when the next ration is available and in which time
+          windows. Admin-edited; distributors see the list read-only. */}
+      <SlotManager
+        key={`ration-slots-${updatedAt || 'init'}`}
+        slots={slots}
+        distributionDate={distributionDate}
+        canEdit={canManageSlots}
+        onSaved={onSaved}
+      />
     </div>
   );
 }

@@ -1,6 +1,6 @@
 import express from 'express';
 import { getFamilyProfile, updateFamilyProfile } from '../controllers/familyController.js';
-import { createBooking, getActiveBooking, getUserBookings } from '../controllers/bookingController.js';
+import { createBooking, getActiveBooking, getUserBookings, setBookingCollectionStatus } from '../controllers/bookingController.js';
 import { analyzeGrievance } from '../controllers/aiController.js';
 import { getDashboardSummary } from '../controllers/dashboardController.js';
 import {
@@ -55,6 +55,9 @@ router.get('/dashboard/summary', protect, getDashboardSummary);
 // Reads stay staff-wide; global-config writes are admin-only per the 7.1
 // roles matrix (distributors are read-only until per-shop scoping lands).
 router.get('/distributor/summary', protect, requireStaff, getDistributorSummary);
+// "Family has taken the ration" action + unmark — distributor-only writes;
+// admins see the resulting status read-only and are rejected here.
+router.patch('/distributor/bookings/:id', protect, requireStaff, setBookingCollectionStatus);
 // Household record for the Families Details "View" action — staff-wide so
 // both admins and distributors see members + ration entitlement.
 router.get('/distributor/families/:rationCardNumber', protect, requireStaff, getStaffFamilyDetails);
