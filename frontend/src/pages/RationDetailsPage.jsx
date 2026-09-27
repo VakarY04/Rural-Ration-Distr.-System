@@ -1,13 +1,22 @@
 import { FileCheck } from 'lucide-react';
 import { swiss } from '../components/ui/swiss';
 import { useLanguage } from '../i18n/LanguageContext';
+import DeliveryDetailsEditor from '../components/distributor/DeliveryDetailsEditor';
+import RationItemsEditor from '../components/distributor/RationItemsEditor';
 
-// Minimal Ration Details view — shows the per-household entitlement items
-// published to every citizen hub. Full item management is out of scope for
-// this navigation step.
-export default function RationDetailsPage({ items, updatedAt }) {
+// Ration Details view — the two editable configurations (ration items +
+// delivery details) that used to live on the staff Home page. Admins can edit
+// both here; distributors see both read-only.
+export default function RationDetailsPage({
+  items,
+  delivery,
+  updatedAt,
+  canEditItems = false,
+  canEditDelivery = false,
+  onSaved,
+}) {
   const { t, lang } = useLanguage();
-  const rows = Array.isArray(items) ? items : [];
+  const canEditAny = canEditItems || canEditDelivery;
 
   return (
     <div className="space-y-6 font-sans">
@@ -20,7 +29,7 @@ export default function RationDetailsPage({ items, updatedAt }) {
           {t('ration.title')}
         </h1>
         <p className="text-sm text-slate-500 mt-2">
-          {t('ration.intro')}
+          {canEditAny ? t('ration.introAdmin') : t('ration.intro')}
         </p>
         {updatedAt && (
           <p className="text-[11px] text-slate-500 mt-1 tabular-nums">
@@ -29,32 +38,23 @@ export default function RationDetailsPage({ items, updatedAt }) {
         )}
       </header>
 
-      <section className="border border-slate-200 bg-white rounded-2xl overflow-hidden">
-        <div className="p-5">
-          {rows.length === 0 ? (
-            <p className="text-sm font-semibold text-slate-900">{t('ration.empty')}</p>
-          ) : (
-            <table className="w-full">
-              <thead>
-                <tr>
-                  <th scope="col" className="text-left text-[10px] font-bold uppercase tracking-[0.14em] text-slate-500 pb-2">{t('ration.item')}</th>
-                  <th scope="col" className="text-right text-[10px] font-bold uppercase tracking-[0.14em] text-slate-500 pb-2 w-32 pl-6">{t('ration.qty')}</th>
-                  <th scope="col" className="text-left text-[10px] font-bold uppercase tracking-[0.14em] text-slate-500 pb-2 w-24 pl-6">{t('ration.unit')}</th>
-                </tr>
-              </thead>
-              <tbody>
-                {rows.map((item, i) => (
-                  <tr key={item.key || item.label || i} className="border-t border-slate-100">
-                    <td className="py-2 pr-3 text-sm font-semibold text-slate-900 text-left">{item.label}</td>
-                    <td className="py-2 pl-6 pr-3 text-sm font-bold text-slate-900 tabular-nums text-right">{item.quantity}</td>
-                    <td className="py-2 pl-6 pr-3 text-xs font-bold uppercase text-slate-500 text-left">{item.unit}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          )}
+      {/* Ration configuration — editing lives here, not on the Home page */}
+      {(delivery || canEditAny) && (
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-start">
+          <DeliveryDetailsEditor
+            key={`ration-delivery-${updatedAt || 'init'}`}
+            delivery={delivery}
+            onSaved={onSaved}
+            canEdit={canEditDelivery}
+          />
+          <RationItemsEditor
+            key={`ration-items-${updatedAt || 'init'}`}
+            items={items}
+            onSaved={onSaved}
+            canEdit={canEditItems}
+          />
         </div>
-      </section>
+      )}
     </div>
   );
 }

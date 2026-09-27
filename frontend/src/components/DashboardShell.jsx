@@ -121,7 +121,7 @@ export default function DashboardShell({ children, currentSubPage, onSubPageChan
         </div>
       </aside>
 
-      <main className="flex-1 overflow-y-auto overflow-x-clip overscroll-y-contain min-w-0 bg-[#F4F6F9]" id="main-content" tabIndex={-1}>
+      <main className="flex-1 flex flex-col overflow-y-auto overflow-x-clip overscroll-y-contain min-w-0 bg-[#F4F6F9]" id="main-content" tabIndex={-1}>
         <div className="flex items-center justify-between flex-wrap gap-3 px-8 pt-4">
           <button
             type="button"
@@ -146,7 +146,7 @@ export default function DashboardShell({ children, currentSubPage, onSubPageChan
             </p>
           </div>
         )}
-        <div className="px-8 pt-4 pb-0">{children}</div>
+        <div className="px-8 pt-4 pb-0 flex-1">{children}</div>
         <SiteFooter onNavigate={onNavigate} />
       </main>
     </div>

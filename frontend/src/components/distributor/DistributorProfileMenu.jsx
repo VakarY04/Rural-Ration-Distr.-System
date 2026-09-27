@@ -9,7 +9,7 @@ const FOCUS =
 // Distributor profile access card — mirrors the User-side avatar/name chip
 // used in the citizen DashboardShell, but adds a dropdown with "Go to
 // Profile" and "Logout".
-export default function DistributorProfileMenu({ name, role, onNavigate, onLogout }) {
+export default function DistributorProfileMenu({ name, role, avatar, onNavigate, onLogout }) {
   const { t } = useLanguage();
   const [open, setOpen] = useState(false);
   const rootRef = useRef(null);
@@ -50,7 +50,7 @@ export default function DistributorProfileMenu({ name, role, onNavigate, onLogou
         aria-expanded={open}
         className={`flex items-center gap-3 bg-white border border-slate-200 hover:border-slate-400 px-4 py-2.5 transition-colors cursor-pointer ${FOCUS}`}
       >
-        <Avatar src={null} name={name || t('staffMenu.fallback')} size={32} />
+        <Avatar src={avatar} name={name || t('staffMenu.fallback')} size={32} />
         <div className="text-left min-w-0">
           <p className="text-sm font-bold text-slate-900 leading-tight truncate">{name || t('staffMenu.fallback')}</p>
           <p className="text-[10px] font-bold uppercase tracking-[0.14em] text-slate-500 break-words">

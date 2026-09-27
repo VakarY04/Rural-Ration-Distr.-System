@@ -46,6 +46,9 @@ export const sendAuthSuccess = (res, user, status = 200) =>
   res.status(status).json({ token: signSessionToken(user._id), data: sessionPayload(user) });
 
 // Public-facing account shape returned by the profile read/update endpoints.
+// Every role edits ONLY its own document via PUT /auth/me (protect middleware
+// scopes to req.user), so admin / distributor / citizen profiles are each
+// editable by their respective owners and nobody else.
 export const publicUser = (user) => ({
   name: user.name,
   avatar: user.avatar || null,
@@ -53,4 +56,13 @@ export const publicUser = (user) => ({
   email: user.email || null,
   role: user.role,
   shopId: user.shopId || null,
+  address: user.address
+    ? {
+        village: user.address.village || '',
+        block: user.address.block || '',
+        district: user.address.district || '',
+        state: user.address.state || '',
+        pincode: user.address.pincode || '',
+      }
+    : { village: '', block: '', district: '', state: '', pincode: '' },
 });

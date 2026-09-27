@@ -1,6 +1,8 @@
 import Booking from '../models/Booking.js';
 import User from '../models/User.js';
+import Family from '../models/Family.js';
 import Grievance from '../models/Grievance.js';
+import { computeRationBreakdown } from '../services/rationCalculator.js';
 import {
   getDistributionSettings,
   DEFAULT_WAREHOUSE,
@@ -28,6 +30,58 @@ const publicBooking = (b) => ({
   status: b.status,
   allocatedItems: b.allocatedItems || [],
 });
+
+// Staff family details (admin + distributor) — household record as entered in
+// the citizen's Family Profile (members with name/age/relation + address) plus
+// the computed ration entitlement for that household (same PDS rule as the
+// Terminal Hub: max(35, 10 x members) kg) and the latest booking, if any.
+export const getStaffFamilyDetails = async (req, res) => {
+  try {
+    const rationCardNumber = String(req.params?.rationCardNumber ?? '').trim();
+    if (!rationCardNumber) {
+      return res.status(400).json({ message: 'A ration card number is required.' });
+    }
+
+    const family = await Family.findOne({ rationCardNumber }).sort({ updatedAt: -1 }).lean();
+    if (!family) {
+      return res.status(404).json({
+        message: 'No household profile found for this ration card. The citizen may not have completed their Family Profile yet.',
+      });
+    }
+
+    const members = Array.isArray(family.members) ? family.members : [];
+    const totalMembers = members.length ? members.length : 1;
+    const ration = computeRationBreakdown(totalMembers);
+
+    const latestBooking = await Booking.findOne({ rationCardNumber })
+      .sort({ createdAt: -1 })
+      .lean();
+
+    return res.status(200).json({
+      rationCardNumber: family.rationCardNumber,
+      headOfFamily: family.headOfFamily,
+      address: family.address || null,
+      members: members.map((m) => ({
+        name: m?.name || 'Member',
+        age: Number(m?.age) || 0,
+        relation: m?.relation || 'Dependent',
+      })),
+      totalMembers,
+      ration: {
+        totalKg: ration.totalKg,
+        totalMembers: ration.totalMembers,
+        items: ration.items,
+      },
+      booking: latestBooking ? publicBooking(latestBooking) : null,
+      updatedAt: family.updatedAt || null,
+    });
+  } catch (error) {
+    return sendError(res, error, {
+      message: 'Failed to load family details.',
+      logLabel: 'Staff Family Details Error:',
+    });
+  }
+};
 
 // Aggregated snapshot powering the distributor console dashboard:
 // headline stats (families booked etc.), recent booking queue, and the
@@ -82,6 +136,18 @@ export const getDistributorSummary = async (req, res) => {
       name: req.user?.name || 'Staff',
       role: req.user?.role,
       shopId: req.user?.shopId || null,
+      avatar: req.user?.avatar || null,
+      phone: req.user?.phone || null,
+      email: req.user?.email || null,
+      address: req.user?.address
+        ? {
+            village: req.user.address.village || '',
+            block: req.user.address.block || '',
+            district: req.user.address.district || '',
+            state: req.user.address.state || '',
+            pincode: req.user.address.pincode || '',
+          }
+        : { village: '', block: '', district: '', state: '', pincode: '' },
       permissions: permissionsFor(req.user?.role),
       stats: {
         familiesBooked: bookedCards.length,

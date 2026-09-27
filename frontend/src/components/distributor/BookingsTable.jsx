@@ -5,7 +5,7 @@
 // name are both retained.
 import { MapPin, Eye } from 'lucide-react';
 import { useLanguage } from '../../i18n/LanguageContext';
-export default function BookingsTable({ bookings }) {
+export default function BookingsTable({ bookings, onView }) {
   const { t } = useLanguage();
   if (!bookings?.length) {
     return (
@@ -42,10 +42,7 @@ export default function BookingsTable({ bookings }) {
           <span className="flex-1 min-w-0 text-sm font-semibold text-slate-900 truncate">{b.headOfFamily}</span>
           <button
             type="button"
-            onClick={(e) => {
-              e.preventDefault();
-              // TODO: wire up to a family details view when available.
-            }}
+            onClick={() => onView?.(b)}
             title={t('queue.viewTitle')}
             className="shrink-0 text-xs font-semibold tracking-wide px-3 py-1.5 rounded border border-slate-300 text-slate-600 hover:bg-slate-900 hover:text-white transition-colors cursor-pointer focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-orange-500 inline-flex items-center gap-1.5"
           >

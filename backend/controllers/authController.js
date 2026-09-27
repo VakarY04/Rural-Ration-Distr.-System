@@ -230,14 +230,16 @@ export const getMe = async (req, res) => {
   }
 };
 
-// Update the logged-in account's own name / profile picture / phone.
-// Phone IS editable here so OTP-registered users can link (or correct) the
-// mobile number tied to their email account. Email stays read-only since
-// it's the primary credential for password login.
+// Update the logged-in account's own name / profile picture / phone / home
+// address. Each role edits ONLY its own document (req.user scope), so admin,
+// distributor and citizen profiles are each editable by their respective
+// owners. Phone IS editable here so OTP-registered users can link (or correct)
+// the mobile number tied to their email account. Email + role + shopId stay
+// read-only since they are credentials / registry-provisioned identity.
 export const updateMe = async (req, res) => {
   try {
     const userId = req.user?.id || req.user?._id;
-    const { name, avatar, phone } = req.body;
+    const { name, avatar, phone, address } = req.body;
 
     if (!name || !name.trim()) {
       return res.status(400).json({ message: 'Please provide your name.' });
@@ -251,6 +253,17 @@ export const updateMe = async (req, res) => {
 
     const update = { name: name.trim() };
     if (avatar !== undefined) update.avatar = avatar || null;
+
+    if (address !== undefined && address !== null) {
+      const clean = (v, max = 120) => String(v ?? '').trim().slice(0, max);
+      update.address = {
+        village: clean(address.village),
+        block: clean(address.block),
+        district: clean(address.district),
+        state: clean(address.state),
+        pincode: clean(address.pincode, 12),
+      };
+    }
 
     if (phone !== undefined && phone !== null) {
       const normalizedPhone = normalizePhone(phone);

@@ -6,14 +6,14 @@ import { TRICOLOR_GRADIENT } from '../components/ui/swiss';
 import DeliveryRouteMap from '../components/DeliveryRouteMap';
 import StatBlocks from '../components/distributor/StatBlocks';
 import BookingsTable from '../components/distributor/BookingsTable';
-import DeliveryDetailsEditor from '../components/distributor/DeliveryDetailsEditor';
-import RationItemsEditor from '../components/distributor/RationItemsEditor';
 import SlotManager from '../components/distributor/SlotManager';
 import GrievanceQueue from '../components/distributor/GrievanceQueue';
 import ReportsPanel from '../components/distributor/ReportsPanel';
 import DistributorProfileMenu from '../components/distributor/DistributorProfileMenu';
+import FamilyDetailsDialog from '../components/distributor/FamilyDetailsDialog';
 import FamiliesDetailsPage from './FamiliesDetailsPage';
 import RationDetailsPage from './RationDetailsPage';
+import ComplaintsPage from './ComplaintsPage';
 import DistributorProfilePage from './DistributorProfilePage';
 import SiteFooter from '../components/SiteFooter';
 import SkipLink from '../components/SkipLink';
@@ -24,14 +24,41 @@ import { useLanguage } from '../i18n/LanguageContext';
 const FOCUS =
   'focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-orange-500';
 
-// Distributor / Admin console — Swiss-grid dashboard showing booking demand
-// and the two citizen-facing configurations an admin can edit.
+// Distributor / Admin console — Swiss-grid dashboard showing booking demand.
+// Ration items + delivery configuration live on the Ration Details page
+// (admin-editable); the Home page stays focused on operations.
 export default function DistributorConsolePage({ currentSubPage = 'home', onNavigate, onLogout }) {
   const { t } = useLanguage();
   const storedName = localStorage.getItem('ration_user_name') || t('console.fallbackName');
   const [summary, setSummary] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
+
+  // Family "View" dialog — shared by the Families Details page and the Home
+  // booking queue, for admins and distributors alike.
+  const [familyCard, setFamilyCard] = useState(null);
+  const [familyDetails, setFamilyDetails] = useState(null);
+  const [familyLoading, setFamilyLoading] = useState(false);
+  const [familyError, setFamilyError] = useState('');
+
+  const openFamilyDetails = useCallback((booking) => {
+    const card = booking?.rationCardNumber;
+    if (!card) return;
+    setFamilyCard(card);
+    setFamilyDetails(null);
+    setFamilyError('');
+    setFamilyLoading(true);
+    api(`/distributor/families/${encodeURIComponent(card)}`)
+      .then((data) => setFamilyDetails(data))
+      .catch((e) => setFamilyError(e.message || 'Could not load family details.'))
+      .finally(() => setFamilyLoading(false));
+  }, []);
+
+  const closeFamilyDetails = useCallback(() => {
+    setFamilyCard(null);
+    setFamilyDetails(null);
+    setFamilyError('');
+  }, []);
 
   const loadSummary = useCallback(() => {
     return api('/distributor/summary')
@@ -84,11 +111,15 @@ export default function DistributorConsolePage({ currentSubPage = 'home', onNavi
   const NAV = [
     { id: 'families-details', label: t('console.navFamilies') },
     { id: 'ration-details', label: t('console.navRation') },
+    { id: 'home', label: t('console.navHome') },
+    { id: 'complaints', label: t('console.navComplaints') },
     { id: 'profile', label: t('console.navProfile') },
   ];
+  const isNavActive = (id) =>
+    id === 'home' ? currentSubPage === 'home' || !currentSubPage : currentSubPage === id;
 
   return (
-    <div className="min-h-screen font-sans text-[#000080]">
+    <div className="min-h-screen font-sans text-[#000080] flex flex-col">
       <SkipLink />
       {/* Sticky nav — tricolor strip + header stay pinned while scrolling */}
       <div className="sticky top-0 z-40">
@@ -113,10 +144,10 @@ export default function DistributorConsolePage({ currentSubPage = 'home', onNavi
               </div>
             </button>
 
-            <div className="flex items-center gap-3 sm:gap-5 flex-wrap justify-end">
-              <nav className="flex items-center gap-1 sm:gap-2" aria-label={t('console.navLabel')}>
+            <div className="flex-1 flex items-center justify-center">
+              <nav className="flex items-center justify-center gap-1 sm:gap-2 flex-wrap" aria-label={t('console.navLabel')}>
                 {NAV.map((item) => {
-                  const active = currentSubPage === item.id;
+                  const active = isNavActive(item.id);
                   return (
                     <button
                       key={item.id}
@@ -132,14 +163,16 @@ export default function DistributorConsolePage({ currentSubPage = 'home', onNavi
                   );
                 })}
               </nav>
+            </div>
 
-              <DistributorProfileMenu name={name} role={role} onNavigate={onNavigate} onLogout={onLogout} />
+            <div className="flex items-center gap-3 sm:gap-5 flex-wrap justify-end">
+              <DistributorProfileMenu name={name} role={role} avatar={summary?.avatar} onNavigate={onNavigate} onLogout={onLogout} />
             </div>
           </div>
         </header>
       </div>
 
-      <main className="max-w-7xl mx-auto px-6 py-8 space-y-8 overscroll-y-contain" id="main-content" tabIndex={-1}>
+      <main className="flex-1 w-full max-w-7xl mx-auto px-6 py-8 space-y-8 overscroll-y-contain" id="main-content" tabIndex={-1}>
         <div className="flex items-center justify-end gap-2 flex-wrap">
           <LanguageToggle />
           <AccessibilityToolbar />
@@ -163,15 +196,33 @@ export default function DistributorConsolePage({ currentSubPage = 'home', onNavi
         )}
 
         {!loading && summary && currentSubPage === 'families-details' && (
-          <FamiliesDetailsPage bookings={uniqueBookings} />
+          <FamiliesDetailsPage bookings={uniqueBookings} onView={openFamilyDetails} />
         )}
 
         {!loading && summary && currentSubPage === 'ration-details' && (
-          <RationDetailsPage items={summary.items} updatedAt={summary.updatedAt} />
+          <RationDetailsPage
+            items={summary.items}
+            delivery={summary.delivery}
+            updatedAt={summary.updatedAt}
+            canEditItems={canEditItems}
+            canEditDelivery={canEditDelivery}
+            onSaved={loadSummary}
+          />
+        )}
+
+        {!loading && summary && currentSubPage === 'complaints' && (
+          <ComplaintsPage />
         )}
 
         {!loading && currentSubPage === 'profile' && (
-          <DistributorProfilePage name={name} role={role} shopId={shopId} isAdmin={isAdmin} />
+          <DistributorProfilePage
+            name={name}
+            role={role}
+            shopId={shopId}
+            isAdmin={isAdmin}
+            summary={summary}
+            onSaved={loadSummary}
+          />
         )}
 
         {!loading && summary && (currentSubPage === 'home' || !currentSubPage) && (
@@ -199,24 +250,28 @@ export default function DistributorConsolePage({ currentSubPage = 'home', onNavi
               onSaved={loadSummary}
             />
 
-            {/* 7.3 — grievance queue wired to AI triage (staff assign/track/resolve) */}
-            <GrievanceQueue />
+            {/* Grievance queue — distributor home only. Admins work from the
+                dedicated Complaints page instead. */}
+            {!isAdmin && <GrievanceQueue />}
 
             {/* 7.4 — entitlement vs allocation vs collection per district */}
             <ReportsPanel />
 
-            <div className="grid grid-cols-1 lg:grid-cols-[1fr_380px] gap-6 items-start">
-              {/* Delivery route map + booking queue */}
-              <div className="space-y-6">
-                <section aria-label={t('console.mapLabel')} className="space-y-3">
-                  <div className="flex items-center justify-between">
-                    <h2 className="text-sm font-bold tracking-tight flex items-center gap-1.5 break-words min-w-0"><MapPin size={13} className="text-[#198754]" aria-hidden="true" /> {t('console.routeTitle')}</h2>
-                  </div>
-                  <div className="border border-slate-200 bg-white h-[360px] overflow-hidden isolate" title={t('console.mapTitle')}>
-                    <DeliveryRouteMap origin={summary.delivery.from} destination={summary.delivery.to} />
-                  </div>
-                </section>
+            <div className="space-y-6">
+              {/* Delivery route map + booking queue (full width — ration items
+                  + delivery configuration now live on the Ration Details page) */}
+              <section aria-label={t('console.mapLabel')} className="space-y-3">
+                <div className="flex items-center justify-between">
+                  <h2 className="text-sm font-bold tracking-tight flex items-center gap-1.5 break-words min-w-0"><MapPin size={13} className="text-[#198754]" aria-hidden="true" /> {t('console.routeTitle')}</h2>
+                </div>
+                <div className="border border-slate-200 bg-white h-[360px] overflow-hidden isolate" title={t('console.mapTitle')}>
+                  <DeliveryRouteMap origin={summary.delivery.from} destination={summary.delivery.to} />
+                </div>
+              </section>
 
+              {/* Booked families queue — distributor home only. Admins work
+                  from the Families Details page instead. */}
+              {!isAdmin && (
                 <section aria-label={t('console.queueLabel')} className="space-y-3">
                   <div className="flex items-baseline justify-between">
                     <h2 className="text-sm font-bold tracking-tight break-words min-w-0">
@@ -226,27 +281,20 @@ export default function DistributorConsolePage({ currentSubPage = 'home', onNavi
                       {t('console.recent', { count: uniqueBookings.length })}
                     </span>
                   </div>
-                  <BookingsTable bookings={uniqueBookings} />
+                  <BookingsTable bookings={uniqueBookings} onView={openFamilyDetails} />
                 </section>
-              </div>
-
-              {/* Role-gated configuration — 7.1 matrix: distributors read-only */}
-              <div className="space-y-6">
-                <DeliveryDetailsEditor
-                  key={`delivery-${summary.updatedAt || 'init'}`}
-                  delivery={summary.delivery}
-                  onSaved={loadSummary}
-                  canEdit={canEditDelivery}
-                />
-                <RationItemsEditor
-                  key={`items-${summary.updatedAt || 'init'}`}
-                  items={summary.items}
-                  onSaved={loadSummary}
-                  canEdit={canEditItems}
-                />
-              </div>
+              )}
             </div>
           </>
+        )}
+
+        {familyCard && (
+          <FamilyDetailsDialog
+            details={familyDetails}
+            loading={familyLoading}
+            error={familyError}
+            onClose={closeFamilyDetails}
+          />
         )}
       </main>
 
