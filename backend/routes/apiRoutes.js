@@ -5,6 +5,7 @@ import { analyzeGrievance } from '../controllers/aiController.js';
 import { getDashboardSummary } from '../controllers/dashboardController.js';
 import {
   getDistributorSummary,
+  getStaffFamilyDetails,
   updateDeliveryDetails,
   updateRationItems,
 } from '../controllers/distributorController.js';
@@ -54,6 +55,9 @@ router.get('/dashboard/summary', protect, getDashboardSummary);
 // Reads stay staff-wide; global-config writes are admin-only per the 7.1
 // roles matrix (distributors are read-only until per-shop scoping lands).
 router.get('/distributor/summary', protect, requireStaff, getDistributorSummary);
+// Household record for the Families Details "View" action — staff-wide so
+// both admins and distributors see members + ration entitlement.
+router.get('/distributor/families/:rationCardNumber', protect, requireStaff, getStaffFamilyDetails);
 router.put('/distributor/delivery', protect, requireAdmin, updateDeliveryDetails);
 router.put('/distributor/items', protect, requireAdmin, updateRationItems);
 

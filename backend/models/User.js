@@ -38,6 +38,16 @@ const userSchema = new mongoose.Schema(
       trim: true,
       default: null,
     },
+    address: {
+      // Home address for staff (admin / distributor) profiles. Citizens keep
+      // their household address on the Family document; staff have no Family
+      // record, so the address lives directly on the account. All optional.
+      village: { type: String, trim: true, default: '' },
+      block: { type: String, trim: true, default: '' },
+      district: { type: String, trim: true, default: '' },
+      state: { type: String, trim: true, default: '' },
+      pincode: { type: String, trim: true, default: '' },
+    },
     otp: {
       type: String,
       default: undefined,

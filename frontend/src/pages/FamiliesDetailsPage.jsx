@@ -3,10 +3,11 @@ import { swiss } from '../components/ui/swiss';
 import BookingsTable from '../components/distributor/BookingsTable';
 import { useLanguage } from '../i18n/LanguageContext';
 
-// Minimal Families Details view — surfaces the unique booked families pulled
-// from the shared distributor summary. Full family management is out of scope
-// for this navigation step.
-export default function FamiliesDetailsPage({ bookings }) {
+// Families Details view — unique booked families from the shared distributor
+// summary. The "View" action opens the household record (members as entered
+// in the citizen's Family Profile + computed ration entitlement) via the
+// `onView` handler owned by the console, so admins and distributors share it.
+export default function FamiliesDetailsPage({ bookings, onView }) {
   const { t } = useLanguage();
   return (
     <div className="space-y-6 font-sans">
@@ -30,7 +31,7 @@ export default function FamiliesDetailsPage({ bookings }) {
             {t('families.recent', { count: bookings.length })}
           </span>
         </div>
-        <BookingsTable bookings={bookings} />
+        <BookingsTable bookings={bookings} onView={onView} />
       </section>
     </div>
   );
