@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Plus, Trash2, Clock } from 'lucide-react';
+import { Plus, Trash2, Clock, CalendarDays } from 'lucide-react';
 import EditorShell from './EditorShell';
 import { useLanguage } from '../../i18n/LanguageContext';
 import { api } from '../../services/api';
@@ -20,20 +20,32 @@ function cleanRow(row) {
 
 // 7.2 — admin slot windows manager. Distributors get a read-only list +
 // admin-only notice (7.1 matrix); admins get full Edit/Save/Cancel with
-// label + per-slot cap + open/closed toggle, up to 8 windows.
-export default function SlotManager({ slots, canEdit = false, onSaved }) {
-  const { t } = useLanguage();
+// label + per-slot cap + open/closed toggle, up to 8 windows — plus the fixed
+// distribution date that locks citizens to time-slot-only booking.
+export default function SlotManager({ slots, distributionDate = '', canEdit = false, onSaved }) {
+  const { t, lang } = useLanguage();
   const initial = Array.isArray(slots) && slots.length
     ? slots.map(cleanRow)
     : [{ label: '', capacity: 6, isOpen: true }];
+  const initialDate = distributionDate || '';
 
   const [editing, setEditing] = useState(false);
   const [draft, setDraft] = useState(initial);
+  const [dateDraft, setDateDraft] = useState(initialDate);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState('');
 
+  const prettyDate = (iso) => {
+    if (!iso) return '';
+    const d = new Date(`${iso}T00:00:00`);
+    if (Number.isNaN(d.getTime())) return iso;
+    return d.toLocaleDateString(lang === 'hi' ? 'hi-IN' : 'en-IN', { day: 'numeric', month: 'short', year: 'numeric' });
+  };
+  const todayStr = new Date().toISOString().split('T')[0];
+
   const startEditing = () => {
     setDraft(initial);
+    setDateDraft(initialDate);
     setError('');
     setEditing(true);
   };
@@ -45,7 +57,7 @@ export default function SlotManager({ slots, canEdit = false, onSaved }) {
     setSaving(true);
     setError('');
     try {
-      await api('/slots', 'PUT', { slots: draft.map(cleanRow) });
+      await api('/slots', 'PUT', { slots: draft.map(cleanRow), distributionDate: dateDraft });
       setEditing(false);
       onSaved?.();
       return true;
@@ -65,6 +77,14 @@ export default function SlotManager({ slots, canEdit = false, onSaved }) {
   if (!canEdit) {
     return (
       <EditorShell title={t('slots.title')} readOnly>
+        <div className="flex items-center gap-2.5 border border-slate-200 bg-slate-50 px-3 py-2.5 mb-4">
+          <CalendarDays size={15} className="text-slate-500 shrink-0" aria-hidden="true" />
+          <p className="text-xs font-semibold text-slate-700">
+            {initialDate
+              ? t('slots.fixedDate', { date: prettyDate(initialDate) })
+              : t('slots.noDateSet')}
+          </p>
+        </div>
         <ul className="divide-y divide-slate-100">
           {rows.filter((r) => r.label).map((row, i) => (
             <li key={i} className="flex items-center gap-3 py-2.5 first:pt-0 last:pb-0">
@@ -101,6 +121,28 @@ export default function SlotManager({ slots, canEdit = false, onSaved }) {
       onCancel={cancelEditing}
       error={error}
     >
+      <div className="space-y-1.5 mb-4">
+        <label htmlFor="slot-date" className="text-[10px] font-bold uppercase tracking-[0.14em] text-slate-500">
+          <span className="flex items-center gap-1.5"><CalendarDays size={12} aria-hidden="true" /> {t('slots.dateLabel')}</span>
+        </label>
+        {editing ? (
+          <>
+            <input
+              id="slot-date"
+              type="date"
+              min={todayStr}
+              value={dateDraft}
+              onChange={(e) => setDateDraft(e.target.value)}
+              className={`${inputClass} cursor-pointer tabular-nums`}
+            />
+            <p className="text-[11px] text-slate-500">{t('slots.dateHint')}</p>
+          </>
+        ) : (
+          <p className="text-sm font-semibold text-slate-900 tabular-nums">
+            {initialDate ? prettyDate(initialDate) : t('slots.noDateSet')}
+          </p>
+        )}
+      </div>
       <ul className="divide-y divide-slate-100">
         {draft.map((row, i) => (
           <li key={i} className="flex items-center gap-2 py-2.5 first:pt-0 last:pb-0 flex-wrap sm:flex-nowrap">

@@ -1,13 +1,11 @@
 import { useState, useEffect, useCallback } from 'react';
-import { RefreshCw, MapPin } from 'lucide-react';
+import { RefreshCw, MapPin, X, AlertCircle } from 'lucide-react';
 import logoAsset from '../images/E-RATION Logo.webp';
 import { api } from '../services/api';
 import { TRICOLOR_GRADIENT } from '../components/ui/swiss';
 import DeliveryRouteMap from '../components/DeliveryRouteMap';
 import StatBlocks from '../components/distributor/StatBlocks';
 import BookingsTable from '../components/distributor/BookingsTable';
-import SlotManager from '../components/distributor/SlotManager';
-import GrievanceQueue from '../components/distributor/GrievanceQueue';
 import ReportsPanel from '../components/distributor/ReportsPanel';
 import DistributorProfileMenu from '../components/distributor/DistributorProfileMenu';
 import FamilyDetailsDialog from '../components/distributor/FamilyDetailsDialog';
@@ -79,6 +77,31 @@ export default function DistributorConsolePage({ currentSubPage = 'home', onNavi
     };
   }, [loadSummary]);
 
+  // Collection status flips — distributor-only actions moving the booking
+  // between Confirmed and Collected. Admins never get the buttons.
+  const [markingId, setMarkingId] = useState('');
+  const [actionError, setActionError] = useState('');
+
+  const setCollectionStatus = useCallback((booking, status) => {
+    const id = booking?.id;
+    if (!id || markingId) return;
+    setMarkingId(id);
+    setActionError('');
+    api(`/distributor/bookings/${id}`, 'PATCH', { status })
+      .then(() => loadSummary())
+      .then(() => {
+        // Keep an open family dialog in sync when its booking just changed.
+        if (familyCard && booking?.rationCardNumber === familyCard) {
+          return api(`/distributor/families/${encodeURIComponent(familyCard)}`)
+            .then((data) => setFamilyDetails(data))
+            .catch(() => {});
+        }
+        return undefined;
+      })
+      .catch((e) => setActionError(e.message || 'Could not update booking.'))
+      .finally(() => setMarkingId(''));
+  }, [markingId, loadSummary, familyCard]);
+
   const name = summary?.name || storedName;
   const rawRole = summary?.role || localStorage.getItem('ration_user_role') || 'distributor';
   const isAdmin = rawRole === 'admin';
@@ -88,7 +111,6 @@ export default function DistributorConsolePage({ currentSubPage = 'home', onNavi
   const canEditDelivery = permissions?.canEditDelivery ?? isAdmin;
   const canEditItems = permissions?.canEditItems ?? isAdmin;
   const canManageSlots = permissions?.canManageSlots ?? isAdmin;
-  const shopId = summary?.shopId || null;
   const role = isAdmin ? t('console.roleAdmin') : t('console.roleDistributor');
 
   // Deduplicate booked families by their unique ration card number so the
@@ -112,7 +134,8 @@ export default function DistributorConsolePage({ currentSubPage = 'home', onNavi
     { id: 'families-details', label: t('console.navFamilies') },
     { id: 'ration-details', label: t('console.navRation') },
     { id: 'home', label: t('console.navHome') },
-    { id: 'complaints', label: t('console.navComplaints') },
+    // Complaints is admin-only — distributors have no complaints UI.
+    ...(isAdmin ? [{ id: 'complaints', label: t('console.navComplaints') }] : []),
     { id: 'profile', label: t('console.navProfile') },
   ];
   const isNavActive = (id) =>
@@ -177,6 +200,20 @@ export default function DistributorConsolePage({ currentSubPage = 'home', onNavi
           <LanguageToggle />
           <AccessibilityToolbar />
         </div>
+        {actionError && (
+          <div role="alert" className="flex items-start gap-2 text-sm font-medium text-[#DC3545] bg-[#DC3545]/10 border border-[#DC3545]/30 p-4">
+            <AlertCircle size={18} className="shrink-0 mt-0.5" aria-hidden="true" />
+            <span className="flex-1">{actionError}</span>
+            <button
+              type="button"
+              onClick={() => setActionError('')}
+              aria-label={t('queue.dismiss')}
+              className={`shrink-0 p-1 hover:bg-[#DC3545]/10 transition-colors cursor-pointer ${FOCUS}`}
+            >
+              <X size={14} aria-hidden="true" />
+            </button>
+          </div>
+        )}
         {loading && (
           <p className="py-16 text-center text-sm font-semibold text-slate-500">{t('common.loading')}</p>
         )}
@@ -196,21 +233,31 @@ export default function DistributorConsolePage({ currentSubPage = 'home', onNavi
         )}
 
         {!loading && summary && currentSubPage === 'families-details' && (
-          <FamiliesDetailsPage bookings={uniqueBookings} onView={openFamilyDetails} />
+          <FamiliesDetailsPage
+            bookings={uniqueBookings}
+            onView={openFamilyDetails}
+            canMarkCollected={!isAdmin}
+            markingId={markingId}
+            onMarkCollected={(b) => setCollectionStatus(b, 'Collected')}
+            onUnmarkCollected={(b) => setCollectionStatus(b, 'Confirmed')}
+          />
         )}
 
         {!loading && summary && currentSubPage === 'ration-details' && (
           <RationDetailsPage
             items={summary.items}
             delivery={summary.delivery}
+            slots={summary.slots}
+            distributionDate={summary.distributionDate || ''}
             updatedAt={summary.updatedAt}
             canEditItems={canEditItems}
             canEditDelivery={canEditDelivery}
+            canManageSlots={canManageSlots}
             onSaved={loadSummary}
           />
         )}
 
-        {!loading && summary && currentSubPage === 'complaints' && (
+        {!loading && summary && currentSubPage === 'complaints' && isAdmin && (
           <ComplaintsPage />
         )}
 
@@ -218,7 +265,6 @@ export default function DistributorConsolePage({ currentSubPage = 'home', onNavi
           <DistributorProfilePage
             name={name}
             role={role}
-            shopId={shopId}
             isAdmin={isAdmin}
             summary={summary}
             onSaved={loadSummary}
@@ -235,56 +281,50 @@ export default function DistributorConsolePage({ currentSubPage = 'home', onNavi
               </h1>
               <p className="mt-2 inline-flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.14em]">
                 <span className={`px-2.5 py-1 rounded-full border ${isAdmin ? 'border-[#000080]/30 bg-[#000080]/5 text-[#000080]' : 'border-[#198754]/30 bg-[#198754]/10 text-[#198754]'}`}>
-                  {role}{shopId ? ` · ${shopId}` : ''}
+                  {role}
                 </span>
               </p>
             </section>
 
             <StatBlocks stats={summary.stats} />
 
-            {/* 7.2 — slot windows & capacity (admin-managed, full width) */}
-            <SlotManager
-              key={`slots-${summary.updatedAt || 'init'}`}
-              slots={summary.slots}
-              canEdit={canManageSlots}
-              onSaved={loadSummary}
-            />
+            {/* Delivery route map (full width — slot windows now live on the
+                Ration Details page) */}
+            <section aria-label={t('console.mapLabel')} className="space-y-3">
+              <div className="flex items-center justify-between">
+                <h2 className="text-sm font-bold tracking-tight flex items-center gap-1.5 break-words min-w-0"><MapPin size={13} className="text-[#198754]" aria-hidden="true" /> {t('console.routeTitle')}</h2>
+              </div>
+              <div className="border border-slate-200 bg-white h-[360px] overflow-hidden isolate" title={t('console.mapTitle')}>
+                <DeliveryRouteMap origin={summary.delivery.from} destination={summary.delivery.to} />
+              </div>
+            </section>
 
-            {/* Grievance queue — distributor home only. Admins work from the
-                dedicated Complaints page instead. */}
-            {!isAdmin && <GrievanceQueue />}
+            {/* Booked families queue — right below the delivery route map.
+                Distributor home only; admins work from the Families
+                Details page instead. */}
+            {!isAdmin && (
+              <section aria-label={t('console.queueLabel')} className="space-y-3">
+                <div className="flex items-baseline justify-between">
+                  <h2 className="text-sm font-bold tracking-tight break-words min-w-0">
+                    {t('console.queueTitle')}
+                  </h2>
+                  <span className="text-[10px] font-bold uppercase tracking-[0.14em] text-slate-500 tabular-nums">
+                    {t('console.recent', { count: uniqueBookings.length })}
+                  </span>
+                </div>
+                <BookingsTable
+                  bookings={uniqueBookings}
+                  onView={openFamilyDetails}
+                  canMarkCollected={!isAdmin}
+                  markingId={markingId}
+                  onMarkCollected={(b) => setCollectionStatus(b, 'Collected')}
+                  onUnmarkCollected={(b) => setCollectionStatus(b, 'Confirmed')}
+                />
+              </section>
+            )}
 
             {/* 7.4 — entitlement vs allocation vs collection per district */}
             <ReportsPanel />
-
-            <div className="space-y-6">
-              {/* Delivery route map + booking queue (full width — ration items
-                  + delivery configuration now live on the Ration Details page) */}
-              <section aria-label={t('console.mapLabel')} className="space-y-3">
-                <div className="flex items-center justify-between">
-                  <h2 className="text-sm font-bold tracking-tight flex items-center gap-1.5 break-words min-w-0"><MapPin size={13} className="text-[#198754]" aria-hidden="true" /> {t('console.routeTitle')}</h2>
-                </div>
-                <div className="border border-slate-200 bg-white h-[360px] overflow-hidden isolate" title={t('console.mapTitle')}>
-                  <DeliveryRouteMap origin={summary.delivery.from} destination={summary.delivery.to} />
-                </div>
-              </section>
-
-              {/* Booked families queue — distributor home only. Admins work
-                  from the Families Details page instead. */}
-              {!isAdmin && (
-                <section aria-label={t('console.queueLabel')} className="space-y-3">
-                  <div className="flex items-baseline justify-between">
-                    <h2 className="text-sm font-bold tracking-tight break-words min-w-0">
-                      {t('console.queueTitle')}
-                    </h2>
-                    <span className="text-[10px] font-bold uppercase tracking-[0.14em] text-slate-500 tabular-nums">
-                      {t('console.recent', { count: uniqueBookings.length })}
-                    </span>
-                  </div>
-                  <BookingsTable bookings={uniqueBookings} onView={openFamilyDetails} />
-                </section>
-              )}
-            </div>
           </>
         )}
 

@@ -19,6 +19,9 @@ export default function BookingPage() {
   const [bookingDetails, setBookingDetails] = useState(null);
   // 7.2 — live slot windows from the admin-managed template (fallback to the
   // legacy four windows when the endpoint is unreachable, e.g. old backend).
+  // When the admin has fixed a distribution date, citizens choose a time slot
+  // only — the date picker locks to that day (server re-enforces on submit).
+  const [fixedDate, setFixedDate] = useState('');
   const [timeSlots, setTimeSlots] = useState([
     '09:00 AM - 11:00 AM',
     '11:00 AM - 01:00 PM',
@@ -59,6 +62,10 @@ export default function BookingPage() {
 
       if (Array.isArray(slotsRes?.slots) && slotsRes.slots.length) {
         setTimeSlots(slotsRes.slots.filter((s) => s?.label).map((s) => s.label));
+      }
+      if (slotsRes?.distributionDate) {
+        setFixedDate(slotsRes.distributionDate);
+        setSelectedDate(slotsRes.distributionDate);
       }
     } catch (err) {
       console.error('Error verifying household profile:', err);
@@ -162,6 +169,8 @@ export default function BookingPage() {
         setError(t('booking.alreadyBooked'));
       } else if (data.code === 'PAST_DATE') {
         setError(t('booking.pastDate'));
+      } else if (data.code === 'FIXED_DATE') {
+        setError(t('booking.fixedDate', { date: fixedDate || selectedDate }));
       } else {
         setError(data.message || t('booking.scheduleFailed'));
       }
@@ -252,6 +261,7 @@ export default function BookingPage() {
           onSubmit={handleCreateBooking}
           selectedDate={selectedDate}
           onDateChange={setSelectedDate}
+          fixedDate={fixedDate}
           selectedSlot={selectedSlot}
           onSlotChange={setSelectedSlot}
           submitting={submitting}

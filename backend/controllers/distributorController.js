@@ -164,6 +164,7 @@ export const getDistributorSummary = async (req, res) => {
       },
       items: settings.items,
       slots: Array.isArray(settings.slots) && settings.slots.length ? settings.slots : DEFAULT_SLOTS,
+      distributionDate: settings.distributionDate || '',
       grievanceStats,
       updatedAt: settings.updatedAt,
     });

@@ -42,6 +42,16 @@ export const createBooking = async (req, res) => {
     // 5.1 slot-capacity guard — 7.2 dynamic version. The requested window
     // must exist in the admin-managed template, be open, and have room left.
     const settings = await getDistributionSettings();
+    // Fixed distribution day: when the admin has set one, citizens choose a
+    // time slot only — any other date is rejected (server-enforced; the
+    // citizen form locks the date picker to match).
+    const fixedDate = settings.distributionDate || '';
+    if (fixedDate && distributionDate !== fixedDate) {
+      return res.status(400).json({
+        message: `Ration is distributed only on the fixed date ${fixedDate}. Please choose a time slot for that day.`,
+        code: 'FIXED_DATE',
+      });
+    }
     const templates = Array.isArray(settings.slots) && settings.slots.length ? settings.slots : DEFAULT_SLOTS;
     const slot = templates.find((s) => s.label === timeSlot);
     if (!slot) {
@@ -104,5 +114,39 @@ export const getUserBookings = async (req, res) => {
       message: 'Failed to retrieve booking records.',
       logLabel: 'Get User Bookings Error:',
     });
+  }
+};
+
+// PATCH /distributor/bookings/:id — distributor flips a household's booking
+// between Confirmed and Collected ("family has taken the ration" + unmark).
+// Distributor-only: admins see the status read-only (Families Details /
+// dialog) and get a 403 here so they cannot change it.
+export const setBookingCollectionStatus = async (req, res) => {
+  try {
+    if (req.user?.role !== 'distributor') {
+      return res.status(403).json({ message: 'Only distributors can update the collection status.' });
+    }
+    const booking = await Booking.findById(req.params.id);
+    if (!booking) {
+      return res.status(404).json({ message: 'Booking not found.' });
+    }
+    const next = req.body?.status;
+    if (next !== 'Collected' && next !== 'Confirmed') {
+      return res.status(400).json({ message: 'Status must be Collected or Confirmed.' });
+    }
+    if (booking.status === next) {
+      return res.status(200).json({ message: `Ration already marked as ${next.toLowerCase()}.`, booking });
+    }
+    if (booking.status !== 'Confirmed' && booking.status !== 'Collected') {
+      return res.status(400).json({ message: `A ${booking.status} booking cannot be updated here.` });
+    }
+    booking.status = next;
+    await booking.save();
+    res.status(200).json({
+      message: next === 'Collected' ? 'Ration marked as collected.' : 'Collection mark removed.',
+      booking,
+    });
+  } catch (error) {
+    return sendError(res, error, { status: 400 });
   }
 };

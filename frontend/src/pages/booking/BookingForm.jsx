@@ -6,7 +6,9 @@ const FOCUS =
   'focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-orange-500';
 
 // Slot-selection form for the Ration Bookings page — date + time window,
-// ID notice strip and confirmation action. Pure presentation.
+// ID notice strip and confirmation action. Pure presentation. When the admin
+// has fixed a distribution date (`fixedDate`), the date picker locks to that
+// day and citizens choose a time slot only.
 export default function BookingForm({
   error,
   success,
@@ -14,6 +16,7 @@ export default function BookingForm({
   onSubmit,
   selectedDate,
   onDateChange,
+  fixedDate = '',
   selectedSlot,
   onSlotChange,
   submitting,
@@ -50,19 +53,22 @@ export default function BookingForm({
         <SectionHead title={t('booking.form.selectSlot')} />
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-          {/* Date Picker */}
+          {/* Date Picker — locked when the admin has fixed the ration day */}
           <div className="space-y-1.5">
             <label htmlFor="distribution-date" className={swiss.label}><span className="flex items-center gap-1.5"><Calendar size={12} aria-hidden="true" /> {t('booking.form.date')}</span></label>
             <input
               id="distribution-date"
               type="date"
               required
-              min={new Date().toISOString().split('T')[0]}
+              min={fixedDate || new Date().toISOString().split('T')[0]}
               value={selectedDate}
               onChange={(e) => onDateChange(e.target.value)}
-              className={`${swiss.input} cursor-pointer ${FOCUS}`}
+              disabled={Boolean(fixedDate)}
+              className={`${swiss.input} cursor-pointer disabled:bg-slate-100 disabled:text-slate-500 disabled:cursor-not-allowed ${FOCUS}`}
             />
-            <p className="text-[10px] md:text-[12px] text-slate-500 font-medium">{t('booking.form.dateHint')}</p>
+            <p className="text-[10px] md:text-[12px] text-slate-500 font-medium">
+              {fixedDate ? t('booking.form.dateFixedHint') : t('booking.form.dateHint')}
+            </p>
           </div>
 
           {/* Time Slot Selector */}
