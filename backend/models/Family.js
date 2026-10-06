@@ -14,7 +14,6 @@ const memberSchema = new mongoose.Schema({
   },
   relation: {
     type: String,
-    required: [true, 'Relation to head of family is required'],
     trim: true,
   },
 });

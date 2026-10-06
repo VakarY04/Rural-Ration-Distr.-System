@@ -9,7 +9,7 @@ export default function EditorShell({ title, editing, saving, onEdit, onSave, on
   return (
     <section className="border border-slate-200 bg-white rounded-2xl overflow-hidden">
       <header className="flex items-start justify-between gap-4 px-5 pt-5 pb-4 border-b border-slate-100">
-        <h2 className="text-sm font-bold uppercase tracking-[0.1em] text-[#000080] break-words min-w-0">{title}</h2>
+        <h2 className="text-sm font-bold uppercase tracking-[0.1em] text-black break-words min-w-0">{title}</h2>
 
         {!readOnly && !editing && (
           <button

@@ -1,5 +1,5 @@
 import { Users } from 'lucide-react';
-import { swiss } from '../components/ui/swiss';
+import { swissUser as swiss } from '../components/ui/swiss';
 import BookingsTable from '../components/distributor/BookingsTable';
 import { useLanguage } from '../i18n/LanguageContext';
 
@@ -21,9 +21,6 @@ export default function FamiliesDetailsPage({ bookings, onView, canMarkCollected
           </span>
           {t('families.title')}
         </h1>
-        <p className="text-sm text-slate-500 mt-2">
-          {t('families.intro')}
-        </p>
       </header>
 
       <section aria-label={t('families.booked')} className="space-y-3">

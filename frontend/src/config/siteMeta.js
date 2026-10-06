@@ -8,19 +8,20 @@
 // ---------------------------------------------------------------------------
 export const siteMeta = {
   projectName: 'E-Ration Portal',
-  tagline: 'Public Distribution System',
   // TODO(owner): replace with your name/alias before sharing publicly.
   ownerName: 'Vakar Younish',
   // TODO(owner): replace with a dedicated public email (not your private one).
   ownerEmail: 'faltu0756@gmail.com',
   // Honest framing for a personal project: never claim to BE the government.
   // If a department adopts this, swap this line for the official lineage sentence.
-  ownershipNote: 'An independent civic project built for the people of India',
+  // NOTE: display strings (tagline, ownership note, gov-link labels) live in
+  // the i18n dictionaries as footer.* so they switch with the language toggle.
   // Outbound reference links — linking OUT to the government is always fine.
+  // `id` resolves the visible label via t('footer.govLink' + id).
   govLinks: [
-    { label: 'National Portal of India', href: 'https://www.india.gov.in/' },
-    { label: 'Digital India', href: 'https://www.digitalindia.gov.in/' },
-    { label: 'myScheme', href: 'https://www.myscheme.gov.in/' },
+    { id: 'NationalPortal', href: 'https://www.india.gov.in/' },
+    { id: 'DigitalIndia', href: 'https://www.digitalindia.gov.in/' },
+    { id: 'myScheme', href: 'https://www.myscheme.gov.in/' },
   ],
 };
 

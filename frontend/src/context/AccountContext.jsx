@@ -23,7 +23,9 @@ export function AccountProvider({ children }) {
         api('/family/profile'),
       ]);
       setAccount({
-        name: accountData?.name || 'Citizen',
+        // Empty name falls through to the translated t('nav.citizen') label
+        // in the shell — never a hardcoded English fallback word.
+        name: accountData?.name || '',
         avatar: accountData?.avatar || null,
         rationCardNumber: profileData?.rationCardNumber || null,
       });

@@ -6,13 +6,20 @@ const FOCUS =
   'focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-orange-500';
 
 // Family details dialog — shows the household record exactly as entered in
-// the citizen's Family Profile (members with name / age / relation, address)
+// the citizen's Family Profile (members with name / age, address)
 // plus the computed ration entitlement for that household. Shared by the
 // Families Details page and the Home booking queue, for admins and
 // distributors alike.
 export default function FamilyDetailsDialog({ details, loading, error, onClose }) {
   const { t } = useLanguage();
   const closeRef = useRef(null);
+  // Backend stores booking status in English — map to the active language so
+  // Hindi mode never shows a raw English status word.
+  const bookingStatusLabel = (status) => {
+    if (/^collected$/i.test(String(status || ''))) return t('status.collected');
+    if (/^confirmed$/i.test(String(status || ''))) return t('status.confirmed');
+    return String(status || '');
+  };
 
   useEffect(() => {
     closeRef.current?.focus();
@@ -121,7 +128,6 @@ export default function FamilyDetailsDialog({ details, loading, error, onClose }
                         <th scope="col" className="text-left text-[10px] font-bold uppercase tracking-[0.14em] text-slate-500 pb-2 w-10">#</th>
                         <th scope="col" className="text-left text-[10px] font-bold uppercase tracking-[0.14em] text-slate-500 pb-2">{t('families.details.name')}</th>
                         <th scope="col" className="text-right text-[10px] font-bold uppercase tracking-[0.14em] text-slate-500 pb-2 w-16">{t('families.details.age')}</th>
-                        <th scope="col" className="text-left text-[10px] font-bold uppercase tracking-[0.14em] text-slate-500 pb-2 pl-6">{t('families.details.relation')}</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -130,7 +136,6 @@ export default function FamilyDetailsDialog({ details, loading, error, onClose }
                           <td className="py-2 pr-3 text-xs font-bold text-slate-400 tabular-nums">{i + 1}</td>
                           <td className="py-2 pr-3 text-sm font-semibold text-slate-900">{m.name}</td>
                           <td className="py-2 pr-3 text-sm font-bold text-slate-900 tabular-nums text-right">{m.age}</td>
-                          <td className="py-2 pl-6 text-sm text-slate-600">{m.relation}</td>
                         </tr>
                       ))}
                     </tbody>
@@ -178,7 +183,7 @@ export default function FamilyDetailsDialog({ details, loading, error, onClose }
                     </div>
                     <div className="flex justify-between py-1.5">
                       <span className="text-slate-500">{t('families.details.status')}</span>
-                      <span className="font-semibold text-slate-800">{details.booking.status}</span>
+                      <span className="font-semibold text-slate-800">{bookingStatusLabel(details.booking.status)}</span>
                     </div>
                   </>
                 ) : (

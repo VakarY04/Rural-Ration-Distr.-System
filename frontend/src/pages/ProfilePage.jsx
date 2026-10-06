@@ -4,11 +4,11 @@ import { useAccount } from '../context/AccountContext';
 import { useLanguage } from '../i18n/LanguageContext';
 import { API_URL } from '../services/api';
 import { computeTotalQuotaKg } from '../utils/ration';
-import { swiss } from '../components/ui/swiss';
+import { swissUser as swiss } from '../components/ui/swiss';
 import { AccountPanel, RationCardPanel, AddressPanel } from './profile/ProfilePanels';
 import { MembersPanel, QuotaPanel, DangerZonePanel } from './profile/ProfileMembers';
 
-const emptyMember = () => ({ name: '', age: '', relation: '' });
+const emptyMember = () => ({ name: '', age: '' });
 
 export default function ProfilePage({ onAccountDeleted }) {
   const { refresh: refreshAccount } = useAccount();
@@ -135,7 +135,7 @@ export default function ProfilePage({ onAccountDeleted }) {
             rationCardNumber: card,
             headOfFamily: head,
             address,
-            members: members.map((m) => ({ ...m, age: Number(m.age) || 0, relation: m.relation?.trim() || t('profile.defaultRelation') })),
+            members: members.map((m) => ({ name: m.name?.trim() || '', age: Number(m.age) || 0 })),
           }),
         }),
       ]);
@@ -193,16 +193,13 @@ export default function ProfilePage({ onAccountDeleted }) {
   }
 
   return (
-    <div className="max-w-6xl mx-auto space-y-6 font-sans">
+    <div className="max-w-6xl mx-auto space-y-4 font-sans">
       <header className="flex flex-col md:flex-row md:items-start justify-between gap-4">
         <div>
           <p className={swiss.micro}>{t('profile.eyebrow')}</p>
           <div className="flex items-baseline gap-3 mt-1">
             <h1 className={swiss.headline}>{t('profile.title')}</h1>
           </div>
-          <p className="text-sm text-slate-500 mt-2">
-            {t('profile.subtitle')}
-          </p>
         </div>
         <div className="flex items-start gap-2 bg-[#0D6EFD]/10 border border-[#0D6EFD]/30 px-4 py-3 max-w-sm">
           <Info size={16} className="text-[#0D6EFD] shrink-0 mt-0.5" />
@@ -228,8 +225,8 @@ export default function ProfilePage({ onAccountDeleted }) {
         </div>
       )}
 
-      <form onSubmit={handleSave} className="space-y-6">
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">
+      <form onSubmit={handleSave} className="space-y-4">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 items-start">
           <AccountPanel
             fileInputRef={fileInputRef}
             avatar={avatar}
@@ -244,7 +241,7 @@ export default function ProfilePage({ onAccountDeleted }) {
           <AddressPanel address={address} setAddress={setAddress} />
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-[1fr_360px] gap-6 items-start">
+        <div className="grid grid-cols-1 lg:grid-cols-[1fr_360px] gap-4 items-start">
           <MembersPanel
             members={members}
             editingIndex={editingIndex}

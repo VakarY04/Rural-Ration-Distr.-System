@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { Camera, CheckCircle2, AlertCircle, Loader2, Save, ShieldCheck } from 'lucide-react';
-import { swiss } from '../components/ui/swiss';
+import { swissUser as swiss } from '../components/ui/swiss';
 import { Avatar } from '../components/ui/avatar';
 import { useLanguage } from '../i18n/LanguageContext';
 import { api } from '../services/api';
@@ -110,7 +110,6 @@ export default function DistributorProfilePage({ name, role, isAdmin, summary, o
       <header>
         <p className={swiss.micro}>{t('staff.eyebrow')}</p>
         <h1 className={swiss.headline}>{isAdmin ? t('staffProfile.titleAdmin') : t('staffProfile.titleDistributor')}</h1>
-        <p className="text-sm text-slate-500 mt-2">{t('staffProfile.intro')}</p>
       </header>
 
       {msg.error && (

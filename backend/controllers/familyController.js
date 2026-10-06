@@ -49,12 +49,11 @@ export const updateFamilyProfile = async (req, res) => {
       });
     }
 
-    // ✅ Fallback map ensuring relation field is never undefined
+    // Members carry name + age only — relation was removed from profiles.
     const sanitizedMembers = Array.isArray(members)
       ? members.map((m) => ({
           name: m.name || 'Member',
           age: Number(m.age) || 0,
-          relation: m.relation || m.role || m.relationship || 'Dependent',
         }))
       : [];
 

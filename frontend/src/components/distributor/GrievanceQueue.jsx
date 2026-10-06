@@ -26,7 +26,21 @@ function statusKey(status, t) {
 // each row lets staff re-categorise, assign, set status and write the
 // resolution note the citizen sees (email follows on resolve when configured).
 export default function GrievanceQueue() {
-  const { t } = useLanguage();
+  const { t, lang } = useLanguage();
+  // Category codes are stored in English — map to the active language for
+  // display (stored values stay English so filtering keeps working).
+  const categoryLabel = (category) => {
+    const map = {
+      quantity: 'grievance.catQuantity',
+      quality: 'grievance.catQuality',
+      access: 'grievance.catAccess',
+      corruption: 'grievance.catCorruption',
+      technical: 'grievance.catTechnical',
+      other: 'grievance.catOther',
+    };
+    const key = map[String(category || '').trim().toLowerCase()];
+    return key ? t(key) : String(category || '');
+  };
   const [items, setItems] = useState([]);
   const [stats, setStats] = useState(null);
   const [filter, setFilter] = useState('');
@@ -101,7 +115,7 @@ export default function GrievanceQueue() {
     <section aria-label={t('grievance.title')} className="border border-slate-200 bg-white rounded-2xl overflow-hidden">
       <header className="px-5 pt-5 pb-4 border-b border-slate-100 space-y-3">
         <div>
-          <h2 className="text-sm font-bold uppercase tracking-[0.1em] text-[#000080] break-words">{t('grievance.title')}</h2>
+          <h2 className="text-sm font-bold uppercase tracking-[0.1em] text-black break-words">{t('grievance.title')}</h2>
           <p className="text-xs text-slate-500 font-medium mt-1">{t('grievance.subtitle')}</p>
         </div>
         <div className="flex items-center gap-2 flex-wrap" role="group" aria-label={t('grievance.title')}>
@@ -155,7 +169,7 @@ export default function GrievanceQueue() {
                       {g.category}
                     </span>
                     <span className="text-[11px] text-slate-500 font-medium tabular-nums ml-auto">
-                      #{String(g.id).slice(-6).toUpperCase()} · {new Date(g.createdAt).toLocaleDateString('en-IN', { day: 'numeric', month: 'short' })}
+                      #{String(g.id).slice(-6).toUpperCase()} · {new Date(g.createdAt).toLocaleDateString(lang === 'hi' ? 'hi-IN' : 'en-IN', { day: 'numeric', month: 'short' })}
                     </span>
                   </div>
                   <p className="text-sm font-semibold text-slate-900 leading-snug break-words">{g.issue}</p>
@@ -180,7 +194,7 @@ export default function GrievanceQueue() {
                       className={`${inputClass} cursor-pointer`}
                     >
                       {CATEGORIES.map((c) => (
-                        <option key={c} value={c}>{c}</option>
+                        <option key={c} value={c}>{categoryLabel(c)}</option>
                       ))}
                     </select>
                   </div>

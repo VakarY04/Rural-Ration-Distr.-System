@@ -18,6 +18,13 @@ function statusStyle(status) {
 
 export default function BookingsTable({ bookings, onView, canMarkCollected = false, markingId = '', onMarkCollected, onUnmarkCollected }) {
   const { t } = useLanguage();
+  // Backend stores booking status in English — map to the active language so
+  // Hindi mode never shows a raw English status word.
+  const bookingStatusLabel = (status) => {
+    if (/^collected$/i.test(String(status || ''))) return t('status.collected');
+    if (/^confirmed$/i.test(String(status || ''))) return t('status.confirmed');
+    return String(status || '');
+  };
   if (!bookings?.length) {
     return (
       <div className="border border-slate-200 bg-white p-10 text-center">
@@ -56,7 +63,7 @@ export default function BookingsTable({ bookings, onView, canMarkCollected = fal
             <span className="flex-1 min-w-0 text-sm font-semibold text-slate-900 truncate">{b.headOfFamily}</span>
             {b.status && (
               <span className={`shrink-0 text-[10px] font-bold uppercase tracking-wider px-2 py-1 border ${statusStyle(b.status)}`}>
-                {b.status}
+                {bookingStatusLabel(b.status)}
               </span>
             )}
             <button

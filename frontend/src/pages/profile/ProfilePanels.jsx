@@ -1,6 +1,6 @@
 import { Camera, CheckCircle2, Mail, Phone } from 'lucide-react';
 import { Avatar } from '../../components/ui/avatar';
-import { swiss, SectionHead } from '../../components/ui/swiss';
+import { swissUser as swiss, SectionHeadUser as SectionHead } from '../../components/ui/swiss';
 import { useLanguage } from '../../i18n/LanguageContext';
 
 export function AccountPanel({
@@ -16,10 +16,10 @@ export function AccountPanel({
   const { t } = useLanguage();
   return (
     <section className={swiss.panel}>
-      <div className="border-b border-slate-100 p-5">
+      <div className="border-b border-slate-100 p-4">
         <SectionHead title={t('profile.account.title')} />
       </div>
-      <div className="p-5 space-y-4">
+      <div className="p-4 space-y-4">
         <div className="flex items-center gap-3">
           <button
             type="button"
@@ -83,10 +83,10 @@ export function RationCardPanel({ card, onCardChange, head, onHeadChange }) {
   const { t } = useLanguage();
   return (
     <section className={swiss.panel}>
-      <div className="border-b border-slate-100 p-5">
+      <div className="border-b border-slate-100 p-4">
         <SectionHead title={t('profile.card.title')} />
       </div>
-      <div className="p-5 space-y-4">
+      <div className="p-4 space-y-4">
         <div>
           <label htmlFor="card" className={swiss.label}>{t('profile.card.id')}</label>
           <input id="card" className={swiss.input} value={card} onChange={onCardChange} placeholder={t('profile.card.idPh')} required />
@@ -109,11 +109,11 @@ export function AddressPanel({ address, setAddress }) {
 
   return (
     <section className={swiss.panel}>
-      <div className="border-b border-slate-100 p-5">
+      <div className="border-b border-slate-100 p-4">
         <SectionHead title={t('profile.address.title')} />
         <p className="text-[11px] text-slate-500 mt-1">{t('profile.address.hint')}</p>
       </div>
-      <div className="p-5 grid grid-cols-2 gap-3">
+      <div className="p-4 grid grid-cols-2 gap-3">
         <div className="col-span-2">
           <label htmlFor="village" className={swiss.label}>{t('profile.address.village')}</label>
           <input id="village" className={swiss.input} {...field('village')} required />

@@ -1,21 +1,23 @@
 import { useState } from 'react';
-import { PanelLeftClose, PanelLeftOpen, LogOut } from 'lucide-react';
+import { PanelLeftClose, PanelLeftOpen } from 'lucide-react';
 import logoAsset from '../images/E-RATION Logo.webp';
-import terminalHubIcon from '../images/nav/terminal-hub.webp';
-import familyProfileIcon from '../images/nav/family-profile.webp';
-import rationBookingsIcon from '../images/nav/ration-bookings.webp';
-import aiHelpDeskIcon from '../images/nav/ai-help-desk.webp';
+import {
+  TerminalHubIcon,
+  FamilyProfileIcon,
+  RationBookingsIcon,
+  AiHelpDeskIcon,
+  GovLogoutIcon,
+} from './GovNavIcons';
 import { useAccount } from '../context/AccountContext';
 import { Avatar } from './ui/avatar';
-import { swiss, TricolorStrip } from './ui/swiss';
+import { swissUser as swiss, TricolorStrip } from './ui/swiss';
 import SkipLink from './SkipLink';
 import AccessibilityToolbar from './AccessibilityToolbar';
 import LanguageToggle from './LanguageToggle';
 import SiteFooter from './SiteFooter';
 import { useLanguage } from '../i18n/LanguageContext';
 
-const FOCUS =
-  'focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-orange-500';
+const FOCUS = 'gov-nav-focus';
 
 export default function DashboardShell({ children, currentSubPage, onSubPageChange, onNavigate, onLogout }) {
   const { account } = useAccount();
@@ -36,28 +38,38 @@ export default function DashboardShell({ children, currentSubPage, onSubPageChan
     });
   };
   const navItems = [
-    { id: 'home', label: t('nav.terminalHub'), icon: terminalHubIcon },
-    { id: 'profile', label: t('nav.familyProfile'), icon: familyProfileIcon },
-    { id: 'booking', label: t('nav.rationBookings'), icon: rationBookingsIcon },
-    { id: 'ai-support', label: t('nav.aiHelpDesk'), icon: aiHelpDeskIcon },
+    { id: 'home', label: t('nav.terminalHub'), Icon: TerminalHubIcon },
+    { id: 'profile', label: t('nav.familyProfile'), Icon: FamilyProfileIcon },
+    { id: 'booking', label: t('nav.rationBookings'), Icon: RationBookingsIcon },
+    { id: 'ai-support', label: t('nav.aiHelpDesk'), Icon: AiHelpDeskIcon },
   ];
+
+  // Govt palette for the citizen nav: clean white base (black idle text
+  // ≈21:1), hover = India Green #138808 (white text ≈4.5:1), selected = Navy
+  // #000080 (white text ≈15:1). State is never colour-alone: aria-current +
+  // left bar + text label accompany every colour cue (GIGW A12).
+  const NAV_IDLE = 'text-black hover:bg-[#138808] hover:text-white';
+  const NAV_ACTIVE = 'bg-[#000080] text-white';
+  const NAV_MICRO = 'text-black/70';
 
   return (
     <div className={`flex h-screen overflow-hidden font-sans ${swiss.page}`}>
       <SkipLink />
-      <aside className={`${navCollapsed ? 'w-20 px-3' : 'w-64 p-5'} bg-slate-900 text-white flex flex-col justify-between py-5 border-r border-slate-800 shrink-0 transition-all duration-200`}>
+      <aside className={`${navCollapsed ? 'w-20 px-3' : 'w-64 px-5'} pt-5 pb-3 bg-white text-black flex flex-col justify-between border-r border-slate-200 shrink-0 transition-all duration-200`}>
         <div>
           <div className={`flex items-center gap-3 px-1 mb-4 ${navCollapsed ? 'justify-center px-0' : ''}`}>
-            <img src={logoAsset} alt="E-Ration" width={44} height={44} decoding="async" className="w-11 h-11 object-contain bg-slate-800 p-1 rounded-2xl" />
+            <img src={logoAsset} alt="E-Ration" width={55} height={55} decoding="async" className="w-[55px] h-[55px] object-contain shrink-0" />
             {!navCollapsed && (
               <div>
-                <h1 className="text-sm font-bold tracking-tight text-white leading-tight">{t('nav.portalName')}</h1>
-                <p className="text-[10px] font-bold uppercase tracking-[0.14em] text-slate-400">{t('nav.citizenWorkspace')}</p>
+                <h1 className="text-sm font-bold tracking-tight text-black leading-tight">{t('nav.portalName')}</h1>
+                <p className={`text-[10px] font-bold uppercase tracking-[0.14em] ${NAV_MICRO}`}>{t('nav.citizenWorkspace')}</p>
               </div>
             )}
           </div>
 
-          <TricolorStrip className="h-[3px] mb-5" />
+          <div className="border border-slate-200 mb-5">
+            <TricolorStrip className="h-[3px]" />
+          </div>
 
           <nav className="space-y-1" aria-label={t('nav.workspaceLabel')}>
             {navItems.map((item) => {
@@ -71,15 +83,15 @@ export default function DashboardShell({ children, currentSubPage, onSubPageChan
                   aria-label={navCollapsed ? item.label : undefined}
                   className={`relative w-full flex items-center gap-3 py-3 text-sm font-semibold transition-colors cursor-pointer ${FOCUS} ${navCollapsed ? 'justify-center px-2' : 'px-4'} ${
                     active
-                      ? 'bg-slate-950 text-white'
-                      : 'text-slate-300 hover:text-white hover:bg-slate-800'
+                      ? NAV_ACTIVE
+                      : NAV_IDLE
                   }`}
                 >
                   <span
                     aria-hidden="true"
-                    className={`absolute left-0 top-0 h-full w-1 ${active ? 'bg-orange-500' : 'bg-transparent'}`}
+                    className={`absolute left-0 top-0 h-full w-1 ${active ? 'bg-white' : 'bg-transparent'}`}
                   />
-                  <img src={item.icon} alt="" width={28} height={28} decoding="async" className="w-7 h-7 object-contain shrink-0" />
+                  <item.Icon size={26} />
                   {!navCollapsed && <span>{item.label}</span>}
                 </button>
               );
@@ -95,15 +107,15 @@ export default function DashboardShell({ children, currentSubPage, onSubPageChan
             title={t('nav.familyProfile')}
             className={`relative w-full flex items-center gap-3 py-2.5 text-sm font-semibold transition-colors cursor-pointer ${FOCUS} ${navCollapsed ? 'justify-center px-2' : 'px-3'} ${
               currentSubPage === 'profile'
-                ? 'bg-slate-950 text-white'
-                : 'text-slate-300 hover:text-white hover:bg-slate-800'
+                ? NAV_ACTIVE
+                : NAV_IDLE
             }`}
           >
             <Avatar src={account?.avatar} name={account?.name || t('nav.citizen')} size={32} />
             {!navCollapsed && (
               <div className="text-left min-w-0">
                 <p className="text-sm font-bold leading-tight truncate">{account?.name || t('nav.citizen')}</p>
-                <p className="text-[10px] font-bold uppercase tracking-[0.14em] text-slate-400 truncate">
+                <p className={`text-[10px] font-bold uppercase tracking-[0.14em] truncate ${currentSubPage === 'profile' ? 'text-white/80' : NAV_MICRO}`}>
                   {account?.rationCardNumber ? t('nav.rationCard', { id: account.rationCardNumber }) : t('nav.citizenWorkspace')}
                 </p>
               </div>
@@ -113,9 +125,9 @@ export default function DashboardShell({ children, currentSubPage, onSubPageChan
           <button
             onClick={onLogout}
             title={navCollapsed ? t('nav.logout') : undefined}
-            className={`w-full flex items-center justify-center gap-2 border border-slate-700 hover:border-slate-600 hover:bg-slate-800 text-slate-300 hover:text-white py-3 text-sm font-semibold transition-colors cursor-pointer ${FOCUS}`}
+            className={`w-full flex items-center justify-center gap-2 border border-black/50 bg-white/20 text-black hover:bg-[#138808] hover:border-[#138808] hover:text-white py-3 text-sm font-semibold transition-colors cursor-pointer ${FOCUS}`}
           >
-            <LogOut size={18} className="shrink-0" aria-hidden="true" />
+            <GovLogoutIcon size={20} aria-hidden="true" />
             {!navCollapsed && <span>{t('nav.logout')}</span>}
           </button>
         </div>

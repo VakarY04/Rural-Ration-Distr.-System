@@ -1,5 +1,5 @@
 import { MessageSquareWarning } from 'lucide-react';
-import { swiss } from '../components/ui/swiss';
+import { swissUser as swiss } from '../components/ui/swiss';
 import GrievanceQueue from '../components/distributor/GrievanceQueue';
 import { useLanguage } from '../i18n/LanguageContext';
 

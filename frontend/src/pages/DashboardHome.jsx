@@ -1,11 +1,11 @@
 import { useState, useEffect } from 'react';
 import {
-  AlertCircle, ArrowRight, Calendar, Clock, Bell, MapPin, Users,
+  AlertCircle, AlertTriangle, ArrowRight, Calendar, Clock, Bell, MapPin, Users,
   ShoppingBag, Building2,
 } from 'lucide-react';
 import DeliveryRouteMap from '../components/DeliveryRouteMap';
 import { API_URL } from '../services/api';
-import { swiss, SectionHead } from '../components/ui/swiss';
+import { swissUser as swiss, SectionHeadUser as SectionHead } from '../components/ui/swiss';
 import { useLanguage } from '../i18n/LanguageContext';
 
 const FOCUS =
@@ -68,6 +68,38 @@ export default function DashboardHome({ onNavigate }) {
   const { name, profile, booking, ration, delivery } = summary;
   const hasProfile = Boolean(profile);
 
+  // Missed pickup: the (fixed or chosen) collection date has passed and the
+  // distributor never marked the booking Collected — i.e. the user forgot to
+  // pick up the ration. Policy: the ration is made available in the next
+  // distribution window when it opens. Date-only comparison in local time so
+  // a same-day evening slot is not flagged prematurely.
+  const parseDateOnly = (value) => {
+    const m = /^(\d{4})-(\d{2})-(\d{2})/.exec(String(value || ''));
+    if (!m) return null;
+    const d = new Date(Number(m[1]), Number(m[2]) - 1, Number(m[3]));
+    return Number.isNaN(d.getTime()) ? null : d;
+  };
+  const isCollected = /^collected$/i.test(String(booking?.status || ''));
+  const bookingDate = parseDateOnly(booking?.distributionDate);
+  const isMissed = Boolean(
+    booking && !isCollected && bookingDate && (() => {
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      return bookingDate < today;
+    })()
+  );
+  const missedDateLabel = bookingDate
+    ? bookingDate.toLocaleDateString(lang === 'hi' ? 'hi-IN' : 'en-IN', { day: 'numeric', month: 'short', year: 'numeric' })
+    : (booking?.distributionDate || '');
+
+  // Backend stores booking status in English — render the active-language
+  // label so Hindi mode never shows a raw English status word.
+  const bookingStatusLabel = (status) => {
+    if (/^collected$/i.test(String(status || ''))) return t('status.collected');
+    if (/^confirmed$/i.test(String(status || ''))) return t('status.confirmed');
+    return String(status || '');
+  };
+
   return (
     <div className="max-w-7xl mx-auto space-y-6 font-sans">
       <header>
@@ -75,11 +107,6 @@ export default function DashboardHome({ onNavigate }) {
         <div className="flex items-baseline gap-3 mt-1">
           <h1 className={swiss.headline}>{t('dashboard.title')}</h1>
         </div>
-        <p className="text-sm text-slate-500 mt-2">
-          {hasProfile
-            ? t('dashboard.subtitle', { id: profile.rationCardNumber, count: profile.totalMembers })
-            : t('dashboard.subtitleEmpty')}
-        </p>
         {summary.updatedAt && (
           <p className="text-[11px] text-slate-500 mt-1 tabular-nums">
             {t('dashboard.lastReviewed', { date: new Date(summary.updatedAt).toLocaleDateString(lang === 'hi' ? 'hi-IN' : 'en-IN', { day: 'numeric', month: 'short', year: 'numeric' }) })}
@@ -97,10 +124,10 @@ export default function DashboardHome({ onNavigate }) {
         </div>
         <div className="p-6 min-w-0 overflow-hidden">
           <p className={swiss.micro}>{t('dashboard.nextCollection')}</p>
-          <p className={`mt-2 text-2xl sm:text-3xl md:text-4xl font-extrabold tracking-tight tabular-nums break-words ${booking ? 'text-slate-900' : 'text-slate-500'}`}>
+          <p className={`mt-2 text-2xl sm:text-3xl md:text-4xl font-extrabold tracking-tight tabular-nums break-words ${!booking ? 'text-slate-500' : isMissed ? 'text-[#DC3545]' : 'text-slate-900'}`}>
             {booking ? booking.distributionDate : t('dashboard.notScheduled')}
           </p>
-          <p className="text-xs text-slate-500 mt-1">{booking ? booking.timeSlot : t('dashboard.bookHint')}</p>
+          <p className={`text-xs mt-1 ${isMissed ? 'font-bold text-[#DC3545]' : 'text-slate-500'}`}>{booking ? (isMissed ? t('dashboard.missedTitle') : booking.timeSlot) : t('dashboard.bookHint')}</p>
         </div>
         <div className="p-6 min-w-0 overflow-hidden flex flex-wrap items-end justify-between gap-4">
           <div className="min-w-0">
@@ -208,7 +235,7 @@ export default function DashboardHome({ onNavigate }) {
             <div className="space-y-2 text-sm">
               <div className="flex justify-between py-1.5 border-b border-slate-100">
                 <span className="text-slate-500">{t('dashboard.status')}</span>
-                <span className={`${chip} border-[#0D6EFD] bg-[#0D6EFD]/10 text-[#0D6EFD]`}>{booking.status || t('dashboard.confirmed')}</span>
+                <span className={`${chip} border-[#0D6EFD] bg-[#0D6EFD]/10 text-[#0D6EFD]`}>{booking.status ? bookingStatusLabel(booking.status) : t('dashboard.confirmed')}</span>
               </div>
               <div className="flex justify-between py-1.5 border-b border-slate-100">
                 <span className="text-slate-500 flex items-center gap-1.5"><Calendar size={13} /> {t('dashboard.date')}</span>
@@ -240,10 +267,28 @@ export default function DashboardHome({ onNavigate }) {
         </div>
       </div>
 
-      {booking && (
+      {booking && !isMissed && (
         <div className="bg-amber-50 border border-amber-300 px-4 py-2.5 flex items-center gap-2.5" role="status" title={t('dashboard.bookingStatusTitle')}>
           <Bell size={16} className="text-amber-500 shrink-0" aria-hidden="true" />
           <p className="text-sm text-slate-700">{t('dashboard.nextConfirmed')}</p>
+        </div>
+      )}
+
+      {booking && isMissed && (
+        <div className="bg-[#DC3545]/10 border border-[#DC3545]/40 px-4 py-3 flex items-start gap-2.5" role="alert" title={t('dashboard.bookingStatusTitle')}>
+          <AlertTriangle size={16} className="text-[#DC3545] shrink-0 mt-0.5" aria-hidden="true" />
+          <div className="min-w-0 flex-1">
+            <p className="text-sm font-bold text-[#DC3545]">{t('dashboard.missedTitle')}</p>
+            <p className="text-sm text-slate-700 mt-0.5">{t('dashboard.missedBody', { date: missedDateLabel })}</p>
+          </div>
+          <button
+            type="button"
+            onClick={() => onNavigate('booking')}
+            className={`shrink-0 bg-[#DC3545] hover:bg-[#B02A37] text-white text-xs font-semibold tracking-wide px-4 py-2.5 transition-colors cursor-pointer inline-flex items-center justify-center gap-2 ${FOCUS}`}
+          >
+            <span>{t('dashboard.missedCta')}</span>
+            <ArrowRight size={14} />
+          </button>
         </div>
       )}
     </div>

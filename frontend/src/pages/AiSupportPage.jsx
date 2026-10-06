@@ -13,7 +13,7 @@ import {
 import { useAccount } from '../context/AccountContext';
 import { API_URL } from '../services/api';
 import { useLanguage } from '../i18n/LanguageContext';
-import { swiss, SectionHead } from '../components/ui/swiss';
+import { swissUser as swiss, SectionHeadUser as SectionHead } from '../components/ui/swiss';
 
 const FOCUS =
   'focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-orange-500';
@@ -21,6 +21,27 @@ const FOCUS =
 export default function AiSupportPage() {
   const { t } = useLanguage();
   const { account } = useAccount();
+  // Backend/AI store ticket status + category in English — map to the active
+  // language so Hindi mode never shows raw English words on these badges.
+  const ticketStatusLabel = (status) => {
+    const s = String(status || '');
+    if (/^resolved$/i.test(s)) return t('grievance.statusResolved');
+    if (/^in.?review$/i.test(s)) return t('grievance.statusReview');
+    if (/^open$/i.test(s)) return t('grievance.statusOpen');
+    return s;
+  };
+  const ticketCategoryLabel = (category) => {
+    const map = {
+      quantity: 'grievance.catQuantity',
+      quality: 'grievance.catQuality',
+      access: 'grievance.catAccess',
+      corruption: 'grievance.catCorruption',
+      technical: 'grievance.catTechnical',
+      other: 'grievance.catOther',
+    };
+    const key = map[String(category || '').trim().toLowerCase()];
+    return key ? t(key) : String(category || '');
+  };
   const [cardId, setCardId] = useState('');
   const [issue, setIssue] = useState('');
   const [loading, setLoading] = useState(false);
@@ -146,9 +167,6 @@ export default function AiSupportPage() {
               {t('helpdesk.title')}
             </h1>
             <p className="text-[11px] text-slate-500 font-medium mt-0.5">{t('helpdesk.sub')}</p>
-            <p className="text-xs text-slate-500 font-medium mt-1 max-w-md leading-relaxed">
-              {t('helpdesk.intro')}
-            </p>
           </div>
 
           <div className="flex items-center gap-2 bg-white text-slate-900 border border-slate-300 px-3 py-1.5 text-xs font-bold tabular-nums w-fit shrink-0">
@@ -168,9 +186,6 @@ export default function AiSupportPage() {
         {/* Input Form */}
         <form onSubmit={handleAnalyze} className="space-y-4">
           <SectionHead title={t('helpdesk.describeTitle')} />
-          <p className="-mt-3 text-xs text-slate-500 font-medium">
-            {t('helpdesk.describeHint')}
-          </p>
 
           <div className="relative">
             <label htmlFor="issue-input" className="sr-only">{t('helpdesk.describeLabel')}</label>
@@ -272,10 +287,10 @@ export default function AiSupportPage() {
                       #{String(g.id).slice(-6).toUpperCase()}
                     </span>
                     <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 border border-slate-300 text-slate-600">
-                      {g.status}
+                      {ticketStatusLabel(g.status)}
                     </span>
                     <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 border border-slate-300 text-slate-600">
-                      {g.category}
+                      {ticketCategoryLabel(g.category)}
                     </span>
                   </div>
                   <p className="text-xs font-semibold text-slate-900 break-words">{g.issue}</p>
