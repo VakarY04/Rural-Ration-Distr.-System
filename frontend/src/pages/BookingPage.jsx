@@ -2,13 +2,13 @@ import { useState, useEffect } from 'react';
 import { AlertCircle, RefreshCw, CreditCard } from 'lucide-react';
 import { computeAllocatedItems, computeTotalQuotaKg } from '../utils/ration';
 import { API_URL } from '../services/api';
-import { swiss } from '../components/ui/swiss';
+import { swissUser as swiss } from '../components/ui/swiss';
 import { useLanguage } from '../i18n/LanguageContext';
 import { QuotaPanel, ActiveBookingTicket } from './booking/BookingSections';
 import BookingForm from './booking/BookingForm';
 
 export default function BookingPage() {
-  const { t, lang } = useLanguage();
+  const { t } = useLanguage();
   const [profile, setProfile] = useState(null);
   const [loadingProfile, setLoadingProfile] = useState(true);
   const [selectedDate, setSelectedDate] = useState('');
@@ -238,11 +238,6 @@ export default function BookingPage() {
             <p className="text-xs text-slate-500 font-medium mt-1 max-w-md leading-relaxed">
               {t('booking.subtitle')}
             </p>
-            {profile?.updatedAt && (
-              <p className="text-[11px] text-slate-500 font-medium mt-1 tabular-nums">
-                {t('booking.lastReviewed', { date: new Date(profile.updatedAt).toLocaleDateString(lang === 'hi' ? 'hi-IN' : 'en-IN', { day: 'numeric', month: 'short', year: 'numeric' }) })}
-              </p>
-            )}
           </div>
 
           <div className="flex items-center gap-2 bg-white text-slate-900 border border-slate-300 px-3 py-1.5 text-xs font-bold tabular-nums w-fit shrink-0">

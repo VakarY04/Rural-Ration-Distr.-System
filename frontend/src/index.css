@@ -196,6 +196,16 @@ a.sr-only:focus-visible {
   perspective: 1000px;
 }
 
+/* Citizen nav focus (GIGW 2.4.7 / WCAG 1.4.11) — dual ring so the indicator
+   stays visible on all three nav surfaces: white idle, India Green
+   #138808 hover, Navy #000080 selected. Navy outline reads on white,
+   the white outer ring reads on green/navy — one of the two always passes 3:1. */
+.gov-nav-focus:focus-visible {
+  outline: 2px solid #000080;
+  outline-offset: 2px;
+  box-shadow: 0 0 0 4px #ffffff;
+}
+
 /* Landing-page cards: the hover "shell" wrapper MUST mirror the inner card's
    border-radius and keep `overflow-hidden` + the same background. A square shell
    around a rounded card exposes the dark page background in the card's rounded

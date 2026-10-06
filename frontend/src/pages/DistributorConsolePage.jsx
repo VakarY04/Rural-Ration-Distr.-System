@@ -5,7 +5,6 @@ import { api } from '../services/api';
 import { TRICOLOR_GRADIENT } from '../components/ui/swiss';
 import DeliveryRouteMap from '../components/DeliveryRouteMap';
 import StatBlocks from '../components/distributor/StatBlocks';
-import BookingsTable from '../components/distributor/BookingsTable';
 import ReportsPanel from '../components/distributor/ReportsPanel';
 import DistributorProfileMenu from '../components/distributor/DistributorProfileMenu';
 import FamilyDetailsDialog from '../components/distributor/FamilyDetailsDialog';
@@ -142,7 +141,7 @@ export default function DistributorConsolePage({ currentSubPage = 'home', onNavi
     id === 'home' ? currentSubPage === 'home' || !currentSubPage : currentSubPage === id;
 
   return (
-    <div className="min-h-screen font-sans text-[#000080] flex flex-col">
+    <div className="min-h-screen font-sans text-black flex flex-col">
       <SkipLink />
       {/* Sticky nav — tricolor strip + header stay pinned while scrolling */}
       <div className="sticky top-0 z-40">
@@ -178,7 +177,7 @@ export default function DistributorConsolePage({ currentSubPage = 'home', onNavi
                       onClick={() => onNavigate('distributor-console', { subPage: item.id })}
                       aria-current={active ? 'page' : undefined}
                       className={`text-[11px] font-bold uppercase tracking-wider px-3 py-2 transition-colors cursor-pointer rounded ${FOCUS} ${
-                        active ? 'text-[#000080] bg-slate-100' : 'text-slate-600 hover:text-[#000080]'
+                        active ? 'text-black bg-slate-100' : 'text-slate-600 hover:text-black'
                       }`}
                     >
                       {item.label}
@@ -253,6 +252,9 @@ export default function DistributorConsolePage({ currentSubPage = 'home', onNavi
             canEditItems={canEditItems}
             canEditDelivery={canEditDelivery}
             canManageSlots={canManageSlots}
+            committedItems={summary.stats?.committedItems || []}
+            canEditCommitted={canEditItems}
+            committedCustomized={summary.stats?.committedCustomized || false}
             onSaved={loadSummary}
           />
         )}
@@ -280,7 +282,7 @@ export default function DistributorConsolePage({ currentSubPage = 'home', onNavi
                 {t('console.heading')}
               </h1>
               <p className="mt-2 inline-flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.14em]">
-                <span className={`px-2.5 py-1 rounded-full border ${isAdmin ? 'border-[#000080]/30 bg-[#000080]/5 text-[#000080]' : 'border-[#198754]/30 bg-[#198754]/10 text-[#198754]'}`}>
+                <span className={`px-2.5 py-1 rounded-full border ${isAdmin ? 'border-black/30 bg-black/5 text-black' : 'border-[#198754]/30 bg-[#198754]/10 text-[#198754]'}`}>
                   {role}
                 </span>
               </p>
@@ -299,29 +301,9 @@ export default function DistributorConsolePage({ currentSubPage = 'home', onNavi
               </div>
             </section>
 
-            {/* Booked families queue — right below the delivery route map.
-                Distributor home only; admins work from the Families
-                Details page instead. */}
-            {!isAdmin && (
-              <section aria-label={t('console.queueLabel')} className="space-y-3">
-                <div className="flex items-baseline justify-between">
-                  <h2 className="text-sm font-bold tracking-tight break-words min-w-0">
-                    {t('console.queueTitle')}
-                  </h2>
-                  <span className="text-[10px] font-bold uppercase tracking-[0.14em] text-slate-500 tabular-nums">
-                    {t('console.recent', { count: uniqueBookings.length })}
-                  </span>
-                </div>
-                <BookingsTable
-                  bookings={uniqueBookings}
-                  onView={openFamilyDetails}
-                  canMarkCollected={!isAdmin}
-                  markingId={markingId}
-                  onMarkCollected={(b) => setCollectionStatus(b, 'Collected')}
-                  onUnmarkCollected={(b) => setCollectionStatus(b, 'Confirmed')}
-                />
-              </section>
-            )}
+            {/* Booked families live on the Families Details page only — the
+                Home page stays focused on the route map and reports. The
+                family "View" dialog below is shared by that page. */}
 
             {/* 7.4 — entitlement vs allocation vs collection per district */}
             <ReportsPanel />

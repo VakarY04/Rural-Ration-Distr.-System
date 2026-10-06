@@ -43,6 +43,29 @@ export default function RationItemsEditor({ items, onSaved, canEdit = false }) {
   const updateRow = (index, patch) =>
     setDraft(draft.map((r, i) => (i === index ? { ...r, ...patch } : r)));
 
+  // Admin-typed labels stay English in storage; known PDS staples render in
+  // the active language, anything custom shows as typed.
+  const itemName = (label) => {
+    const map = {
+      rice: 'items.nameRice',
+      wheat: 'items.nameWheat',
+      oil: 'items.nameOil',
+      sugar: 'items.nameSugar',
+      salt: 'items.nameSalt',
+      pulses: 'items.namePulses',
+      pulse: 'items.namePulses',
+      dal: 'items.namePulses',
+      kerosene: 'items.nameKerosene',
+      'coarse grain': 'items.nameCoarseGrain',
+      coarsegrain: 'items.nameCoarseGrain',
+      millet: 'items.nameCoarseGrain',
+      millets: 'items.nameCoarseGrain',
+    };
+    const key = map[String(label || '').trim().toLowerCase()];
+    return key ? t(key) : String(label || '');
+  };
+  const unitLabel = (unit) => (unit === 'litre' ? t('items.litre') : t('items.kg'));
+
   // 7.1 matrix: distributors see the list read-only; only admins get Edit.
   if (!canEdit) {
     return (
@@ -56,9 +79,10 @@ export default function RationItemsEditor({ items, onSaved, canEdit = false }) {
               <span className="w-8 h-8 border border-amber-200 bg-amber-50 text-amber-600 flex items-center justify-center shrink-0" aria-hidden="true">
                 <Wheat size={14} />
               </span>
-              <span className="flex-1 min-w-0 text-sm font-semibold text-slate-900 truncate">{row.label}</span>
+              <span className="flex-1 min-w-0 text-sm font-semibold text-slate-900 truncate">{itemName(row.label)}</span>
               <span className="text-sm font-extrabold tracking-tight tabular-nums text-slate-900 shrink-0">
-                {row.quantity} {row.unit === 'litre' ? 'L' : 'kg'}
+                {row.quantity} {unitLabel(row.unit)}{' '}
+                <span className="text-[11px] font-semibold text-slate-500">({t('items.perMember')})</span>
               </span>
             </li>
           ))}
@@ -84,6 +108,10 @@ export default function RationItemsEditor({ items, onSaved, canEdit = false }) {
         <p className="text-sm font-semibold text-slate-900 break-words">{t('items.empty')}</p>
       )}
 
+      {editing && (
+        <p className="text-[11px] font-medium text-slate-500">{t('items.perMemberHint')}</p>
+      )}
+
       <ul className="divide-y divide-slate-100">
         {draft.filter((r) => editing || r.label).map((row, i) => (
           <li key={i} className="flex items-center gap-3 py-2.5 first:pt-0 last:pb-0">
@@ -96,14 +124,17 @@ export default function RationItemsEditor({ items, onSaved, canEdit = false }) {
                   placeholder={t('items.namePh')}
                   className={`${inputClass} flex-1 min-w-0`}
                 />
-                <input
-                  aria-label={t('items.qtyAria', { n: i + 1 })}
-                  type="number"
-                  min={0}
-                  value={row.quantity}
-                  onChange={(e) => updateRow(i, { quantity: e.target.value })}
-                  className={`${inputClass} w-20 tabular-nums`}
-                />
+                <span className="flex flex-col gap-0.5 w-20 shrink-0">
+                  <input
+                    aria-label={t('items.qtyAria', { n: i + 1 })}
+                    type="number"
+                    min={0}
+                    value={row.quantity}
+                    onChange={(e) => updateRow(i, { quantity: e.target.value })}
+                    className={`${inputClass} w-full tabular-nums`}
+                  />
+                  <span className="text-[10px] font-medium text-slate-500 leading-none">({t('items.perMember')})</span>
+                </span>
                 <select
                   aria-label={t('items.unitAria', { n: i + 1 })}
                   value={row.unit}

@@ -35,6 +35,11 @@ export function LanguageProvider({ children }) {
 
   useEffect(() => {
     document.documentElement.setAttribute('lang', lang === 'hi' ? 'hi' : 'en');
+    // The app ships its own complete Hindi UI. Browser auto-translate would
+    // double-translate it (often back into English, badly) AND rewrite
+    // React-managed text nodes — freezing/mixing languages and breaking
+    // reconciliation. Opt the document out so only our toggle translates.
+    document.documentElement.setAttribute('translate', 'no');
     try {
       localStorage.setItem(LANG_KEY, lang);
     } catch {

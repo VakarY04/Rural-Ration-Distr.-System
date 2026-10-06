@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
-import { Download, Table2 } from 'lucide-react';
+import { Download, Table2, Users, Check } from 'lucide-react';
 import { api, API_URL } from '../../services/api';
 import { useLanguage } from '../../i18n/LanguageContext';
 
@@ -61,7 +61,7 @@ export default function ReportsPanel() {
     <section aria-label={t('reports.title')} className="border border-slate-200 bg-white rounded-2xl overflow-hidden">
       <header className="flex items-start justify-between gap-4 px-5 pt-5 pb-4 border-b border-slate-100 flex-wrap">
         <div>
-          <h2 className="text-sm font-bold uppercase tracking-[0.1em] text-[#000080] break-words">{t('reports.title')}</h2>
+          <h2 className="text-sm font-bold uppercase tracking-[0.1em] text-black break-words">{t('reports.title')}</h2>
           <p className="text-xs text-slate-500 font-medium mt-1">{t('reports.subtitle')}</p>
         </div>
         <button
@@ -90,6 +90,15 @@ export default function ReportsPanel() {
           </div>
         ) : (
           <>
+            <div className="flex items-center gap-3 bg-[#138808]/10 border border-[#138808]/30 px-4 py-3 mb-4">
+              <span className="w-9 h-9 shrink-0 bg-[#138808]/15 border border-[#138808]/30 text-[#138808] flex items-center justify-center" aria-hidden="true">
+                <Users size={16} />
+              </span>
+              <div className="min-w-0">
+                <p className="text-[10px] font-bold uppercase tracking-[0.14em] text-[#138808]">{t('reports.familiesBookedOnline')}</p>
+                <p className="text-2xl font-extrabold tracking-tight tabular-nums text-slate-900 leading-none mt-1">{totals?.families ?? 0}</p>
+              </div>
+            </div>
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-px bg-slate-200 border border-slate-200 text-xs mb-4">
               {[
                 [t('reports.entitled'), totals?.entitledKg ?? 0],
@@ -104,10 +113,10 @@ export default function ReportsPanel() {
               ))}
             </div>
             <div className="overflow-x-auto border border-slate-200">
-              <table className="w-full text-xs min-w-[640px]">
+              <table className="w-full text-xs min-w-[720px]">
                 <thead>
                   <tr className="bg-slate-50 text-left">
-                    {[t('reports.district'), t('reports.families'), t('reports.entitled'), t('reports.allocated'), t('reports.collected'), t('reports.rate'), t('reports.bookings')].map((h) => (
+                    {[t('reports.villageDistrict'), t('reports.familyHead'), t('reports.entitled'), t('reports.allocated'), t('reports.collected'), t('reports.rate'), t('reports.bookings')].map((h) => (
                       <th key={h} scope="col" className="px-3 py-2 font-bold uppercase tracking-wider text-slate-500 whitespace-nowrap">
                         {h}
                       </th>
@@ -115,20 +124,30 @@ export default function ReportsPanel() {
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-slate-100">
-                  {rows.map((r) => (
-                    <tr key={r.district} className="hover:bg-slate-50/60">
-                      <td className="px-3 py-2 font-bold text-slate-900 break-words">{r.district}</td>
-                      <td className="px-3 py-2 tabular-nums">{r.families}</td>
+                  {rows.map((r, i) => (
+                    <tr key={`${r.district}-${r.head}-${i}`} className="hover:bg-slate-50/60">
+                      <td className="px-3 py-2 break-words">
+                        <span className="block font-bold text-slate-900">{r.village}</span>
+                        <span className="block text-[11px] text-slate-500">{r.district}</span>
+                      </td>
+                      <td className="px-3 py-2 font-bold text-slate-900 break-words">{r.head}</td>
                       <td className="px-3 py-2 tabular-nums">{r.entitledKg}</td>
                       <td className="px-3 py-2 tabular-nums">{r.allocatedKg}</td>
                       <td className="px-3 py-2 tabular-nums">{r.collectedKg}</td>
                       <td className="px-3 py-2 tabular-nums">{r.collectionRate}%</td>
-                      <td className="px-3 py-2 tabular-nums">{r.bookings}</td>
+                      <td className="px-3 py-2 tabular-nums">
+                        <span className="inline-flex items-center gap-1.5" title={r.collectedBookings > 0 ? t('reports.collectedTick') : undefined}>
+                          {r.bookings}
+                          {r.collectedBookings > 0 && (
+                            <Check size={13} strokeWidth={3} className="text-[#198754] shrink-0" aria-hidden="true" />
+                          )}
+                        </span>
+                      </td>
                     </tr>
                   ))}
                   <tr className="bg-slate-900 text-white font-bold">
                     <td className="px-3 py-2">{t('reports.total')}</td>
-                    <td className="px-3 py-2 tabular-nums">{totals?.families ?? 0}</td>
+                    <td className="px-3 py-2 tabular-nums" title={t('reports.families')}>{totals?.families ?? 0}</td>
                     <td className="px-3 py-2 tabular-nums">{totals?.entitledKg ?? 0}</td>
                     <td className="px-3 py-2 tabular-nums">{totals?.allocatedKg ?? 0}</td>
                     <td className="px-3 py-2 tabular-nums">{totals?.collectedKg ?? 0}</td>

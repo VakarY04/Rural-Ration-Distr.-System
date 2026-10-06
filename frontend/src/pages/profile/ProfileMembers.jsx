@@ -1,8 +1,7 @@
 import React from 'react';
-import { Info, Plus, ShieldAlert, Trash2, Pencil, CheckCircle2, Users, FileCheck } from 'lucide-react';
+import { Plus, ShieldAlert, Trash2, Pencil, CheckCircle2, Users, FileCheck } from 'lucide-react';
 import { Avatar } from '../../components/ui/avatar';
-import { colorForText } from '../../components/ui/badge';
-import { swiss, SectionHead } from '../../components/ui/swiss';
+import { swissUser as swiss, SectionHeadUser as SectionHead } from '../../components/ui/swiss';
 import { useLanguage } from '../../i18n/LanguageContext';
 
 const FOCUS =
@@ -20,7 +19,7 @@ export function MembersPanel({
   const { t } = useLanguage();
   return (
     <section className={swiss.panel}>
-      <div className="border-b border-slate-100 p-5 flex items-center justify-between gap-4">
+      <div className="border-b border-slate-100 p-4 flex items-center justify-between gap-4">
         <div className="flex items-center gap-2.5">
           <span className="w-8 h-8 border border-slate-200 bg-slate-50 text-slate-600 flex items-center justify-center shrink-0" aria-hidden="true">
             <Users size={15} />
@@ -31,9 +30,9 @@ export function MembersPanel({
           <Plus size={14} /> {t('profile.members.add')}
         </button>
       </div>
-      <div className="p-5">
+      <div className="p-4">
         {members.length === 0 ? (
-          <div className="text-sm text-slate-500 bg-slate-50 border border-slate-200 p-5 text-center">
+          <div className="text-sm text-slate-500 bg-slate-50 border border-slate-200 p-4 text-center">
             {t('profile.members.empty')}
           </div>
         ) : (
@@ -42,7 +41,6 @@ export function MembersPanel({
               <tr className="text-left text-[10px] font-bold uppercase tracking-[0.14em] text-slate-500 border-b border-slate-200">
                 <th scope="col" className="py-2 pr-3 font-bold text-left">{t('profile.members.name')}</th>
                 <th scope="col" className="py-2 pr-3 font-bold text-right">{t('profile.members.age')}</th>
-                <th scope="col" className="py-2 pr-3 font-bold text-left">{t('profile.members.relation')}</th>
                 <th scope="col" className="py-2 w-16 text-center"><span className="sr-only">{t('profile.members.actions')}</span></th>
               </tr>
             </thead>
@@ -60,9 +58,6 @@ export function MembersPanel({
                           <td className="py-2 pr-3">
                             <input className={swiss.input} type="number" min="0" value={m.age} onChange={(e) => updateMember(i, 'age', e.target.value)} placeholder={t('profile.members.agePh')} aria-label={t('profile.members.ageAria', { n: i + 1 })} />
                           </td>
-                          <td className="py-2 pr-3">
-                            <input className={swiss.input} value={m.relation} onChange={(e) => updateMember(i, 'relation', e.target.value)} placeholder={t('profile.members.relationPh')} aria-label={t('profile.members.relationAria', { n: i + 1 })} />
-                          </td>
                           <td className="py-2 text-right">
                             <button type="button" onClick={() => setEditingIndex(null)} title={t('profile.members.done')} className={`text-[#198754] hover:bg-[#198754]/10 p-2 cursor-pointer ${FOCUS}`} aria-label={t('profile.members.done')}>
                               <CheckCircle2 size={16} />
@@ -78,15 +73,6 @@ export function MembersPanel({
                             </div>
                           </td>
                           <td className="py-2.5 pr-3 tabular-nums text-slate-600 text-right">{m.age || '—'}</td>
-                          <td className="py-2.5 pr-3">
-                            {m.relation ? (
-                              <span className={`inline-flex items-center border border-current px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider ${colorForText(m.relation)}`}>
-                                {m.relation}
-                              </span>
-                            ) : (
-                              <span className="text-slate-500 text-xs italic">{t('profile.members.notSet')}</span>
-                            )}
-                          </td>
                           <td className="py-2.5 text-right whitespace-nowrap">
                             <button type="button" onClick={() => setEditingIndex(i)} title={t('profile.members.edit', { n: i + 1 })} aria-label={t('profile.members.edit', { n: i + 1 })} className={`text-slate-500 hover:text-[#0D6EFD] p-1.5 hover:bg-[#0D6EFD]/10 cursor-pointer transition-colors ${FOCUS}`}>
                               <Pencil size={15} />
@@ -100,7 +86,7 @@ export function MembersPanel({
                     </tr>
                     {rowErrors[i] && (
                       <tr>
-                        <td colSpan={4} className="pb-2">
+                        <td colSpan={3} className="pb-2">
                           <p className="text-[11px] text-[#DC3545] font-medium">{rowErrors[i]}</p>
                         </td>
                       </tr>
@@ -120,7 +106,7 @@ export function QuotaPanel({ totalMembers, estimatedGrainsKg }) {
   const { t } = useLanguage();
   return (
     <section className={swiss.panel}>
-      <div className="border-b border-slate-100 p-5">
+      <div className="border-b border-slate-100 p-4">
         <div className="flex items-center gap-2.5">
           <span className="w-8 h-8 border border-[#198754]/30 bg-[#198754]/10 text-[#198754] flex items-center justify-center shrink-0" aria-hidden="true">
             <FileCheck size={15} />
@@ -128,7 +114,7 @@ export function QuotaPanel({ totalMembers, estimatedGrainsKg }) {
           <SectionHead title={t('profile.quota.title', { count: totalMembers })} />
         </div>
       </div>
-      <div className="p-5">
+      <div className="p-4">
         <div className="bg-slate-50 border border-slate-200 p-4">
           <p className={swiss.micro}>{t('profile.quota.grains')}</p>
           <p className="mt-2 text-4xl font-extrabold tracking-tight tabular-nums text-slate-900">
@@ -136,10 +122,6 @@ export function QuotaPanel({ totalMembers, estimatedGrainsKg }) {
             <span className="text-lg font-bold text-slate-500 ml-1">kg</span>
           </p>
         </div>
-        <p className="text-[11px] text-slate-500 mt-3 flex items-start gap-1.5">
-          <Info size={12} className="shrink-0 mt-0.5" />
-          <span>{t('profile.quota.note')}</span>
-        </p>
       </div>
     </section>
   );
@@ -149,7 +131,7 @@ export function DangerZonePanel({ onDelete }) {
   const { t } = useLanguage();
   return (
       <section className="bg-white border border-[#DC3545]/40">
-      <div className="border-b border-[#DC3545]/20 p-5">
+      <div className="border-b border-[#DC3545]/20 p-4">
         <div className="flex items-center gap-2.5">
           <ShieldAlert size={18} className="text-[#DC3545]" />
           <h2 className="text-sm font-bold uppercase tracking-[0.1em] text-[#DC3545]">{t('profile.danger.title')}</h2>
@@ -158,7 +140,7 @@ export function DangerZonePanel({ onDelete }) {
           {t('profile.danger.body')}
         </p>
       </div>
-      <div className="p-5">
+      <div className="p-4">
         <button
           type="button"
           onClick={onDelete}

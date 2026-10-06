@@ -8,11 +8,19 @@ import { sendError } from '../utils/httpError.js';
 // Definitions (single source of truth = computeRationBreakdown, i.e.
 // entitlement = max(35, 10 x members) kg — the README's stale "5 kg" line is
 // docs drift, not code):
-//   entitledKg   — monthly household entitlement summed over Family profiles
-//                  in the district (members.length, min 1 per profile).
-//   allocatedKg  — kg promised via bookings with live statuses
-//                  (Confirmed + Collected); Cancelled/Archived excluded as
-//                  void / past-cycle. Parsed from allocatedItems quantities.
+//   families      — households holding at least one LIVE booking
+//                  (Confirmed + Collected) in the cycle. Profiles without a
+//                  live booking are excluded, so this matches the Families
+//                  Details queue. Past cycles drop out via Archived status.
+//   entitledKg   — monthly household entitlement summed over those same
+//                  counted families (members.length, min 1 per profile).
+//   bookings     — live booking RECORDS counted once per family: each
+//                  household contributes only its latest live booking (by
+//                  distribution date, then newest first). A missed pickup
+//                  superseded by a fresh booking must not count twice, so this
+//                  always agrees with the Families column.
+//   allocatedKg  — kg promised via those counted bookings, parsed from
+//                  allocatedItems quantities.
 //   collectedKg  — subset of allocatedKg actually handed over
 //                  (status Collected only).
 // District comes from Family.address.district joined by booking.user first,
@@ -40,60 +48,62 @@ export const buildReport = async () => {
     if (f.user) byUser.set(String(f.user), f);
     if (f.rationCardNumber) byCard.set(String(f.rationCardNumber), f);
   }
-  const districtOf = (b) => {
-    const fam =
-      (b.user && byUser.get(String(b.user))) ||
-      (b.rationCardNumber && byCard.get(String(b.rationCardNumber))) ||
-      null;
-    const d = String(fam?.address?.district || '').trim();
-    return d || 'Unassigned';
-  };
+  const householdSize = (fam) =>
+    fam && Array.isArray(fam.members) && fam.members.length ? fam.members.length : 1;
 
-  const rows = new Map();
-  const row = (district) => {
-    if (!rows.has(district)) {
-      rows.set(district, {
-        district,
-        families: 0,
-        entitledKg: 0,
-        allocatedKg: 0,
-        collectedKg: 0,
-        bookings: 0,
-        collectedBookings: 0,
-      });
-    }
-    return rows.get(district);
-  };
-
-  for (const f of families) {
-    const d = String(f.address?.district || '').trim() || 'Unassigned';
-    const members = Array.isArray(f.members) && f.members.length ? f.members.length : 1;
-    const r = row(d);
-    r.families += 1;
-    r.entitledKg += computeRationBreakdown(members).totalKg;
-  }
-
+  // One row PER FAMILY (not per district): village + district shown together
+  // and the head named, so staff can see exactly which household each line
+  // is. A household holding two live records (e.g. a missed pickup superseded
+  // by a fresh booking) contributes only its latest — by distribution date,
+  // then newest first — so Bookings always agrees with Families. Profiles
+  // without a live booking never appear.
+  const latestByFamily = new Map();
   for (const b of bookings) {
     if (!LIVE_STATUSES.includes(b.status)) continue;
-    const r = row(districtOf(b));
-    const kg = bookingKg(b);
-    r.allocatedKg += kg;
-    r.bookings += 1;
-    if (b.status === 'Collected') {
-      r.collectedKg += kg;
-      r.collectedBookings += 1;
+    const key =
+      (b.user && `u:${String(b.user)}`) ||
+      (b.rationCardNumber && `c:${String(b.rationCardNumber)}`) ||
+      `id:${String(b._id)}`;
+    const prev = latestByFamily.get(key);
+    if (
+      !prev ||
+      String(b.distributionDate || '') > String(prev.distributionDate || '') ||
+      (b.distributionDate === prev.distributionDate &&
+        new Date(b.createdAt) > new Date(prev.createdAt))
+    ) {
+      latestByFamily.set(key, b);
     }
   }
 
-  const districts = [...rows.values()]
-    .map((r) => ({
-      ...r,
-      entitledKg: Math.round(r.entitledKg),
-      allocatedKg: Math.round(r.allocatedKg),
-      collectedKg: Math.round(r.collectedKg),
-      collectionRate: r.allocatedKg > 0 ? Math.round((r.collectedKg / r.allocatedKg) * 100) : 0,
-    }))
-    .sort((a, b) => a.district.localeCompare(b.district));
+  const districts = [...latestByFamily.values()]
+    .map((b) => {
+      const fam =
+        (b.user && byUser.get(String(b.user))) ||
+        (b.rationCardNumber && byCard.get(String(b.rationCardNumber))) ||
+        null;
+      const kg = bookingKg(b);
+      const collected = b.status === 'Collected';
+      const allocatedKg = Math.round(kg);
+      const collectedKg = collected ? allocatedKg : 0;
+      return {
+        village: String(fam?.address?.village || '').trim() || '—',
+        district: String(fam?.address?.district || '').trim() || 'Unassigned',
+        head: String(fam?.headOfFamily || b.headOfFamily || '').trim() || '—',
+        families: 1,
+        entitledKg: Math.round(computeRationBreakdown(householdSize(fam)).totalKg),
+        allocatedKg,
+        collectedKg,
+        collectionRate: allocatedKg > 0 ? Math.round((collectedKg / allocatedKg) * 100) : 0,
+        bookings: 1,
+        collectedBookings: collected ? 1 : 0,
+      };
+    })
+    .sort(
+      (a, b) =>
+        a.district.localeCompare(b.district) ||
+        a.village.localeCompare(b.village) ||
+        a.head.localeCompare(b.head)
+    );
 
   const totals = districts.reduce(
     (t, r) => ({
@@ -129,21 +139,21 @@ const csvCell = (v) => `"${String(v ?? '').replace(/"/g, '""')}"`;
 export const exportReports = async (req, res) => {
   try {
     const { districts, totals } = await buildReport();
-    const header = 'District,Families,Entitled (kg),Allocated (kg),Collected (kg),Collection Rate (%),Bookings,Collected Bookings';
+    const header = 'Village,District,Family Head,Entitled (kg),Allocated (kg),Collected (kg),Collection Rate (%),Bookings';
     const lines = districts.map((r) =>
       [
+        csvCell(r.village),
         csvCell(r.district),
-        r.families,
+        csvCell(r.head),
         r.entitledKg,
         r.allocatedKg,
         r.collectedKg,
         r.collectionRate,
         r.bookings,
-        r.collectedBookings,
       ].join(',')
     );
     lines.push(
-      ['TOTAL', totals.families, totals.entitledKg, totals.allocatedKg, totals.collectedKg, totals.collectionRate, totals.bookings, totals.collectedBookings].join(',')
+      ['TOTAL', '', totals.families, totals.entitledKg, totals.allocatedKg, totals.collectedKg, totals.collectionRate, totals.bookings].join(',')
     );
     const csv = `${header}\n${lines.join('\n')}\n`;
     res.setHeader('Content-Type', 'text/csv; charset=utf-8');

@@ -58,3 +58,30 @@ export function SectionHead({ title, right }) {
     </div>
   );
 }
+
+// ── Users (citizen) section variant ─────────────────────────────────────────
+// Same system as `swiss`, except navy body text renders black per owner
+// request. Citizen files import `swissUser as swiss` / `SectionHeadUser as
+// SectionHead` so usage sites stay identical. Staff console, auth, landing
+// and info pages keep importing `swiss` / `SectionHead` (navy) unchanged.
+// Functional status colours (STATUS green/red/info-blue) are untouched in
+// both variants — they carry meaning, not body copy.
+export const swissUser = {
+  ...swiss,
+  page: 'min-h-screen font-sans bg-[#F4F6F9] text-black',
+  input:
+    'w-full border border-slate-200 focus:border-black hover:border-slate-400 hover:shadow-md bg-slate-50 focus:bg-white hover:bg-white px-3 py-2 text-sm font-medium text-black outline-none transition-all duration-200 placeholder:text-slate-500',
+  btnSecondary:
+    'border border-slate-300 hover:border-black text-black hover:text-white hover:bg-black text-xs font-semibold tracking-wide px-4 py-2.5 transition-colors cursor-pointer disabled:opacity-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#FF9933] inline-flex items-center justify-center gap-2 bg-white',
+  sectionTitle: 'text-base md:text-xl font-medium tracking-tight text-black',
+  headline: 'text-2xl md:text-4xl font-bold tracking-tighter text-black',
+};
+
+export function SectionHeadUser({ title, right }) {
+  return (
+    <div className="flex items-baseline justify-between gap-4">
+      <h2 className={swissUser.sectionTitle}>{title}</h2>
+      {right}
+    </div>
+  );
+}

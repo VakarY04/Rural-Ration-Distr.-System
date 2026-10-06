@@ -32,7 +32,7 @@ const publicBooking = (b) => ({
 });
 
 // Staff family details (admin + distributor) — household record as entered in
-// the citizen's Family Profile (members with name/age/relation + address) plus
+// the citizen's Family Profile (members with name/age + address) plus
 // the computed ration entitlement for that household (same PDS rule as the
 // Terminal Hub: max(35, 10 x members) kg) and the latest booking, if any.
 export const getStaffFamilyDetails = async (req, res) => {
@@ -64,7 +64,6 @@ export const getStaffFamilyDetails = async (req, res) => {
       members: members.map((m) => ({
         name: m?.name || 'Member',
         age: Number(m?.age) || 0,
-        relation: m?.relation || 'Dependent',
       })),
       totalMembers,
       ration: {
@@ -117,6 +116,53 @@ export const getDistributorSummary = async (req, res) => {
     ];
     const confirmedBookings = bookings.filter((b) => b.status === 'Confirmed').length;
 
+    // Per-item committed totals. Each configured item quantity is a PER-MEMBER
+    // rate (admin-set); committed = rate × members summed over households that
+    // hold a live (Confirmed/Collected) booking — the same live set the
+    // Families queue and the district report use. Failure-isolated like
+    // grievance stats: a Family-collection hiccup yields zeros, never a 500.
+    const liveBookings = bookings.filter((b) => b.status === 'Confirmed' || b.status === 'Collected');
+    const liveCards = [...new Set(liveBookings.map((b) => b.rationCardNumber).filter(Boolean))];
+    const liveUsers = [
+      ...new Set(liveBookings.map((b) => b.user).filter(Boolean).map((id) => id.toString())),
+    ];
+    let committedMembers = 0;
+    try {
+      const orClauses = [];
+      if (liveUsers.length) orClauses.push({ user: { $in: liveUsers } });
+      if (liveCards.length) orClauses.push({ rationCardNumber: { $in: liveCards } });
+      if (orClauses.length) {
+        const fams = await Family.find({ $or: orClauses }).select('user rationCardNumber members').lean();
+        const seen = new Set();
+        for (const f of fams) {
+          const key = f.user ? `u:${String(f.user)}` : `c:${String(f.rationCardNumber)}`;
+          if (seen.has(key)) continue;
+          seen.add(key);
+          committedMembers += Array.isArray(f.members) && f.members.length ? f.members.length : 1;
+        }
+      }
+    } catch {
+      committedMembers = 0;
+    }
+    const round2 = (n) => Math.round((Number(n) || 0) * 100) / 100;
+    const autoCommitted = (Array.isArray(settings.items) ? settings.items : [])
+      .filter((i) => i && String(i.label || '').trim())
+      .map((i) => ({
+        label: String(i.label).trim(),
+        quantity: round2(Number(i.quantity) * committedMembers),
+        unit: i.unit === 'litre' ? 'litre' : 'kg',
+      }));
+    // Admin override wins when present; otherwise the computed totals serve.
+    const overrideItems = (Array.isArray(settings.committedOverride) ? settings.committedOverride : [])
+      .filter((i) => i && String(i.label || '').trim())
+      .map((i) => ({
+        label: String(i.label).trim(),
+        quantity: Math.max(Number(i.quantity) || 0, 0),
+        unit: i.unit === 'litre' ? 'litre' : 'kg',
+      }));
+    const committedItems = overrideItems.length ? overrideItems : autoCommitted;
+    const committedCustomized = overrideItems.length > 0;
+
     // 7.3 — grievance headline counts for the console (failure-isolated: a
     // grievance-collection hiccup must never break the whole summary).
     let grievanceStats = { Open: 0, 'In Review': 0, Resolved: 0, total: 0 };
@@ -154,6 +200,10 @@ export const getDistributorSummary = async (req, res) => {
         totalBookings: bookings.length,
         confirmedBookings,
         grainCommittedKg: Math.round(sumAllocatedKg(recentBookings)),
+        committedItems,
+        committedMembers,
+        committedHouseholds: liveCards.length,
+        committedCustomized,
       },
       bookings: recentBookings.map(publicBooking),
       // Coordinates are infrastructure defaults (admin edits only touch
@@ -232,6 +282,33 @@ export const updateRationItems = async (req, res) => {
     return sendError(res, error, {
       message: 'Failed to update ration items.',
       logLabel: 'Update Ration Items Error:',
+    });
+  }
+};
+
+// Admin edit #3 — "Total Committed Ration" manual override. Totals are
+// normally computed (per-member rate × booked members); a saved non-empty
+// list replaces the computed totals wholesale, and saving an empty list
+// clears the override so computed totals serve again.
+export const updateCommittedOverride = async (req, res) => {
+  try {
+    const rawItems = Array.isArray(req.body?.items) ? req.body.items : [];
+    const items = rawItems.slice(0, 12).map((item, index) => ({
+      key: `committed-${index + 1}`,
+      label: cleanText(item?.label, 80),
+      quantity: Math.max(Number(item?.quantity) || 0, 0),
+      unit: cleanText(item?.unit, 10) || 'kg',
+    })).filter((i) => i.label);
+
+    const settings = await getDistributionSettings();
+    settings.committedOverride = items;
+    await settings.save();
+
+    return res.status(200).json({ message: 'Committed totals updated.', committedOverride: settings.committedOverride });
+  } catch (error) {
+    return sendError(res, error, {
+      message: 'Failed to update committed totals.',
+      logLabel: 'Update Committed Override Error:',
     });
   }
 };

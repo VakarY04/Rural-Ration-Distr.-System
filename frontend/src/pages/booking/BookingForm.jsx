@@ -1,5 +1,5 @@
 import { AlertCircle, CheckCircle2, RefreshCw, ShieldCheck, Lock, Calendar, Clock } from 'lucide-react';
-import { swiss, SectionHead } from '../../components/ui/swiss';
+import { swissUser as swiss, SectionHeadUser as SectionHead } from '../../components/ui/swiss';
 import { useLanguage } from '../../i18n/LanguageContext';
 
 const FOCUS =

@@ -8,6 +8,7 @@ import {
   getStaffFamilyDetails,
   updateDeliveryDetails,
   updateRationItems,
+  updateCommittedOverride,
 } from '../controllers/distributorController.js';
 import { getSlots, getSlotAvailability, updateSlots } from '../controllers/slotController.js';
 import {
@@ -63,6 +64,7 @@ router.patch('/distributor/bookings/:id', protect, requireStaff, setBookingColle
 router.get('/distributor/families/:rationCardNumber', protect, requireStaff, getStaffFamilyDetails);
 router.put('/distributor/delivery', protect, requireAdmin, updateDeliveryDetails);
 router.put('/distributor/items', protect, requireAdmin, updateRationItems);
+router.put('/distributor/committed', protect, requireAdmin, updateCommittedOverride);
 
 // Slot windows (7.2) — reads for every signed-in user (citizens book from
 // them); writes are admin-only. Availability counts live bookings per window.
