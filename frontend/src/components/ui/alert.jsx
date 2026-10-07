@@ -4,9 +4,9 @@ import { AlertCircle, CheckCircle2, Info } from 'lucide-react';
 // success feedback looks identical. Replaces the ad-hoc red/green banner
 // divs that were copy-pasted (with slight drift) across the auth pages.
 const VARIANTS = {
-  error: { cls: 'border-[#DC3545]/40 bg-[#DC3545]/10 text-[#DC3545]', Icon: AlertCircle },
-  success: { cls: 'border-[#198754]/40 bg-[#198754]/10 text-[#198754]', Icon: CheckCircle2 },
-  info: { cls: 'border-[#0D6EFD]/40 bg-[#0D6EFD]/10 text-[#0D6EFD]', Icon: Info },
+  error: { cls: 'border-[#DC3545]/40 bg-[#DC3545]/10 text-[#DC3545] dark:text-red-400', Icon: AlertCircle },
+  success: { cls: 'border-[#198754]/40 bg-[#198754]/10 text-[#198754] dark:text-emerald-400', Icon: CheckCircle2 },
+  info: { cls: 'border-[#0D6EFD]/40 bg-[#0D6EFD]/10 text-[#0D6EFD] dark:text-blue-400', Icon: Info },
 };
 
 export function Alert({ variant = 'error', children, className = '' }) {

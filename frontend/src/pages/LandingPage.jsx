@@ -6,6 +6,7 @@ import { swiss, TricolorStrip, TRICOLOR_GRADIENT } from '../components/ui/swiss'
 import { useLandingAnimations } from './landing/useLandingAnimations';
 import SkipLink from '../components/SkipLink';
 import AccessibilityToolbar from '../components/AccessibilityToolbar';
+import DarkModeToggle from '../components/DarkModeToggle';
 import SiteFooter from '../components/SiteFooter';
 import { useLanguage } from '../i18n/LanguageContext';
 import { WaveAccent, BannerWaves } from '../components/landing/WaveDecorations';
@@ -95,8 +96,9 @@ export default function LandingPage({ onNavigate }) {
       <TricolorStrip />
 
       <header className="fixed top-0 left-0 right-0 z-50">
-        <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-end gap-4 flex-wrap">
-          <button onClick={() => onNavigate('admin-login')} type="button" className={`${swiss.btnPrimary} rounded-lg`}>
+  <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-end gap-4 flex-wrap">
+    <DarkModeToggle />
+    <button onClick={() => onNavigate('admin-login')} type="button" className={`${swiss.btnPrimary} rounded-lg`}>
             <Users size={14} aria-hidden="true" />
             <span>{t('header.signIn')}</span>
           </button>
@@ -151,10 +153,10 @@ export default function LandingPage({ onNavigate }) {
                       <Icon size={22} aria-hidden="true" />
                     </div>
                     <div className="relative z-10 min-w-0">
-                      <span key={splitKey} className={`${HERO_BADGE_TITLE} block text-sm font-extrabold text-[#000080] uppercase tracking-wide break-words`}>
+                      <span key={splitKey} className={`${HERO_BADGE_TITLE} block text-sm font-extrabold text-[#000080] dark:text-[#B9C8FF] uppercase tracking-wide break-words`}>
                         {title}
                       </span>
-                      <span className="block text-xs font-medium text-slate-500 mt-0.5 break-words">{sub}</span>
+                      <span className="block text-xs font-medium text-slate-500 dark:text-slate-400 mt-0.5 break-words">{sub}</span>
                     </div>
                   </div>
                 </div>
@@ -183,11 +185,11 @@ export default function LandingPage({ onNavigate }) {
                         <Icon size={28} aria-hidden="true" />
                       </div>
                       <div className="space-y-3 min-w-0">
-                        <h3 key={splitKey} className={`${FEATURE_CARD_HEADING} text-xl font-extrabold tracking-tighter text-[#000080] break-words`}>
+                        <h3 key={splitKey} className={`${FEATURE_CARD_HEADING} text-xl font-extrabold tracking-tighter text-[#000080] dark:text-[#B9C8FF] break-words`}>
                           {heading}
                         </h3>
                         <div className={`h-0.5 w-16 ${accent} rounded-full`} />
-                        <p key={splitKey} className={`${FEATURE_CARD_TEXT} text-sm font-medium leading-relaxed text-slate-600 pt-2 break-words`}>
+                        <p key={splitKey} className={`${FEATURE_CARD_TEXT} text-sm font-medium leading-relaxed text-slate-600 dark:text-slate-300 pt-2 break-words`}>
                           {text}
                         </p>
                       </div>
@@ -209,12 +211,12 @@ export default function LandingPage({ onNavigate }) {
             <div className={bannerShell}>
               <footer
                 ref={trustFooterRef}
-                className={`${TRUST_FOOTER_BOX} bg-white border border-slate-200/80 rounded-2xl p-6 relative overflow-hidden`}
+                className={`${TRUST_FOOTER_BOX} bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-700 rounded-2xl p-6 relative overflow-hidden`}
               >
                 <BannerWaves />
                 <div className="relative z-10 flex flex-col sm:flex-row items-center justify-center gap-3 text-center">
-                  <ShieldCheck className="text-[#138808] shrink-0" size={22} aria-hidden="true" />
-                  <p key={splitKey} className={`${TRUST_FOOTER_TEXT} text-xs sm:text-sm font-bold text-[#000080] tracking-wide`}>
+                  <ShieldCheck className="text-[#138808] dark:text-green-400 shrink-0" size={22} aria-hidden="true" />
+                  <p key={splitKey} className={`${TRUST_FOOTER_TEXT} text-xs sm:text-sm font-bold text-[#000080] dark:text-[#B9C8FF] tracking-wide`}>
                     {t('landing.trust')}
                   </p>
                 </div>

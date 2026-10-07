@@ -49,7 +49,7 @@ export default function PolicyPage({ doc = 'terms', onNavigate }) {
             className={`px-3 py-1.5 text-xs font-semibold border transition-colors cursor-pointer focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-orange-500 break-words ${
               key === activeKey
                 ? 'bg-slate-900 text-white border-slate-900'
-                : 'bg-white text-slate-600 border-slate-300 hover:border-slate-900'
+                : 'bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-300 border-slate-300 dark:border-slate-600 hover:border-slate-900'
             }`}
           >
             {pick(`policy.${key}.title`, POLICIES[key].title)}
@@ -58,9 +58,9 @@ export default function PolicyPage({ doc = 'terms', onNavigate }) {
       </nav>
       {sections.map((s) => (
         <section key={s.h} className={`${swiss.panel} p-5`}>
-          <h2 className="text-base font-bold text-slate-900 break-words min-w-0">{s.h}</h2>
+          <h2 className="text-base font-bold text-slate-900 dark:text-slate-100 break-words min-w-0">{s.h}</h2>
           {s.p.map((para) => (
-            <p key={para.slice(0, 24)} className="text-sm text-slate-600 mt-2 leading-relaxed break-words">
+            <p key={para.slice(0, 24)} className="text-sm text-slate-600 dark:text-slate-300 mt-2 leading-relaxed break-words">
               {para}
             </p>
           ))}

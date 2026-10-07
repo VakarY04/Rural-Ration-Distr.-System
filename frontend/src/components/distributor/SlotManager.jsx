@@ -8,7 +8,7 @@ const MAX_SLOTS = 8;
 const FOCUS =
   'focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-orange-500';
 const inputClass =
-  'border border-slate-200 focus:border-slate-900 bg-slate-50 focus:bg-white px-3 py-2 text-sm font-medium text-slate-900 outline-none transition-colors';
+  'border border-slate-200 dark:border-slate-700 focus:border-slate-900 dark:focus:border-slate-300 bg-slate-50 dark:bg-slate-800 focus:bg-white dark:focus:bg-slate-900 px-3 py-2 text-sm font-medium text-slate-900 dark:text-slate-100 outline-none transition-colors';
 
 function cleanRow(row) {
   return {
@@ -77,34 +77,34 @@ export default function SlotManager({ slots, distributionDate = '', canEdit = fa
   if (!canEdit) {
     return (
       <EditorShell title={t('slots.title')} readOnly>
-        <div className="flex items-center gap-2.5 border border-slate-200 bg-slate-50 px-3 py-2.5 mb-4">
-          <CalendarDays size={15} className="text-slate-500 shrink-0" aria-hidden="true" />
-          <p className="text-xs font-semibold text-slate-700">
+        <div className="flex items-center gap-2.5 border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 px-3 py-2.5 mb-4">
+          <CalendarDays size={15} className="text-slate-500 dark:text-slate-400 shrink-0" aria-hidden="true" />
+          <p className="text-xs font-semibold text-slate-700 dark:text-slate-200">
             {initialDate
               ? t('slots.fixedDate', { date: prettyDate(initialDate) })
               : t('slots.noDateSet')}
           </p>
         </div>
-        <ul className="divide-y divide-slate-100">
+        <ul className="divide-y divide-slate-100 dark:divide-slate-800">
           {rows.filter((r) => r.label).map((row, i) => (
             <li key={i} className="flex items-center gap-3 py-2.5 first:pt-0 last:pb-0">
-              <span className="w-8 h-8 border border-slate-200 bg-slate-50 text-slate-600 flex items-center justify-center shrink-0" aria-hidden="true">
+              <span className="w-8 h-8 border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-600 dark:text-slate-300 flex items-center justify-center shrink-0" aria-hidden="true">
                 <Clock size={14} />
               </span>
-              <span className="flex-1 min-w-0 text-sm font-semibold text-slate-900 truncate">{row.label}</span>
-              <span className="text-xs font-bold tabular-nums text-slate-500 shrink-0">
+              <span className="flex-1 min-w-0 text-sm font-semibold text-slate-900 dark:text-slate-100 truncate">{row.label}</span>
+              <span className="text-xs font-bold tabular-nums text-slate-500 dark:text-slate-400 shrink-0">
                 {row.capacity} · {t('slots.capacity')}
               </span>
-              <span className={`text-[10px] font-bold uppercase tracking-wider px-2 py-1 border shrink-0 ${row.isOpen ? 'border-[#198754]/30 bg-[#198754]/10 text-[#198754]' : 'border-[#DC3545]/30 bg-[#DC3545]/10 text-[#DC3545]'}`}>
+              <span className={`text-[10px] font-bold uppercase tracking-wider px-2 py-1 border shrink-0 ${row.isOpen ? 'border-[#198754]/30 bg-[#198754]/10 text-[#198754] dark:text-emerald-400' : 'border-[#DC3545]/30 bg-[#DC3545]/10 text-[#DC3545] dark:text-red-400'}`}>
                 {row.isOpen ? t('slots.open') : t('slots.closed')}
               </span>
             </li>
           ))}
         </ul>
         {rows.filter((r) => r.label).length === 0 && (
-          <p className="text-sm font-semibold text-slate-900 break-words">—</p>
+          <p className="text-sm font-semibold text-slate-900 dark:text-slate-100 break-words">—</p>
         )}
-        <p className="mt-4 border border-amber-200 bg-amber-50 text-amber-800 text-xs font-semibold px-3 py-2">
+        <p className="mt-4 border border-amber-200 bg-amber-50 dark:bg-amber-950 text-amber-800 dark:text-amber-300 text-xs font-semibold px-3 py-2">
           {t('editor.adminOnly')}
         </p>
       </EditorShell>
@@ -122,7 +122,7 @@ export default function SlotManager({ slots, distributionDate = '', canEdit = fa
       error={error}
     >
       <div className="space-y-1.5 mb-4">
-        <label htmlFor="slot-date" className="text-[10px] font-bold uppercase tracking-[0.14em] text-slate-500">
+        <label htmlFor="slot-date" className="text-[10px] font-bold uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400">
           <span className="flex items-center gap-1.5"><CalendarDays size={12} aria-hidden="true" /> {t('slots.dateLabel')}</span>
         </label>
         {editing ? (
@@ -135,15 +135,15 @@ export default function SlotManager({ slots, distributionDate = '', canEdit = fa
               onChange={(e) => setDateDraft(e.target.value)}
               className={`${inputClass} cursor-pointer tabular-nums`}
             />
-            <p className="text-[11px] text-slate-500">{t('slots.dateHint')}</p>
+            <p className="text-[11px] text-slate-500 dark:text-slate-400">{t('slots.dateHint')}</p>
           </>
         ) : (
-          <p className="text-sm font-semibold text-slate-900 tabular-nums">
+          <p className="text-sm font-semibold text-slate-900 dark:text-slate-100 tabular-nums">
             {initialDate ? prettyDate(initialDate) : t('slots.noDateSet')}
           </p>
         )}
       </div>
-      <ul className="divide-y divide-slate-100">
+      <ul className="divide-y divide-slate-100 dark:divide-slate-800">
         {draft.map((row, i) => (
           <li key={i} className="flex items-center gap-2 py-2.5 first:pt-0 last:pb-0 flex-wrap sm:flex-nowrap">
             <input
@@ -152,7 +152,7 @@ export default function SlotManager({ slots, distributionDate = '', canEdit = fa
               disabled={!editing}
               onChange={(e) => updateRow(i, { label: e.target.value })}
               placeholder={t('slots.labelPh')}
-              className={`${inputClass} flex-1 min-w-0 disabled:bg-white disabled:border-transparent disabled:px-0 disabled:font-semibold`}
+              className={`${inputClass} flex-1 min-w-0 disabled:bg-white dark:disabled:bg-slate-900 disabled:border-transparent disabled:px-0 disabled:font-semibold`}
             />
             <input
               aria-label={t('slots.capAria', { n: i + 1 })}
@@ -163,7 +163,7 @@ export default function SlotManager({ slots, distributionDate = '', canEdit = fa
               value={row.capacity}
               onChange={(e) => updateRow(i, { capacity: e.target.value })}
               title={t('slots.capacity')}
-              className={`${inputClass} w-20 tabular-nums disabled:bg-white disabled:border-transparent disabled:px-0 disabled:font-extrabold`}
+              className={`${inputClass} w-20 tabular-nums disabled:bg-white dark:disabled:bg-slate-900 disabled:border-transparent disabled:px-0 disabled:font-extrabold`}
             />
             {editing ? (
               <>
@@ -183,13 +183,13 @@ export default function SlotManager({ slots, distributionDate = '', canEdit = fa
                   disabled={draft.length <= 1}
                   title={t('slots.remove', { n: i + 1 })}
                   aria-label={t('slots.remove', { n: i + 1 })}
-                  className={`text-slate-400 hover:text-red-600 p-1.5 hover:bg-red-50 cursor-pointer transition-colors shrink-0 disabled:opacity-30 ${FOCUS}`}
+                  className={`text-slate-400 hover:text-red-600 dark:hover:text-red-400 p-1.5 hover:bg-red-50 dark:hover:bg-slate-800 cursor-pointer transition-colors shrink-0 disabled:opacity-30 ${FOCUS}`}
                 >
                   <Trash2 size={15} aria-hidden="true" />
                 </button>
               </>
             ) : (
-              <span className={`text-[10px] font-bold uppercase tracking-wider px-2 py-1 border shrink-0 ${row.isOpen ? 'border-[#198754]/30 bg-[#198754]/10 text-[#198754]' : 'border-[#DC3545]/30 bg-[#DC3545]/10 text-[#DC3545]'}`}>
+              <span className={`text-[10px] font-bold uppercase tracking-wider px-2 py-1 border shrink-0 ${row.isOpen ? 'border-[#198754]/30 bg-[#198754]/10 text-[#198754] dark:text-emerald-400' : 'border-[#DC3545]/30 bg-[#DC3545]/10 text-[#DC3545] dark:text-red-400'}`}>
                 {row.isOpen ? t('slots.open') : t('slots.closed')}
               </span>
             )}
@@ -201,7 +201,7 @@ export default function SlotManager({ slots, distributionDate = '', canEdit = fa
         <button
           type="button"
           onClick={() => setDraft([...draft, { label: '', capacity: 6, isOpen: true }])}
-          className={`mt-3 w-full flex items-center justify-center gap-2 border border-dashed border-slate-300 hover:border-slate-900 hover:bg-slate-50 text-slate-500 hover:text-slate-900 text-xs font-semibold tracking-wide py-2.5 transition-colors cursor-pointer ${FOCUS}`}
+          className={`mt-3 w-full flex items-center justify-center gap-2 border border-dashed border-slate-300 dark:border-slate-600 hover:border-slate-900 hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100 text-xs font-semibold tracking-wide py-2.5 transition-colors cursor-pointer ${FOCUS}`}
         >
           <Plus size={14} aria-hidden="true" />
           {t('slots.add')}

@@ -36,7 +36,7 @@ export default function ForgotPasswordPage() {
           <div>
             <label htmlFor="forgot-email" className={swiss.label}>{t('auth.forgot.email')}</label>
             <div className="relative flex items-center">
-              <Mail className="absolute left-3.5 text-slate-500" size={16} />
+              <Mail className="absolute left-3.5 text-slate-500 dark:text-slate-400" size={16} />
               <input
                 id="forgot-email"
                 type="email"
@@ -55,7 +55,7 @@ export default function ForgotPasswordPage() {
       ) : (
         <Alert variant="success">
           {t('auth.forgot.success')}
-          <span className="block text-[11px] text-slate-500 mt-0.5">
+          <span className="block text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">
             {t('auth.forgot.checkInbox')}
           </span>
         </Alert>

@@ -32,12 +32,12 @@ export default function HelpPage({ onNavigate }) {
       {GUIDES.map(({ icon: Icon, title, steps }) => (
         <section key={title} className={swiss.panel}>
           <div className="p-5 flex items-start gap-3">
-            <span className="w-9 h-9 border border-slate-200 bg-slate-50 text-slate-700 flex items-center justify-center shrink-0" aria-hidden="true">
+            <span className="w-9 h-9 border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-700 dark:text-slate-200 flex items-center justify-center shrink-0" aria-hidden="true">
               <Icon size={17} />
             </span>
             <div className="min-w-0">
-              <h2 className="text-base font-bold text-slate-900 break-words">{title}</h2>
-              <ol className="mt-2 space-y-1.5 text-sm text-slate-600 list-decimal list-inside">
+              <h2 className="text-base font-bold text-slate-900 dark:text-slate-100 break-words">{title}</h2>
+              <ol className="mt-2 space-y-1.5 text-sm text-slate-600 dark:text-slate-300 list-decimal list-inside">
                 {steps.map((s) => (
                   <li key={s}>{s}</li>
                 ))}
@@ -48,7 +48,7 @@ export default function HelpPage({ onNavigate }) {
       ))}
       <section className={`${swiss.panel} p-5 flex items-center gap-3`}>
         <PhoneCall size={18} className="text-orange-600 shrink-0" aria-hidden="true" />
-        <p className="text-sm text-slate-600 break-words min-w-0">
+        <p className="text-sm text-slate-600 dark:text-slate-300 break-words min-w-0">
           {t('help.urgent')}
         </p>
       </section>

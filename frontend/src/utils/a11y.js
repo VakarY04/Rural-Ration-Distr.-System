@@ -14,7 +14,7 @@ export const SPACING_MAX_LEVEL = 3;
 export const LINE_MAX_LEVEL = 3;
 export const SATURATE_MAX_LEVEL = 3;
 const FONT_SCALES = [1, 1.125, 1.25, 1.375, 1.5]; // normal … +4 clicks
-const DEFAULTS = { textLevel: 0, spacingLevel: 0, lineLevel: 0, saturateLevel: 0, contrast: false, links: false, images: false, adhd: false, invert: false, dyslexia: false };
+const DEFAULTS = { textLevel: 0, spacingLevel: 0, lineLevel: 0, saturateLevel: 0, contrast: false, links: false, images: false, adhd: false, invert: false, dyslexia: false, bigCursor: false, noAnim: false };
 
 const clampInt = (v, min, max, fb) => (Number.isInteger(v) ? Math.min(max, Math.max(min, v)) : fb);
 
@@ -54,6 +54,8 @@ export function loadA11y() {
     adhd: !!stored.adhd,
     invert: !!stored.invert,
     dyslexia: !!stored.dyslexia,
+    bigCursor: !!stored.bigCursor,
+    noAnim: !!stored.noAnim,
   };
 }
 
@@ -70,6 +72,8 @@ export function applyA11y(prefs) {
   root.classList.toggle('a11y-adhd', !!prefs.adhd);
   root.classList.toggle('a11y-invert', !!prefs.invert);
   root.classList.toggle('a11y-dyslexia', !!prefs.dyslexia);
+  root.classList.toggle('a11y-big-cursor', !!prefs.bigCursor);
+  root.classList.toggle('a11y-no-anim', !!prefs.noAnim);
   root.classList.remove('a11y-spacing-1', 'a11y-spacing-2', 'a11y-spacing-3');
   if (spacingLevel > 0) root.classList.add(`a11y-spacing-${spacingLevel}`);
   root.classList.remove('a11y-line-1', 'a11y-line-2', 'a11y-line-3');
@@ -79,8 +83,26 @@ export function applyA11y(prefs) {
   if (saturateLevel === 2) root.classList.add('a11y-saturate-high');
   if (saturateLevel === 3) root.classList.add('a11y-saturate-desaturate');
   try {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify({ ...prefs, textLevel, spacingLevel, lineLevel, saturateLevel, adhd: !!prefs.adhd, invert: !!prefs.invert, dyslexia: !!prefs.dyslexia }));
+    localStorage.setItem(STORAGE_KEY, JSON.stringify({ ...prefs, textLevel, spacingLevel, lineLevel, saturateLevel, adhd: !!prefs.adhd, invert: !!prefs.invert, dyslexia: !!prefs.dyslexia, bigCursor: !!prefs.bigCursor, noAnim: !!prefs.noAnim }));
   } catch {
     // Private mode etc. — prefs simply don't persist.
+  }
+  // Notify live pages (e.g. GSAP scroll tweens, which CSS alone cannot stop)
+  // so JS-driven motion can halt/revert immediately without a reload.
+  try {
+    window.dispatchEvent(new CustomEvent('eration:a11y', { detail: { bigCursor: !!prefs.bigCursor, noAnim: !!prefs.noAnim } }));
+  } catch {
+    // Non-DOM test envs etc. — classes above already applied.
+  }
+}
+
+// Live read for JS-driven motion: true when the remove-animations mode is
+// currently active (class present) or persisted across reloads.
+export function isNoAnim() {
+  try {
+    if (typeof document !== 'undefined' && document.documentElement.classList.contains('a11y-no-anim')) return true;
+    return !!loadA11y().noAnim;
+  } catch {
+    return false;
   }
 }

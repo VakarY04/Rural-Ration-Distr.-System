@@ -140,7 +140,7 @@ export default function DistributorConsolePage({ currentSubPage = 'home', onNavi
     id === 'home' ? currentSubPage === 'home' || !currentSubPage : currentSubPage === id;
 
   return (
-    <div className="min-h-screen font-sans text-black flex flex-col">
+    <div className="min-h-screen font-sans text-black dark:text-slate-100 dark:bg-slate-950 flex flex-col">
       <SkipLink />
       {/* Sticky nav — tricolor strip + header stay pinned while scrolling */}
       <div className="sticky top-0 z-40">
@@ -149,7 +149,7 @@ export default function DistributorConsolePage({ currentSubPage = 'home', onNavi
           style={{ background: TRICOLOR_GRADIENT }}
           aria-hidden="true"
         />
-        <header className="bg-white border-b border-slate-200">
+        <header className="bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-700">
           <div className="w-full px-4 sm:px-6 lg:px-8 py-4 flex items-center justify-between gap-4">
             <button
               type="button"
@@ -159,7 +159,7 @@ export default function DistributorConsolePage({ currentSubPage = 'home', onNavi
               <img src={logoAsset} alt="E-Ration" width={56} height={56} decoding="async" className="w-14 h-14 object-contain p-1 rounded-2xl" />
               <div className="min-w-0">
                 <p className="text-base font-extrabold tracking-tight leading-tight break-words">{t('console.title')}</p>
-                <p className="text-xs font-bold uppercase tracking-[0.14em] text-slate-500 break-words">
+                <p className="text-xs font-bold uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400 break-words">
                   {t('console.portal')}
                 </p>
               </div>
@@ -176,7 +176,7 @@ export default function DistributorConsolePage({ currentSubPage = 'home', onNavi
                       onClick={() => onNavigate('distributor-console', { subPage: item.id })}
                       aria-current={active ? 'page' : undefined}
                       className={`text-[11px] font-bold uppercase tracking-wider px-3 py-2 transition-colors cursor-pointer rounded ${FOCUS} ${
-                        active ? 'text-black bg-slate-100' : 'text-slate-600 hover:text-black'
+                        active ? 'text-black dark:text-slate-100 bg-slate-100 dark:bg-slate-800' : 'text-slate-600 dark:text-slate-300 hover:text-black dark:hover:text-slate-100'
                       }`}
                     >
                       {item.label}
@@ -198,7 +198,7 @@ export default function DistributorConsolePage({ currentSubPage = 'home', onNavi
           <AccessibilityToolbar />
         </div>
         {actionError && (
-          <div role="alert" className="flex items-start gap-2 text-sm font-medium text-[#DC3545] bg-[#DC3545]/10 border border-[#DC3545]/30 p-4">
+          <div role="alert" className="flex items-start gap-2 text-sm font-medium text-[#DC3545] dark:text-red-400 bg-[#DC3545]/10 border border-[#DC3545]/30 p-4">
             <AlertCircle size={18} className="shrink-0 mt-0.5" aria-hidden="true" />
             <span className="flex-1">{actionError}</span>
             <button
@@ -212,11 +212,11 @@ export default function DistributorConsolePage({ currentSubPage = 'home', onNavi
           </div>
         )}
         {loading && (
-          <p className="py-16 text-center text-sm font-semibold text-slate-500">{t('common.loading')}</p>
+          <p className="py-16 text-center text-sm font-semibold text-slate-500 dark:text-slate-400">{t('common.loading')}</p>
         )}
 
         {!loading && (error || !summary) && (
-          <div className="border border-slate-300 bg-white p-10 text-center">
+          <div className="border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-900 p-10 text-center">
             <p className="text-sm font-bold">{t('common.loadFailed')}</p>
             <button
               type="button"
@@ -275,12 +275,12 @@ export default function DistributorConsolePage({ currentSubPage = 'home', onNavi
           <>
             {/* Masthead — Swiss asymmetric headline block */}
             <section>
-              <p className="text-sm font-medium text-slate-500 break-words">{t('console.greeting', { name })}</p>
+              <p className="text-sm font-medium text-slate-500 dark:text-slate-400 break-words">{t('console.greeting', { name })}</p>
               <h1 className="text-4xl md:text-5xl font-extrabold tracking-tighter mt-1 break-words min-w-0">
                 {t('console.heading')}
               </h1>
               <p className="mt-2 inline-flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.14em]">
-                <span className={`px-2.5 py-1 rounded-full border ${isAdmin ? 'border-black/30 bg-black/5 text-black' : 'border-[#198754]/30 bg-[#198754]/10 text-[#198754]'}`}>
+                <span className={`px-2.5 py-1 rounded-full border ${isAdmin ? 'border-black/30 bg-black/5 text-black dark:text-slate-100' : 'border-[#198754]/30 bg-[#198754]/10 text-[#198754] dark:text-emerald-400'}`}>
                   {role}
                 </span>
               </p>
@@ -292,9 +292,9 @@ export default function DistributorConsolePage({ currentSubPage = 'home', onNavi
                 Ration Details page) */}
             <section aria-label={t('console.mapLabel')} className="space-y-3">
               <div className="flex items-center justify-between">
-                <h2 className="text-sm font-bold tracking-tight flex items-center gap-1.5 break-words min-w-0"><MapPin size={13} className="text-[#198754]" aria-hidden="true" /> {t('console.routeTitle')}</h2>
+                <h2 className="text-sm font-bold tracking-tight flex items-center gap-1.5 break-words min-w-0"><MapPin size={13} className="text-[#198754] dark:text-emerald-400" aria-hidden="true" /> {t('console.routeTitle')}</h2>
               </div>
-              <div className="border border-slate-200 bg-white h-[360px] overflow-hidden isolate" title={t('console.mapTitle')}>
+              <div className="border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 h-[360px] overflow-hidden isolate" title={t('console.mapTitle')}>
                 <DeliveryRouteMap origin={summary.delivery.from} destination={summary.delivery.to} />
               </div>
             </section>

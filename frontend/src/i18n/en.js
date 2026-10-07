@@ -23,6 +23,8 @@ export const en = {
   'nav.pds': 'Public Distribution System',
 
   'header.signIn': 'Sign In',
+  'theme.switchDark': 'Switch to dark mode',
+  'theme.switchLight': 'Switch to light mode',
 
   'landing.brandTitle': 'E-Ration Portal',
   'landing.pageTitle': 'E-Ration Portal — Smart Ration Distribution',
@@ -687,6 +689,9 @@ export const en = {
   'a11y.desaturate': 'Desaturate',
   'a11y.invert': 'Invert colours',
   'a11y.dyslexia': 'Dyslexia mode',
+  'a11y.bigCursor': 'Big cursor',
+  'a11y.noAnim': 'Remove animations',
+  'a11y.darkMode': 'Dark mode',
   'a11y.reset': 'Reset settings',
 
   'lang.label': 'Language',

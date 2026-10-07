@@ -28,20 +28,20 @@ export default function BookingForm({
     <>
       {/* Dynamic Alerts */}
       {error && (
-        <div role="alert" className="bg-[#DC3545]/10 border-l-4 border-[#DC3545] text-[#DC3545] p-4 text-xs font-semibold flex items-center gap-2.5">
-          <AlertCircle size={17} className="shrink-0 text-[#DC3545]" />
+        <div role="alert" className="bg-[#DC3545]/10 border-l-4 border-[#DC3545] text-[#DC3545] dark:text-red-400 p-4 text-xs font-semibold flex items-center gap-2.5">
+          <AlertCircle size={17} className="shrink-0 text-[#DC3545] dark:text-red-400" />
           <span>{error}</span>
         </div>
       )}
 
       {success && (
-        <div role="status" className="bg-[#198754]/10 border-l-4 border-[#198754] text-[#198754] p-4 text-xs font-semibold space-y-1.5">
+        <div role="status" className="bg-[#198754]/10 border-l-4 border-[#198754] text-[#198754] dark:text-emerald-400 p-4 text-xs font-semibold space-y-1.5">
           <div className="flex items-center gap-2">
-            <CheckCircle2 size={18} className="text-[#198754]" />
+            <CheckCircle2 size={18} className="text-[#198754] dark:text-emerald-400" />
             <span className="font-bold">{success}</span>
           </div>
           {bookingDetails && (
-            <p className="text-[11px] font-medium text-[#198754] pl-6 tabular-nums">
+            <p className="text-[11px] font-medium text-[#198754] dark:text-emerald-400 pl-6 tabular-nums">
               {t('booking.form.confirmedOn', { date: bookingDetails.distributionDate, slot: bookingDetails.timeSlot })}
             </p>
           )}
@@ -49,7 +49,7 @@ export default function BookingForm({
       )}
 
       {/* Booking Form */}
-      <form onSubmit={onSubmit} className="space-y-6 border-t border-slate-200 pt-6">
+      <form onSubmit={onSubmit} className="space-y-6 border-t border-slate-200 dark:border-slate-700 pt-6">
         <SectionHead title={t('booking.form.selectSlot')} />
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
@@ -64,9 +64,9 @@ export default function BookingForm({
               value={selectedDate}
               onChange={(e) => onDateChange(e.target.value)}
               disabled={Boolean(fixedDate)}
-              className={`${swiss.input} cursor-pointer disabled:bg-slate-100 disabled:text-slate-500 disabled:cursor-not-allowed ${FOCUS}`}
+              className={`${swiss.input} cursor-pointer disabled:bg-slate-100 dark:disabled:bg-slate-800 disabled:text-slate-500 dark:disabled:text-slate-400 disabled:cursor-not-allowed ${FOCUS}`}
             />
-            <p className="text-[10px] md:text-[12px] text-slate-500 font-medium">
+            <p className="text-[10px] md:text-[12px] text-slate-500 dark:text-slate-400 font-medium">
               {fixedDate ? t('booking.form.dateFixedHint') : t('booking.form.dateHint')}
             </p>
           </div>
@@ -101,24 +101,24 @@ export default function BookingForm({
                 );
               })}
             </select>
-            <p className="text-[10px] md:text-[12px] text-slate-500 font-medium">{t('booking.form.slotHint')}</p>
+            <p className="text-[10px] md:text-[12px] text-slate-500 dark:text-slate-400 font-medium">{t('booking.form.slotHint')}</p>
           </div>
         </div>
 
         {/* Identification Notice Strip */}
         <div className="border border-[#0D6EFD]/30 bg-[#0D6EFD]/10 p-4 flex items-center justify-between gap-4">
-          <div className="flex items-center gap-3 text-xs font-medium text-slate-800">
-            <span aria-hidden="true" className="w-5 h-5 border border-[#0D6EFD] text-[#0D6EFD] flex items-center justify-center shrink-0 text-[11px] font-bold">
+          <div className="flex items-center gap-3 text-xs font-medium text-slate-800 dark:text-slate-200">
+            <span aria-hidden="true" className="w-5 h-5 border border-[#0D6EFD] text-[#0D6EFD] dark:text-blue-400 flex items-center justify-center shrink-0 text-[11px] font-bold">
               i
             </span>
             <p>
-              <strong className="font-bold text-slate-900">{t('booking.form.carryPrefix')}</strong> {t('booking.form.carryNote')}
+              <strong className="font-bold text-slate-900 dark:text-slate-100">{t('booking.form.carryPrefix')}</strong> {t('booking.form.carryNote')}
             </p>
           </div>
 
-          <div className="hidden sm:flex items-center gap-1.5 bg-white border border-slate-200 px-3 py-1.5 shrink-0">
-            <ShieldCheck size={16} className="text-[#0D6EFD]" />
-            <Lock size={13} className="text-[#198754]" />
+          <div className="hidden sm:flex items-center gap-1.5 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 px-3 py-1.5 shrink-0">
+            <ShieldCheck size={16} className="text-[#0D6EFD] dark:text-blue-400" />
+            <Lock size={13} className="text-[#198754] dark:text-emerald-400" />
           </div>
         </div>
 
@@ -142,12 +142,12 @@ export default function BookingForm({
         </button>
 
         {/* Bottom Security Banner */}
-        <div className="border border-slate-200 bg-white px-4 py-3 text-xs font-semibold text-slate-600 flex items-center justify-between gap-3">
+        <div className="border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-4 py-3 text-xs font-semibold text-slate-600 dark:text-slate-300 flex items-center justify-between gap-3">
           <div className="flex items-center gap-2.5">
-            <ShieldCheck size={16} className="text-[#198754] shrink-0" />
+            <ShieldCheck size={16} className="text-[#198754] dark:text-emerald-400 shrink-0" />
             <span>{t('booking.form.secureNote')}</span>
           </div>
-          <Lock size={14} className="text-slate-500 shrink-0" />
+          <Lock size={14} className="text-slate-500 dark:text-slate-400 shrink-0" />
         </div>
       </form>
     </>

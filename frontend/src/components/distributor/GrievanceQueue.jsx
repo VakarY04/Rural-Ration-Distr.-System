@@ -6,14 +6,14 @@ import { useLanguage } from '../../i18n/LanguageContext';
 const FOCUS =
   'focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-orange-500';
 const inputClass =
-  'border border-slate-200 focus:border-slate-900 bg-slate-50 focus:bg-white px-3 py-2 text-xs font-medium text-slate-900 outline-none transition-colors';
+  'border border-slate-200 dark:border-slate-700 focus:border-slate-900 dark:focus:border-slate-300 bg-slate-50 dark:bg-slate-800 focus:bg-white dark:focus:bg-slate-900 px-3 py-2 text-xs font-medium text-slate-900 dark:text-slate-100 outline-none transition-colors';
 
 const CATEGORIES = ['Quantity', 'Quality', 'Access', 'Corruption', 'Technical', 'Other'];
 
 function statusStyle(status) {
-  if (status === 'Resolved') return 'border-[#198754]/30 bg-[#198754]/10 text-[#198754]';
-  if (status === 'In Review') return 'border-[#0D6EFD]/30 bg-[#0D6EFD]/10 text-[#0D6EFD]';
-  return 'border-amber-300 bg-amber-50 text-amber-700';
+  if (status === 'Resolved') return 'border-[#198754]/30 bg-[#198754]/10 text-[#198754] dark:text-emerald-400';
+  if (status === 'In Review') return 'border-[#0D6EFD]/30 bg-[#0D6EFD]/10 text-[#0D6EFD] dark:text-blue-400';
+  return 'border-amber-300 bg-amber-50 dark:bg-amber-950 text-amber-700 dark:text-amber-300';
 }
 
 function statusKey(status, t) {
@@ -112,11 +112,11 @@ export default function GrievanceQueue() {
   ];
 
   return (
-    <section aria-label={t('grievance.title')} className="border border-slate-200 bg-white rounded-2xl overflow-hidden">
-      <header className="px-5 pt-5 pb-4 border-b border-slate-100 space-y-3">
+    <section aria-label={t('grievance.title')} className="border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 rounded-2xl overflow-hidden">
+      <header className="px-5 pt-5 pb-4 border-b border-slate-100 dark:border-slate-800 space-y-3">
         <div>
-          <h2 className="text-sm font-bold uppercase tracking-[0.1em] text-black break-words">{t('grievance.title')}</h2>
-          <p className="text-xs text-slate-500 font-medium mt-1">{t('grievance.subtitle')}</p>
+          <h2 className="text-sm font-bold uppercase tracking-[0.1em] text-black dark:text-slate-100 break-words">{t('grievance.title')}</h2>
+          <p className="text-xs text-slate-500 dark:text-slate-400 font-medium mt-1">{t('grievance.subtitle')}</p>
         </div>
         <div className="flex items-center gap-2 flex-wrap" role="group" aria-label={t('grievance.title')}>
           {filters.map((f) => (
@@ -125,7 +125,7 @@ export default function GrievanceQueue() {
               type="button"
               onClick={() => setFilter(f.value)}
               aria-pressed={filter === f.value}
-              className={`text-[11px] font-bold uppercase tracking-wider px-3 py-1.5 border transition-colors cursor-pointer ${FOCUS} ${filter === f.value ? 'bg-slate-900 text-white border-slate-900' : 'border-slate-300 text-slate-600 hover:border-slate-500'}`}
+              className={`text-[11px] font-bold uppercase tracking-wider px-3 py-1.5 border transition-colors cursor-pointer ${FOCUS} ${filter === f.value ? 'bg-slate-900 text-white border-slate-900' : 'border-slate-300 dark:border-slate-600 text-slate-600 dark:text-slate-300 hover:border-slate-500'}`}
             >
               {f.label}
             </button>
@@ -133,7 +133,7 @@ export default function GrievanceQueue() {
           <button
             type="button"
             onClick={() => { setLoading(true); load().finally(() => setLoading(false)); }}
-            className={`ml-auto inline-flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-wider text-slate-500 hover:text-slate-900 cursor-pointer ${FOCUS}`}
+            className={`ml-auto inline-flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100 cursor-pointer ${FOCUS}`}
           >
             <RefreshCw size={12} aria-hidden="true" className={loading ? 'animate-spin' : ''} />
             {t('common.retry')}
@@ -143,19 +143,19 @@ export default function GrievanceQueue() {
 
       <div className="p-5">
         {error && (
-          <p role="alert" className="mb-4 bg-[#DC3545]/10 border border-[#DC3545]/40 text-[#DC3545] text-xs font-semibold px-3 py-2">
+          <p role="alert" className="mb-4 bg-[#DC3545]/10 border border-[#DC3545]/40 text-[#DC3545] dark:text-red-400 text-xs font-semibold px-3 py-2">
             {error}
           </p>
         )}
         {loading ? (
-          <p className="py-10 text-center text-sm font-semibold text-slate-500">{t('common.loading')}</p>
+          <p className="py-10 text-center text-sm font-semibold text-slate-500 dark:text-slate-400">{t('common.loading')}</p>
         ) : items.length === 0 ? (
           <div className="py-10 text-center">
             <Inbox size={22} className="mx-auto text-slate-300" aria-hidden="true" />
-            <p className="mt-2 text-sm font-semibold text-slate-900">{t('grievance.empty')}</p>
+            <p className="mt-2 text-sm font-semibold text-slate-900 dark:text-slate-100">{t('grievance.empty')}</p>
           </div>
         ) : (
-          <ol className="divide-y divide-slate-100">
+          <ol className="divide-y divide-slate-100 dark:divide-slate-800">
             {items.map((g) => {
               const d = draftFor(g);
               const saving = savingId === g.id;
@@ -165,16 +165,16 @@ export default function GrievanceQueue() {
                     <span className={`text-[10px] font-bold uppercase tracking-wider px-2 py-1 border shrink-0 ${statusStyle(g.status)}`}>
                       {statusKey(g.status, t)}
                     </span>
-                    <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-1 border border-slate-300 text-slate-600 shrink-0">
+                    <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-1 border border-slate-300 dark:border-slate-600 text-slate-600 dark:text-slate-300 shrink-0">
                       {g.category}
                     </span>
-                    <span className="text-[11px] text-slate-500 font-medium tabular-nums ml-auto">
+                    <span className="text-[11px] text-slate-500 dark:text-slate-400 font-medium tabular-nums ml-auto">
                       #{String(g.id).slice(-6).toUpperCase()} · {new Date(g.createdAt).toLocaleDateString(lang === 'hi' ? 'hi-IN' : 'en-IN', { day: 'numeric', month: 'short' })}
                     </span>
                   </div>
-                  <p className="text-sm font-semibold text-slate-900 leading-snug break-words">{g.issue}</p>
+                  <p className="text-sm font-semibold text-slate-900 dark:text-slate-100 leading-snug break-words">{g.issue}</p>
                   {g.aiAction && (
-                    <p className="text-xs text-slate-500 break-words">AI: {g.aiAction}</p>
+                    <p className="text-xs text-slate-500 dark:text-slate-400 break-words">AI: {g.aiAction}</p>
                   )}
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                     <select

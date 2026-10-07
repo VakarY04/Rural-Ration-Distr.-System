@@ -16,7 +16,7 @@ const FOCUS =
 // and scroll internally only if the viewport is too short for their content.
 // All three states (User Login, Staff picker, role form) share one card size.
 const CARD =
-  'w-full bg-white border rounded-xl transition-all duration-500 flex flex-col max-h-full overflow-y-auto';
+  'w-full bg-white dark:bg-slate-900 border rounded-xl transition-all duration-500 flex flex-col max-h-full overflow-y-auto';
 const CARD_COMPACT = 'max-w-sm p-8 space-y-5';
 
 export default function AdminLoginPage({ onNavigate, onAuthSuccess }) {
@@ -62,7 +62,12 @@ export default function AdminLoginPage({ onNavigate, onAuthSuccess }) {
         </p>
       </div>
 
-      <div className="relative z-20 flex justify-center px-6 pb-1 shrink-0">
+      {/* Toolbar row sits above the gateway cards (z-30 vs their z-20): the
+          widget's fixed z-2000 is trapped inside this wrapper's stacking
+          context, so without the higher layer the staff card (a later z-20
+          sibling) paints over the widget and swallows its clicks. The widget
+          itself stays edge-docked exactly as on every other page. */}
+      <div className="relative z-30 flex justify-center px-6 pb-1 shrink-0">
         <AccessibilityToolbar />
       </div>
 
@@ -77,14 +82,14 @@ export default function AdminLoginPage({ onNavigate, onAuthSuccess }) {
         >
           <div
             className={`${CARD} ${CARD_COMPACT} ${
-              activeSide === 'left' ? 'border-[#FF9933] -translate-y-1 shadow-xl' : 'border-slate-200 hover:shadow-lg hover:-translate-y-0.5'
+              activeSide === 'left' ? 'border-[#FF9933] -translate-y-1 shadow-xl' : 'border-slate-200 dark:border-slate-700 hover:shadow-lg hover:-translate-y-0.5'
             }`}
           >
             <div className="flex items-center gap-3.5">
-              <div className="w-12 h-12 flex items-center justify-center border shrink-0 border-[#138808] text-[#138808] bg-green-50">
+              <div className="w-12 h-12 flex items-center justify-center border shrink-0 border-[#138808] text-[#138808] dark:text-green-300 bg-green-50 dark:bg-green-950">
                 <Users size={22} />
               </div>
-              <h2 className="text-xl font-medium tracking-tight text-[#000080]">
+              <h2 className="text-xl font-medium tracking-tight text-[#000080] dark:text-[#B9C8FF]">
                 {t('auth.userLogin')}
               </h2>
             </div>
@@ -110,12 +115,12 @@ export default function AdminLoginPage({ onNavigate, onAuthSuccess }) {
               />
             )}
 
-            <p className="text-center text-[11px] font-semibold text-slate-500 pt-3 mt-auto">
+            <p className="text-center text-[11px] font-semibold text-slate-500 dark:text-slate-400 pt-3 mt-auto">
               {t('auth.newToPortal')}{' '}
               <button
                 type="button"
                 onClick={() => onNavigate && onNavigate('auth-register')}
-                className="text-[#138808] hover:text-[#FF9933] font-bold cursor-pointer transition-colors"
+                className="text-[#138808] dark:text-green-400 hover:text-[#FF9933] font-bold cursor-pointer transition-colors"
               >
                 {t('auth.createAccount')}
               </button>
@@ -133,43 +138,43 @@ export default function AdminLoginPage({ onNavigate, onAuthSuccess }) {
         >
           <div
             className={`${CARD} ${CARD_COMPACT} ${
-              activeSide === 'right' ? 'border-[#FF9933] -translate-y-1 shadow-xl' : 'border-slate-200 hover:shadow-lg hover:-translate-y-0.5'
+              activeSide === 'right' ? 'border-[#FF9933] -translate-y-1 shadow-xl' : 'border-slate-200 dark:border-slate-700 hover:shadow-lg hover:-translate-y-0.5'
             }`}
           >
             <div className="flex items-center gap-3.5">
-              <div className="w-12 h-12 flex items-center justify-center border shrink-0 border-[#FF9933] text-[#FF9933] bg-orange-50">
+              <div className="w-12 h-12 flex items-center justify-center border shrink-0 border-[#FF9933] text-[#FF9933] dark:text-orange-300 bg-orange-50 dark:bg-orange-950">
                 <Building2 size={22} />
               </div>
-              <h2 className="text-xl font-medium tracking-tight text-[#000080]">
+              <h2 className="text-xl font-medium tracking-tight text-[#000080] dark:text-[#B9C8FF]">
                 {staffTitle}
               </h2>
             </div>
 
             {staffRole === null ? (
               <div className="space-y-3 flex-1 flex flex-col justify-center">
-                <p className="text-[11px] font-semibold text-slate-500 leading-snug">
+                <p className="text-[11px] font-semibold text-slate-500 dark:text-slate-400 leading-snug">
                   {t('auth.chooseStaffRole')}
                 </p>
                 <button
                   type="button"
                   onClick={() => setStaffRole('admin')}
-                  className={`w-full flex items-center gap-3 border border-slate-300 hover:border-[#FF9933] hover:bg-orange-50 px-4 py-3.5 text-left transition-colors cursor-pointer group ${FOCUS}`}
+                  className={`w-full flex items-center gap-3 border border-slate-300 dark:border-slate-600 hover:border-[#FF9933] hover:bg-orange-50 dark:hover:bg-slate-800 px-4 py-3.5 text-left transition-colors cursor-pointer group ${FOCUS}`}
                 >
                   <ShieldCheck size={20} className="text-slate-400 group-hover:text-[#FF9933] shrink-0 transition-colors" aria-hidden="true" />
                   <span>
-                    <span className="block text-sm font-bold text-slate-900">{t('auth.adminRole')}</span>
-                    <span className="block text-[11px] font-medium text-slate-500">{t('auth.adminRoleSub')}</span>
+                    <span className="block text-sm font-bold text-slate-900 dark:text-slate-100">{t('auth.adminRole')}</span>
+                    <span className="block text-[11px] font-medium text-slate-500 dark:text-slate-400">{t('auth.adminRoleSub')}</span>
                   </span>
                 </button>
                 <button
                   type="button"
                   onClick={() => setStaffRole('distributor')}
-                  className={`w-full flex items-center gap-3 border border-slate-300 hover:border-[#138808] hover:bg-green-50 px-4 py-3.5 text-left transition-colors cursor-pointer group ${FOCUS}`}
+                  className={`w-full flex items-center gap-3 border border-slate-300 dark:border-slate-600 hover:border-[#138808] hover:bg-green-50 dark:hover:bg-slate-800 px-4 py-3.5 text-left transition-colors cursor-pointer group ${FOCUS}`}
                 >
                   <Building2 size={20} className="text-slate-400 group-hover:text-[#138808] shrink-0 transition-colors" aria-hidden="true" />
                   <span>
-                    <span className="block text-sm font-bold text-slate-900">{t('auth.distributorRole')}</span>
-                    <span className="block text-[11px] font-medium text-slate-500">{t('auth.distributorRoleSub')}</span>
+                    <span className="block text-sm font-bold text-slate-900 dark:text-slate-100">{t('auth.distributorRole')}</span>
+                    <span className="block text-[11px] font-medium text-slate-500 dark:text-slate-400">{t('auth.distributorRoleSub')}</span>
                   </span>
                 </button>
               </div>
@@ -178,7 +183,7 @@ export default function AdminLoginPage({ onNavigate, onAuthSuccess }) {
                 <button
                   type="button"
                   onClick={() => setStaffRole(null)}
-                  className={`inline-flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-[0.14em] text-slate-500 hover:text-orange-600 transition-colors cursor-pointer ${FOCUS}`}
+                  className={`inline-flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400 hover:text-orange-600 transition-colors cursor-pointer ${FOCUS}`}
                 >
                   <ArrowLeft size={13} aria-hidden="true" />
                   {t('auth.backToStaff')}

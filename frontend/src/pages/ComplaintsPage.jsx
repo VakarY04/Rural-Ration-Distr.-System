@@ -14,12 +14,12 @@ export default function ComplaintsPage() {
       <header>
         <p className={swiss.micro}>{t('complaints.eyebrow')}</p>
         <h1 className={`${swiss.headline} flex items-center gap-2.5`}>
-          <span className="w-9 h-9 border border-[#DC3545]/30 bg-[#DC3545]/10 text-[#DC3545] flex items-center justify-center shrink-0" aria-hidden="true">
+          <span className="w-9 h-9 border border-[#DC3545]/30 bg-[#DC3545]/10 text-[#DC3545] dark:text-red-400 flex items-center justify-center shrink-0" aria-hidden="true">
             <MessageSquareWarning size={17} />
           </span>
           {t('complaints.title')}
         </h1>
-        <p className="text-sm text-slate-500 mt-2">
+        <p className="text-sm text-slate-500 dark:text-slate-400 mt-2">
           {t('complaints.intro')}
         </p>
       </header>

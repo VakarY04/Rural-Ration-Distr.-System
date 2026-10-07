@@ -12,7 +12,7 @@ const MAX_COMMITTED_ITEMS = 12;
 const FOCUS =
   'focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-orange-500';
 const inputClass =
-  'border border-slate-200 focus:border-slate-900 bg-slate-50 focus:bg-white px-3 py-2 text-sm font-medium text-slate-900 outline-none transition-colors';
+  'border border-slate-200 dark:border-slate-700 focus:border-slate-900 dark:focus:border-slate-300 bg-slate-50 dark:bg-slate-800 focus:bg-white dark:focus:bg-slate-900 px-3 py-2 text-sm font-medium text-slate-900 dark:text-slate-100 outline-none transition-colors';
 
 function cleanRow(row) {
   return {
@@ -86,11 +86,11 @@ function CommittedTotals({ items, customized = false, canEdit = false, onSaved }
     <section aria-label={t('items.committedTitle')} className="border border-[#198754]/30 bg-[#198754]/5 p-5">
       <div className="flex items-start justify-between gap-4 flex-wrap">
         <div className="flex items-center gap-2.5 min-w-0">
-          <span className="w-8 h-8 border border-[#198754]/30 bg-[#198754]/10 text-[#198754] flex items-center justify-center shrink-0" aria-hidden="true">
+          <span className="w-8 h-8 border border-[#198754]/30 bg-[#198754]/10 text-[#198754] dark:text-emerald-400 flex items-center justify-center shrink-0" aria-hidden="true">
             <Wheat size={15} />
           </span>
           <div className="min-w-0">
-            <h2 className="text-sm font-bold uppercase tracking-[0.1em] text-[#198754] break-words">{t('items.committedTitle')}</h2>
+            <h2 className="text-sm font-bold uppercase tracking-[0.1em] text-[#198754] dark:text-emerald-400 break-words">{t('items.committedTitle')}</h2>
           </div>
         </div>
         {canEdit && !editing && (
@@ -110,7 +110,7 @@ function CommittedTotals({ items, customized = false, canEdit = false, onSaved }
                 onClick={resetToAuto}
                 disabled={resetting || section.saving}
                 title={t('editor.reset')}
-                className={`border border-[#DC3545]/50 text-[#DC3545] hover:bg-[#DC3545] hover:text-white text-[11px] font-bold uppercase tracking-wider px-3.5 py-2 transition-colors cursor-pointer disabled:opacity-50 ${FOCUS}`}
+                className={`border border-[#DC3545]/50 text-[#DC3545] dark:text-red-400 hover:bg-[#DC3545] hover:text-white text-[11px] font-bold uppercase tracking-wider px-3.5 py-2 transition-colors cursor-pointer disabled:opacity-50 ${FOCUS}`}
               >
                 {resetting ? t('editor.saving') : t('editor.reset')}
               </button>
@@ -119,7 +119,7 @@ function CommittedTotals({ items, customized = false, canEdit = false, onSaved }
               type="button"
               onClick={section.cancelEditing}
               disabled={section.saving}
-              className={`border border-slate-300 hover:border-slate-500 text-slate-700 text-[11px] font-bold uppercase tracking-wider px-3.5 py-2 transition-colors cursor-pointer disabled:opacity-50 ${FOCUS}`}
+              className={`border border-slate-300 dark:border-slate-600 hover:border-slate-500 text-slate-700 dark:text-slate-200 text-[11px] font-bold uppercase tracking-wider px-3.5 py-2 transition-colors cursor-pointer disabled:opacity-50 ${FOCUS}`}
             >
               {t('editor.cancel')}
             </button>
@@ -135,20 +135,20 @@ function CommittedTotals({ items, customized = false, canEdit = false, onSaved }
         )}
       </div>
       {(section.error || resetError) && (
-        <p role="alert" className="mt-3 bg-[#DC3545]/10 border border-[#DC3545]/40 text-[#DC3545] text-xs font-semibold px-3 py-2">
+        <p role="alert" className="mt-3 bg-[#DC3545]/10 border border-[#DC3545]/40 text-[#DC3545] dark:text-red-400 text-xs font-semibold px-3 py-2">
           {section.error || resetError}
         </p>
       )}
       <div className="mt-4">
         {!editing && rows.length === 0 && (
-          <p className="text-sm text-slate-500">{t('items.committedEmpty')}</p>
+          <p className="text-sm text-slate-500 dark:text-slate-400">{t('items.committedEmpty')}</p>
         )}
         {!editing && rows.length > 0 && (
           <ul className="divide-y divide-[#198754]/15">
             {rows.map((row, i) => (
               <li key={`${row.label}-${i}`} className="flex items-baseline justify-between gap-3 py-2 first:pt-0 last:pb-0">
-                <span className="text-sm font-semibold text-slate-800 truncate">{itemName(t, row.label)}</span>
-                <span className="text-base font-extrabold tracking-tight tabular-nums text-slate-900 shrink-0">
+                <span className="text-sm font-semibold text-slate-800 dark:text-slate-200 truncate">{itemName(t, row.label)}</span>
+                <span className="text-base font-extrabold tracking-tight tabular-nums text-slate-900 dark:text-slate-100 shrink-0">
                   {row.quantity} {unitLabel(row.unit)}
                 </span>
               </li>
@@ -157,8 +157,8 @@ function CommittedTotals({ items, customized = false, canEdit = false, onSaved }
         )}
         {editing && (
           <div className="space-y-3">
-            <p className="text-[11px] font-medium text-slate-500">{t('items.committedHint')}</p>
-            <ul className="divide-y divide-slate-100">
+            <p className="text-[11px] font-medium text-slate-500 dark:text-slate-400">{t('items.committedHint')}</p>
+            <ul className="divide-y divide-slate-100 dark:divide-slate-800">
               {draft.map((row, i) => (
                 <li key={i} className="flex items-center gap-3 py-2.5 first:pt-0 last:pb-0">
                   <input
@@ -192,7 +192,7 @@ function CommittedTotals({ items, customized = false, canEdit = false, onSaved }
                     onClick={() => setDraft(draft.filter((_, j) => j !== i))}
                     title={t('items.remove', { n: i + 1 })}
                     aria-label={t('items.remove', { n: i + 1 })}
-                    className={`text-slate-400 hover:text-red-600 p-1.5 hover:bg-red-50 cursor-pointer transition-colors shrink-0 ${FOCUS}`}
+                    className={`text-slate-400 hover:text-red-600 dark:hover:text-red-400 p-1.5 hover:bg-red-50 dark:hover:bg-slate-800 cursor-pointer transition-colors shrink-0 ${FOCUS}`}
                   >
                     <Trash2 size={15} aria-hidden="true" />
                   </button>
@@ -203,7 +203,7 @@ function CommittedTotals({ items, customized = false, canEdit = false, onSaved }
               <button
                 type="button"
                 onClick={() => setDraft([...draft, { label: '', quantity: 0, unit: 'kg' }])}
-                className={`w-full flex items-center justify-center gap-2 border border-dashed border-slate-300 hover:border-slate-900 hover:bg-white text-slate-500 hover:text-slate-900 text-xs font-semibold tracking-wide py-2.5 transition-colors cursor-pointer ${FOCUS}`}
+                className={`w-full flex items-center justify-center gap-2 border border-dashed border-slate-300 dark:border-slate-600 hover:border-slate-900 hover:bg-white dark:hover:bg-slate-800 text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100 text-xs font-semibold tracking-wide py-2.5 transition-colors cursor-pointer ${FOCUS}`}
               >
                 <Plus size={14} aria-hidden="true" />
                 {t('items.add')}
@@ -242,7 +242,7 @@ export default function RationDetailsPage({
       <header>
         <p className={swiss.micro}>{t('ration.eyebrow')}</p>
         <h1 className={`${swiss.headline} flex items-center gap-2.5`}>
-          <span className="w-9 h-9 border border-[#198754]/30 bg-[#198754]/10 text-[#198754] flex items-center justify-center shrink-0" aria-hidden="true">
+            <span className="w-9 h-9 border border-[#198754]/30 bg-[#198754]/10 text-[#198754] dark:text-emerald-400 flex items-center justify-center shrink-0" aria-hidden="true">
             <FileCheck size={17} />
           </span>
           {t('ration.title')}

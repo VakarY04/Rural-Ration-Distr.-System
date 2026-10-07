@@ -202,10 +202,10 @@ export default function ProfilePage({ onAccountDeleted }) {
           </div>
         </div>
         <div className="flex items-start gap-2 bg-[#0D6EFD]/10 border border-[#0D6EFD]/30 px-4 py-3 max-w-sm">
-          <Info size={16} className="text-[#0D6EFD] shrink-0 mt-0.5" />
+          <Info size={16} className="text-[#0D6EFD] dark:text-blue-400 shrink-0 mt-0.5" />
           <div>
-            <p className="text-xs font-bold text-[#0D6EFD]">{t('profile.autoSyncTitle')}</p>
-            <p className="text-[11px] text-[#0D6EFD] mt-0.5">
+            <p className="text-xs font-bold text-[#0D6EFD] dark:text-blue-400">{t('profile.autoSyncTitle')}</p>
+            <p className="text-[11px] text-[#0D6EFD] dark:text-blue-400 mt-0.5">
               {t('profile.autoSyncBody')}
             </p>
           </div>
@@ -213,13 +213,13 @@ export default function ProfilePage({ onAccountDeleted }) {
       </header>
 
       {msg.error && (
-        <div className="flex items-start gap-2 text-sm font-medium text-[#DC3545] bg-[#DC3545]/10 border border-[#DC3545]/30 p-4">
+        <div className="flex items-start gap-2 text-sm font-medium text-[#DC3545] dark:text-red-400 bg-[#DC3545]/10 border border-[#DC3545]/30 p-4">
           <AlertCircle size={18} className="shrink-0 mt-0.5" />
           <span>{msg.error}</span>
         </div>
       )}
       {msg.success && (
-        <div className="flex items-start gap-2 text-sm font-medium text-[#198754] bg-[#198754]/10 border border-[#198754]/30 p-4">
+        <div className="flex items-start gap-2 text-sm font-medium text-[#198754] dark:text-emerald-400 bg-[#198754]/10 border border-[#198754]/30 p-4">
           <CheckCircle2 size={18} className="shrink-0 mt-0.5" />
           <span>{msg.success}</span>
         </div>

@@ -12,7 +12,7 @@ const MAX_ITEMS = 12;
 const FOCUS =
   'focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-orange-500';
 const inputClass =
-  'border border-slate-200 focus:border-slate-900 bg-slate-50 focus:bg-white px-3 py-2 text-sm font-medium text-slate-900 outline-none transition-colors';
+  'border border-slate-200 dark:border-slate-700 focus:border-slate-900 dark:focus:border-slate-300 bg-slate-50 dark:bg-slate-800 focus:bg-white dark:focus:bg-slate-900 px-3 py-2 text-sm font-medium text-slate-900 dark:text-slate-100 outline-none transition-colors';
 
 function cleanRow(row) {
   return {
@@ -71,23 +71,23 @@ export default function RationItemsEditor({ items, onSaved, canEdit = false }) {
     return (
       <EditorShell title={t('items.title')} readOnly>
         {draft.filter((r) => r.label).length === 0 && (
-          <p className="text-sm font-semibold text-slate-900 break-words">{t('items.empty')}</p>
+          <p className="text-sm font-semibold text-slate-900 dark:text-slate-100 break-words">{t('items.empty')}</p>
         )}
-        <ul className="divide-y divide-slate-100">
+        <ul className="divide-y divide-slate-100 dark:divide-slate-800">
           {draft.filter((r) => r.label).map((row, i) => (
             <li key={i} className="flex items-center gap-3 py-2.5 first:pt-0 last:pb-0">
-              <span className="w-8 h-8 border border-amber-200 bg-amber-50 text-amber-600 flex items-center justify-center shrink-0" aria-hidden="true">
+              <span className="w-8 h-8 border border-amber-200 bg-amber-50 dark:bg-amber-950 text-amber-600 dark:text-amber-300 flex items-center justify-center shrink-0" aria-hidden="true">
                 <Wheat size={14} />
               </span>
-              <span className="flex-1 min-w-0 text-sm font-semibold text-slate-900 truncate">{itemName(row.label)}</span>
-              <span className="text-sm font-extrabold tracking-tight tabular-nums text-slate-900 shrink-0">
+              <span className="flex-1 min-w-0 text-sm font-semibold text-slate-900 dark:text-slate-100 truncate">{itemName(row.label)}</span>
+              <span className="text-sm font-extrabold tracking-tight tabular-nums text-slate-900 dark:text-slate-100 shrink-0">
                 {row.quantity} {unitLabel(row.unit)}{' '}
-                <span className="text-[11px] font-semibold text-slate-500">({t('items.perMember')})</span>
+                <span className="text-[11px] font-semibold text-slate-500 dark:text-slate-400">({t('items.perMember')})</span>
               </span>
             </li>
           ))}
         </ul>
-        <p className="mt-4 border border-amber-200 bg-amber-50 text-amber-800 text-xs font-semibold px-3 py-2">
+        <p className="mt-4 border border-amber-200 bg-amber-50 dark:bg-amber-950 text-amber-800 dark:text-amber-300 text-xs font-semibold px-3 py-2">
           {t('editor.adminOnly')}
         </p>
       </EditorShell>
@@ -105,14 +105,14 @@ export default function RationItemsEditor({ items, onSaved, canEdit = false }) {
       error={section.error}
     >
       {!editing && draft.filter((r) => r.label).length === 0 && (
-        <p className="text-sm font-semibold text-slate-900 break-words">{t('items.empty')}</p>
+        <p className="text-sm font-semibold text-slate-900 dark:text-slate-100 break-words">{t('items.empty')}</p>
       )}
 
       {editing && (
-        <p className="text-[11px] font-medium text-slate-500">{t('items.perMemberHint')}</p>
+        <p className="text-[11px] font-medium text-slate-500 dark:text-slate-400">{t('items.perMemberHint')}</p>
       )}
 
-      <ul className="divide-y divide-slate-100">
+      <ul className="divide-y divide-slate-100 dark:divide-slate-800">
         {draft.filter((r) => editing || r.label).map((row, i) => (
           <li key={i} className="flex items-center gap-3 py-2.5 first:pt-0 last:pb-0">
             {editing ? (
@@ -133,7 +133,7 @@ export default function RationItemsEditor({ items, onSaved, canEdit = false }) {
                     onChange={(e) => updateRow(i, { quantity: e.target.value })}
                     className={`${inputClass} w-full tabular-nums`}
                   />
-                  <span className="text-[10px] font-medium text-slate-500 leading-none">({t('items.perMember')})</span>
+                  <span className="text-[10px] font-medium text-slate-500 dark:text-slate-400 leading-none">({t('items.perMember')})</span>
                 </span>
                 <select
                   aria-label={t('items.unitAria', { n: i + 1 })}
@@ -151,18 +151,18 @@ export default function RationItemsEditor({ items, onSaved, canEdit = false }) {
                   onClick={() => setDraft(draft.filter((_, j) => j !== i))}
                   title={t('items.remove', { n: i + 1 })}
                   aria-label={t('items.remove', { n: i + 1 })}
-                  className={`text-slate-400 hover:text-red-600 p-1.5 hover:bg-red-50 cursor-pointer transition-colors shrink-0 ${FOCUS}`}
+                  className={`text-slate-400 hover:text-red-600 dark:hover:text-red-400 p-1.5 hover:bg-red-50 dark:hover:bg-slate-800 cursor-pointer transition-colors shrink-0 ${FOCUS}`}
                 >
                   <Trash2 size={15} aria-hidden="true" />
                 </button>
               </>
             ) : (
               <>
-                <span className="w-8 h-8 border border-amber-200 bg-amber-50 text-amber-600 flex items-center justify-center shrink-0" aria-hidden="true">
+                <span className="w-8 h-8 border border-amber-200 bg-amber-50 dark:bg-amber-950 text-amber-600 dark:text-amber-300 flex items-center justify-center shrink-0" aria-hidden="true">
                   <Wheat size={14} />
                 </span>
-                <span className="flex-1 min-w-0 text-sm font-semibold text-slate-900 truncate">{row.label}</span>
-                <span className="text-sm font-extrabold tracking-tight tabular-nums text-slate-900 shrink-0">
+                <span className="flex-1 min-w-0 text-sm font-semibold text-slate-900 dark:text-slate-100 truncate">{row.label}</span>
+                <span className="text-sm font-extrabold tracking-tight tabular-nums text-slate-900 dark:text-slate-100 shrink-0">
                   {row.quantity} {row.unit === 'litre' ? 'L' : 'kg'}
                 </span>
               </>
@@ -175,7 +175,7 @@ export default function RationItemsEditor({ items, onSaved, canEdit = false }) {
         <button
           type="button"
           onClick={() => setDraft([...draft, { label: '', quantity: 0, unit: 'kg' }])}
-          className={`mt-3 w-full flex items-center justify-center gap-2 border border-dashed border-slate-300 hover:border-slate-900 hover:bg-slate-50 text-slate-500 hover:text-slate-900 text-xs font-semibold tracking-wide py-2.5 transition-colors cursor-pointer ${FOCUS}`}
+          className={`mt-3 w-full flex items-center justify-center gap-2 border border-dashed border-slate-300 dark:border-slate-600 hover:border-slate-900 hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100 text-xs font-semibold tracking-wide py-2.5 transition-colors cursor-pointer ${FOCUS}`}
         >
           <Plus size={14} aria-hidden="true" />
           {t('items.add')}

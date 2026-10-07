@@ -47,26 +47,26 @@ export default function DashboardShell({ children, currentSubPage, onSubPageChan
   // ≈21:1), hover = India Green #138808 (white text ≈4.5:1), selected = Navy
   // #000080 (white text ≈15:1). State is never colour-alone: aria-current +
   // left bar + text label accompany every colour cue (GIGW A12).
-  const NAV_IDLE = 'text-black hover:bg-[#138808] hover:text-white';
+  const NAV_IDLE = 'text-black dark:text-slate-100 hover:bg-[#138808] hover:text-white';
   const NAV_ACTIVE = 'bg-[#000080] text-white';
-  const NAV_MICRO = 'text-black/70';
+  const NAV_MICRO = 'text-black/70 dark:text-slate-400';
 
   return (
     <div className={`flex h-screen overflow-hidden font-sans ${swiss.page}`}>
       <SkipLink />
-      <aside className={`${navCollapsed ? 'w-20 px-3' : 'w-64 px-5'} pt-5 pb-3 bg-white text-black flex flex-col justify-between border-r border-slate-200 shrink-0 transition-all duration-200`}>
+      <aside className={`${navCollapsed ? 'w-20 px-3' : 'w-64 px-5'} pt-5 pb-3 bg-white dark:bg-slate-900 text-black dark:text-slate-100 flex flex-col justify-between border-r border-slate-200 dark:border-slate-700 shrink-0 transition-all duration-200`}>
         <div>
           <div className={`flex items-center gap-3 px-1 mb-4 ${navCollapsed ? 'justify-center px-0' : ''}`}>
             <img src={logoAsset} alt="E-Ration" width={55} height={55} decoding="async" className="w-[55px] h-[55px] object-contain shrink-0" />
             {!navCollapsed && (
               <div>
-                <h1 className="text-sm font-bold tracking-tight text-black leading-tight">{t('nav.portalName')}</h1>
+                <h1 className="text-sm font-bold tracking-tight text-black dark:text-slate-100 leading-tight">{t('nav.portalName')}</h1>
                 <p className={`text-[10px] font-bold uppercase tracking-[0.14em] ${NAV_MICRO}`}>{t('nav.citizenWorkspace')}</p>
               </div>
             )}
           </div>
 
-          <div className="border border-slate-200 mb-5">
+          <div className="border border-slate-200 dark:border-slate-700 mb-5">
             <TricolorStrip className="h-[3px]" />
           </div>
 
@@ -124,7 +124,7 @@ export default function DashboardShell({ children, currentSubPage, onSubPageChan
           <button
             onClick={onLogout}
             title={navCollapsed ? t('nav.logout') : undefined}
-            className={`w-full flex items-center justify-center gap-2 border border-black/50 bg-white/20 text-black hover:bg-[#138808] hover:border-[#138808] hover:text-white py-3 text-sm font-semibold transition-colors cursor-pointer ${FOCUS}`}
+            className={`w-full flex items-center justify-center gap-2 border border-black/50 bg-white/20 dark:bg-slate-900/20 text-black dark:text-slate-100 hover:bg-[#138808] hover:border-[#138808] hover:text-white py-3 text-sm font-semibold transition-colors cursor-pointer ${FOCUS}`}
           >
             <GovLogoutIcon size={20} aria-hidden="true" />
             {!navCollapsed && <span>{t('nav.logout')}</span>}
@@ -132,7 +132,7 @@ export default function DashboardShell({ children, currentSubPage, onSubPageChan
         </div>
       </aside>
 
-      <main className="flex-1 flex flex-col overflow-y-auto overflow-x-clip overscroll-y-contain min-w-0 bg-[#F4F6F9]" id="main-content" tabIndex={-1}>
+      <main className="flex-1 flex flex-col overflow-y-auto overflow-x-clip overscroll-y-contain min-w-0 bg-[#F4F6F9] dark:bg-slate-950" id="main-content" tabIndex={-1}>
         <div className="flex items-center justify-between flex-wrap gap-3 px-8 pt-4">
           <button
             type="button"
@@ -140,7 +140,7 @@ export default function DashboardShell({ children, currentSubPage, onSubPageChan
             aria-expanded={!navCollapsed}
             aria-label={navCollapsed ? t('nav.expandNav') : t('nav.collapseNav')}
             title={navCollapsed ? t('nav.expandNav') : t('nav.collapseNav')}
-            className={`inline-flex items-center gap-2 border border-slate-300 hover:border-slate-900 hover:bg-slate-900 hover:text-white text-slate-600 px-3 py-1.5 text-xs font-semibold tracking-wide transition-colors cursor-pointer bg-white ${FOCUS}`}
+            className={`inline-flex items-center gap-2 border border-slate-300 dark:border-slate-600 hover:border-slate-900 hover:bg-slate-900 hover:text-white text-slate-600 dark:text-slate-300 px-3 py-1.5 text-xs font-semibold tracking-wide transition-colors cursor-pointer bg-white dark:bg-slate-900 ${FOCUS}`}
           >
             {navCollapsed ? <PanelLeftOpen size={14} /> : <PanelLeftClose size={14} />}
             <span>{navCollapsed ? t('nav.expand') : t('nav.collapse')}</span>
@@ -149,7 +149,7 @@ export default function DashboardShell({ children, currentSubPage, onSubPageChan
         </div>
         {account?.rationCardNumber && (
           <div className="flex items-center justify-between flex-wrap gap-3 px-8 pt-6">
-            <p className="text-[10px] font-bold uppercase tracking-[0.14em] text-slate-500">
+            <p className="text-[10px] font-bold uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400">
               {t('nav.pds')}
             </p>
           </div>

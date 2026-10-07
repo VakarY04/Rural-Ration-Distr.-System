@@ -162,7 +162,7 @@ export default function App() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-[#F4F6F9]">
+    <div className="min-h-screen bg-[#F4F6F9] dark:bg-slate-950">
       <OverlayScrollbar />
       <AdhdReadingMask />
       {/* 1. Landing Page */}

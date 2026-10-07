@@ -7,9 +7,9 @@ import { useLanguage } from '../../i18n/LanguageContext';
 export default function EditorShell({ title, editing, saving, onEdit, onSave, onCancel, error, readOnly, children }) {
   const { t } = useLanguage();
   return (
-    <section className="border border-slate-200 bg-white rounded-2xl overflow-hidden">
-      <header className="flex items-start justify-between gap-4 px-5 pt-5 pb-4 border-b border-slate-100">
-        <h2 className="text-sm font-bold uppercase tracking-[0.1em] text-black break-words min-w-0">{title}</h2>
+    <section className="border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 rounded-2xl overflow-hidden">
+      <header className="flex items-start justify-between gap-4 px-5 pt-5 pb-4 border-b border-slate-100 dark:border-slate-800">
+        <h2 className="text-sm font-bold uppercase tracking-[0.1em] text-black dark:text-slate-100 break-words min-w-0">{title}</h2>
 
         {!readOnly && !editing && (
           <button
@@ -26,7 +26,7 @@ export default function EditorShell({ title, editing, saving, onEdit, onSave, on
               type="button"
               onClick={onCancel}
               disabled={saving}
-              className="border border-slate-300 hover:border-slate-500 text-slate-700 text-[11px] font-bold uppercase tracking-wider px-3.5 py-2 transition-colors cursor-pointer disabled:opacity-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-orange-500"
+              className="border border-slate-300 dark:border-slate-600 hover:border-slate-500 text-slate-700 dark:text-slate-200 text-[11px] font-bold uppercase tracking-wider px-3.5 py-2 transition-colors cursor-pointer disabled:opacity-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-orange-500"
             >
               {t('editor.cancel')}
             </button>
@@ -43,7 +43,7 @@ export default function EditorShell({ title, editing, saving, onEdit, onSave, on
       </header>
 
       {error && (
-        <p role="alert" className="mx-5 mt-4 bg-[#DC3545]/10 border border-[#DC3545]/40 text-[#DC3545] text-xs font-semibold px-3 py-2">
+        <p role="alert" className="mx-5 mt-4 bg-[#DC3545]/10 border border-[#DC3545]/40 text-[#DC3545] dark:text-red-400 text-xs font-semibold px-3 py-2">
           {error}
         </p>
       )}

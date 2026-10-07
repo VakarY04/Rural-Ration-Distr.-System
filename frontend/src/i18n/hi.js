@@ -21,6 +21,8 @@ export const hi = {
   'nav.pds': 'सार्वजनिक वितरण प्रणाली',
 
   'header.signIn': 'साइन इन',
+  'theme.switchDark': 'डार्क मोड चालू करें',
+  'theme.switchLight': 'लाइट मोड चालू करें',
 
   'landing.brandTitle': 'ई-राशन पोर्टल',
   'landing.pageTitle': 'ई-राशन पोर्टल — स्मार्ट राशन वितरण',
@@ -685,6 +687,9 @@ export const hi = {
   'a11y.desaturate': 'संतृप्ति हटाएँ',
   'a11y.invert': 'रंग उल्टें',
   'a11y.dyslexia': 'डिस्लेक्सिया मोड',
+  'a11y.bigCursor': 'बड़ा कर्सर',
+  'a11y.noAnim': 'एनिमेशन हटाएँ',
+  'a11y.darkMode': 'डार्क मोड',
   'a11y.reset': 'सेटिंग्स रीसेट करें',
 
   'lang.label': 'भाषा',
