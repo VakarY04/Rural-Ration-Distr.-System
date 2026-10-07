@@ -11,6 +11,7 @@ import DashboardHome from './pages/DashboardHome';
 import ProfilePage from './pages/ProfilePage';
 import BookingPage from './pages/BookingPage';
 import OverlayScrollbar from './components/OverlayScrollbar';
+import AdhdReadingMask from './components/AdhdReadingMask';
 import AiSupportPage from './pages/AiSupportPage';
 import InfoPage from './pages/info/InfoPage';
 
@@ -163,6 +164,7 @@ export default function App() {
   return (
     <div className="min-h-screen bg-[#F4F6F9]">
       <OverlayScrollbar />
+      <AdhdReadingMask />
       {/* 1. Landing Page */}
       {currentPage === 'landing' && (
         <LandingPage onNavigate={handleNavigate} />

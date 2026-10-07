@@ -6,7 +6,6 @@ import { swiss, TricolorStrip, TRICOLOR_GRADIENT } from '../components/ui/swiss'
 import { useLandingAnimations } from './landing/useLandingAnimations';
 import SkipLink from '../components/SkipLink';
 import AccessibilityToolbar from '../components/AccessibilityToolbar';
-import LanguageToggle from '../components/LanguageToggle';
 import SiteFooter from '../components/SiteFooter';
 import { useLanguage } from '../i18n/LanguageContext';
 import { WaveAccent, BannerWaves } from '../components/landing/WaveDecorations';
@@ -96,10 +95,7 @@ export default function LandingPage({ onNavigate }) {
       <TricolorStrip />
 
       <header className="fixed top-0 left-0 right-0 z-50">
-        <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between gap-4 flex-wrap">
-          <div className="flex items-center">
-            <LanguageToggle />
-          </div>
+        <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-end gap-4 flex-wrap">
           <button onClick={() => onNavigate('admin-login')} type="button" className={`${swiss.btnPrimary} rounded-lg`}>
             <Users size={14} aria-hidden="true" />
             <span>{t('header.signIn')}</span>

@@ -15,7 +15,6 @@ import DistributorProfilePage from './DistributorProfilePage';
 import SiteFooter from '../components/SiteFooter';
 import SkipLink from '../components/SkipLink';
 import AccessibilityToolbar from '../components/AccessibilityToolbar';
-import LanguageToggle from '../components/LanguageToggle';
 import { useLanguage } from '../i18n/LanguageContext';
 
 const FOCUS =
@@ -196,7 +195,6 @@ export default function DistributorConsolePage({ currentSubPage = 'home', onNavi
 
       <main className="flex-1 w-full max-w-7xl mx-auto px-6 py-8 space-y-8 overscroll-y-contain" id="main-content" tabIndex={-1}>
         <div className="flex items-center justify-end gap-2 flex-wrap">
-          <LanguageToggle />
           <AccessibilityToolbar />
         </div>
         {actionError && (

@@ -1,7 +1,7 @@
 import { ArrowLeft } from 'lucide-react';
 import { swiss } from '../../components/ui/swiss';
 import SiteFooter from '../../components/SiteFooter';
-import LanguageToggle from '../../components/LanguageToggle';
+import AccessibilityToolbar from '../../components/AccessibilityToolbar';
 import { useLanguage } from '../../i18n/LanguageContext';
 
 // Narrow centred layout shared by every public info page (Help, Feedback,
@@ -16,6 +16,7 @@ export default function InfoShell({ eyebrow, title, intro, onNavigate, children 
 
   return (
     <div className="min-h-screen font-sans bg-[#F4F6F9] text-[#000080] flex flex-col">
+      <AccessibilityToolbar />
       <main className="flex-1 w-full max-w-3xl mx-auto px-6 py-10" id="main-content" tabIndex={-1}>
         <div className="flex items-center justify-between gap-3 mb-6">
           <button
@@ -26,7 +27,6 @@ export default function InfoShell({ eyebrow, title, intro, onNavigate, children 
             <ArrowLeft size={14} aria-hidden="true" />
             {t('common.back')}
           </button>
-          <LanguageToggle />
         </div>
         <p className={swiss.micro}>{eyebrow}</p>
         <h1 className={`${swiss.headline} mt-1`}>{title}</h1>

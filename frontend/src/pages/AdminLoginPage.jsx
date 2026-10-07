@@ -7,7 +7,6 @@ import AuthOtpForm from '../components/auth/AuthOtpForm';
 import heroBackdrop from '../images/india-republic-day-celebration-digital-art-with-flag.webp';
 import SkipLink from '../components/SkipLink';
 import AccessibilityToolbar from '../components/AccessibilityToolbar';
-import LanguageToggle from '../components/LanguageToggle';
 import { useLanguage } from '../i18n/LanguageContext';
 
 const FOCUS =
@@ -64,9 +63,6 @@ export default function AdminLoginPage({ onNavigate, onAuthSuccess }) {
       </div>
 
       <div className="relative z-20 flex justify-center px-6 pb-1 shrink-0">
-        <div className="flex items-center gap-2 flex-wrap justify-center">
-          <LanguageToggle />
-        </div>
         <AccessibilityToolbar />
       </div>
 
