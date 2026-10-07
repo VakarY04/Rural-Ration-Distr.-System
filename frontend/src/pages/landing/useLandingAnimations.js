@@ -50,6 +50,24 @@ export function useLandingAnimations() {
   const trustFooterRef = useRef(null);
   const lastTextInputs = useRef(null);
 
+  // Remove-animations mode (accessibility toolbar): CSS `animation: none`
+  // cannot stop JS-driven GSAP tweens, so both layers below are skipped
+  // entirely while it is on — text, cards, badges and images stay in their
+  // natural visible state. Listens live so toggling mid-visit halts motion
+  // without a reload; cleanup reverts existing tweens back to visible.
+  const [noAnim, setNoAnim] = useState(() => {
+    try {
+      return document.documentElement.classList.contains('a11y-no-anim');
+    } catch {
+      return false;
+    }
+  });
+  useEffect(() => {
+    const onA11y = (e) => setNoAnim(!!e.detail?.noAnim);
+    window.addEventListener('eration:a11y', onA11y);
+    return () => window.removeEventListener('eration:a11y', onA11y);
+  }, []);
+
   // Webfont backstop: the Devanagari woff2 loads lazily on first Hindi paint,
   // AFTER the first split/measure pass. The text layer re-splits once fonts
   // settle so line breaks use true font metrics (containers only need the
@@ -68,6 +86,7 @@ export function useLandingAnimations() {
 
   // ── Layer A: containers, once per mount ──────────────────────────────────
   useEffect(() => {
+    if (noAnim) return undefined;
     const scroller = scrollContainerRef.current;
     if (!scroller) return undefined;
 
@@ -141,10 +160,15 @@ export function useLandingAnimations() {
     }, mainContainerRef);
 
     return () => ctx.revert();
-  }, []);
+  }, [noAnim]);
 
   // ── Layer B: split text, per language ────────────────────────────────────
   useEffect(() => {
+    if (noAnim) {
+      // Forget prior runs so re-enabling motion rebuilds from a clean slate.
+      lastTextInputs.current = null;
+      return undefined;
+    }
     const scroller = scrollContainerRef.current;
     if (!scroller) return undefined;
 
@@ -319,7 +343,7 @@ export function useLandingAnimations() {
       ctx.revert();
       splitEls.forEach((s) => s.revert());
     };
-  }, [lang, isHi, fontsTick]);
+  }, [lang, isHi, fontsTick, noAnim]);
 
   return {
     mainContainerRef,

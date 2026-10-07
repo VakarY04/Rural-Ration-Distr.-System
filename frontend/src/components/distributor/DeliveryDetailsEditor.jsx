@@ -5,9 +5,9 @@ import { useEditableSection } from './useEditableSection';
 
 const EMPTY = { from: { label: '', address: '' }, to: { label: '', address: '' } };
 
-const Field = { wrapper: 'space-y-1.5', label: 'text-[10px] font-bold uppercase tracking-[0.14em] text-slate-500' };
+const Field = { wrapper: 'space-y-1.5', label: 'text-[10px] font-bold uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400' };
 const inputClass =
-  'w-full border border-slate-200 focus:border-slate-900 bg-slate-50 focus:bg-white px-3 py-2 text-sm font-medium text-slate-900 outline-none transition-colors';
+  'w-full border border-slate-200 dark:border-slate-700 focus:border-slate-900 dark:focus:border-slate-300 bg-slate-50 dark:bg-slate-800 focus:bg-white dark:focus:bg-slate-900 px-3 py-2 text-sm font-medium text-slate-900 dark:text-slate-100 outline-none transition-colors';
 
 function RouteField({ side, value, onChange, editing }) {
   const { t } = useLanguage();
@@ -35,8 +35,8 @@ function RouteField({ side, value, onChange, editing }) {
         <div className="mt-1.5 flex items-start gap-2">
           <MapPin size={14} className="text-orange-600 mt-0.5 shrink-0" aria-hidden="true" />
           <div className="min-w-0">
-            <p className="text-sm font-semibold text-slate-900 leading-snug break-words">{value.label || '—'}</p>
-            <p className="text-xs text-slate-500 leading-snug break-words">{value.address}</p>
+            <p className="text-sm font-semibold text-slate-900 dark:text-slate-100 leading-snug break-words">{value.label || '—'}</p>
+            <p className="text-xs text-slate-500 dark:text-slate-400 leading-snug break-words">{value.address}</p>
           </div>
         </div>
       )}
@@ -63,7 +63,7 @@ export default function DeliveryDetailsEditor({ delivery, onSaved, canEdit = fal
           <RouteField side={t('delivery.from')} value={section.draft.from} onChange={() => {}} editing={false} />
           <RouteField side={t('delivery.to')} value={section.draft.to} onChange={() => {}} editing={false} />
         </dl>
-        <p className="mt-4 border border-amber-200 bg-amber-50 text-amber-800 text-xs font-semibold px-3 py-2">
+        <p className="mt-4 border border-amber-200 bg-amber-50 dark:bg-amber-950 text-amber-800 dark:text-amber-300 text-xs font-semibold px-3 py-2">
           {t('editor.adminOnly')}
         </p>
       </EditorShell>

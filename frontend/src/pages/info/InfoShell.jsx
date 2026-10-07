@@ -15,14 +15,14 @@ export default function InfoShell({ eyebrow, title, intro, onNavigate, children 
   };
 
   return (
-    <div className="min-h-screen font-sans bg-[#F4F6F9] text-[#000080] flex flex-col">
+    <div className="min-h-screen font-sans bg-[#F4F6F9] dark:bg-slate-950 text-[#000080] dark:text-[#B9C8FF] flex flex-col">
       <AccessibilityToolbar />
       <main className="flex-1 w-full max-w-3xl mx-auto px-6 py-10" id="main-content" tabIndex={-1}>
         <div className="flex items-center justify-between gap-3 mb-6">
           <button
             type="button"
             onClick={goBack}
-            className="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-500 hover:text-slate-900 transition-colors cursor-pointer focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-orange-500"
+            className="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100 transition-colors cursor-pointer focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-orange-500"
           >
             <ArrowLeft size={14} aria-hidden="true" />
             {t('common.back')}
@@ -30,7 +30,7 @@ export default function InfoShell({ eyebrow, title, intro, onNavigate, children 
         </div>
         <p className={swiss.micro}>{eyebrow}</p>
         <h1 className={`${swiss.headline} mt-1`}>{title}</h1>
-        {intro && <p className="text-sm text-slate-500 mt-2 leading-relaxed">{intro}</p>}
+        {intro && <p className="text-sm text-slate-500 dark:text-slate-400 mt-2 leading-relaxed">{intro}</p>}
         <div className="mt-6 space-y-6">{children}</div>
       </main>
       <SiteFooter onNavigate={onNavigate} />

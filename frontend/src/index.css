@@ -1,5 +1,20 @@
 @import "tailwindcss";
 
+/* Class-driven dark mode (Government dark-theme guideline: user-chosen theme
+   persisted across visits, OS preference honoured on first load). All
+   `dark:` variants below activate when ThemeContext sets `.dark` on <html>. */
+@custom-variant dark (&:where(.dark, .dark *));
+
+html.dark {
+  color-scheme: dark;
+}
+
+/* Dark map: gently dim Leaflet tiles so the bright road map doesn't glare
+   against dark chrome. Controls/popups keep their own (dark-converted) UI. */
+html.dark .leaflet-tile-pane {
+  filter: brightness(0.88) contrast(1.04);
+}
+
 /* DBIM §4 — Noto Sans is the single mandatory typeface (Latin + Devanagari
    fallback so Hindi/regional text renders in the same family). Mapping it to
    Tailwind's --font-sans makes every `font-sans` utility resolve to Noto Sans
@@ -156,6 +171,12 @@ a.sr-only:focus-visible {
 .a11y-high-contrast .text-slate-400,
 .a11y-high-contrast .text-slate-500 {
   color: #1e293b !important;
+}
+/* High-contrast + dark mode: the light-theme strengthening above would turn
+   text near-invisible on dark surfaces, so strengthen toward white instead. */
+html.dark.a11y-high-contrast .text-slate-400,
+html.dark.a11y-high-contrast .text-slate-500 {
+  color: #e2e8f0 !important;
 }
 .a11y-high-contrast .placeholder\:text-slate-400::placeholder {
   color: #475569 !important;
@@ -335,6 +356,44 @@ html.a11y-dyslexia .a11y-widget * {
   html.a11y-saturate-high,
   html.a11y-saturate-desaturate {
     filter: none;
+  }
+}
+
+/* Big cursor (accessibility toolbar). The regular arrow pointer in its normal
+   look (white fill, black outline) rendered at ~2x size via an inline SVG
+   data-URI — plain CSS cannot scale the native cursor. One identical cursor
+   everywhere (links, buttons, inputs, text included) so nothing changes shape,
+   only size. `!important` beats Tailwind's cursor utilities. */
+html.a11y-big-cursor,
+html.a11y-big-cursor *,
+html.a11y-big-cursor *::before,
+html.a11y-big-cursor *::after {
+  cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='44' height='44' viewBox='0 0 44 44'%3E%3Cpath d='M11 4l26 20.5-14.5 1.8L16.5 40z' fill='%23ffffff' stroke='%23000000' stroke-width='3' stroke-linejoin='round'/%3E%3C/svg%3E") 11 4, auto !important;
+}
+
+/* Remove animations (accessibility toolbar, WCAG 2.3.3). One class on
+   <html> kills every transition, animation, keyframe and smooth scroll
+   app-wide, including the overlay scrollbar thumb, reading mask glide,
+   split-text helpers and Tailwind utilities. `!important` so utilities
+   like `transition-colors duration-150` can't win. */
+html.a11y-no-anim,
+html.a11y-no-anim *,
+html.a11y-no-anim *::before,
+html.a11y-no-anim *::after {
+  animation: none !important;
+  animation-duration: 0.01ms !important;
+  animation-iteration-count: 1 !important;
+  transition: none !important;
+  transition-duration: 0.01ms !important;
+  scroll-behavior: auto !important;
+}
+@media (prefers-reduced-motion: no-preference) {
+  html.a11y-no-anim,
+  html.a11y-no-anim *,
+  html.a11y-no-anim *::before,
+  html.a11y-no-anim *::after {
+    animation: none !important;
+    transition: none !important;
   }
 }
 

@@ -186,7 +186,7 @@ export default function BookingPage() {
   if (loadingProfile) {
     return (
       <div className="flex flex-col items-center justify-center min-h-[400px] gap-3 font-sans">
-        <RefreshCw size={24} className="text-slate-900 animate-spin" />
+        <RefreshCw size={24} className="text-slate-900 dark:text-slate-100 animate-spin" />
         <p className={swiss.micro}>{t('booking.verifying')}</p>
       </div>
     );
@@ -198,18 +198,18 @@ export default function BookingPage() {
   if (!isProfileComplete) {
     return (
       <div className={`max-w-2xl mx-auto mt-8 ${swiss.panel} p-8 text-center space-y-4 font-sans`}>
-        <div className="w-12 h-12 bg-amber-50 text-amber-600 flex items-center justify-center mx-auto border border-amber-200">
+        <div className="w-12 h-12 bg-amber-50 dark:bg-amber-950 text-amber-600 dark:text-amber-300 flex items-center justify-center mx-auto border border-amber-200">
           <AlertCircle size={24} />
         </div>
         <div>
-          <h3 className="text-base md:text-xl font-extrabold tracking-tight text-slate-900">{t('booking.profileRequired')}</h3>
-          <p className="text-xs text-slate-500 font-medium mt-1 leading-relaxed">
+          <h3 className="text-base md:text-xl font-extrabold tracking-tight text-slate-900 dark:text-slate-100">{t('booking.profileRequired')}</h3>
+          <p className="text-xs text-slate-500 dark:text-slate-400 font-medium mt-1 leading-relaxed">
             {(() => {
               const body = t('booking.profileRequiredBody');
               const label = t('booking.familyProfiles');
               const parts = body.split(label);
               if (parts.length < 2) return body;
-              return (<>{parts[0]}<strong className="text-slate-700">{label}</strong>{parts.slice(1).join(label)}</>);
+              return (<>{parts[0]}<strong className="text-slate-700 dark:text-slate-200">{label}</strong>{parts.slice(1).join(label)}</>);
             })()}
           </p>
         </div>
@@ -229,18 +229,18 @@ export default function BookingPage() {
       <section className={`${swiss.panel} p-6 md:p-8 space-y-6`}>
 
         {/* Header Info */}
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-200 pb-5">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-200 dark:border-slate-700 pb-5">
           <div>
             <p className={`${swiss.micro} mb-1`}>{t('booking.scheduling')}</p>
-            <h1 className="text-2xl md:text-4xl font-bold tracking-tighter text-slate-900">
+            <h1 className="text-2xl md:text-4xl font-bold tracking-tighter text-slate-900 dark:text-slate-100">
               {t('booking.title')}
             </h1>
-            <p className="text-xs text-slate-500 font-medium mt-1 max-w-md leading-relaxed">
+            <p className="text-xs text-slate-500 dark:text-slate-400 font-medium mt-1 max-w-md leading-relaxed">
               {t('booking.subtitle')}
             </p>
           </div>
 
-          <div className="flex items-center gap-2 bg-white text-slate-900 border border-slate-300 px-3 py-1.5 text-xs font-bold tabular-nums w-fit shrink-0">
+          <div className="flex items-center gap-2 bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 border border-slate-300 dark:border-slate-600 px-3 py-1.5 text-xs font-bold tabular-nums w-fit shrink-0">
             <CreditCard size={15} className="text-orange-600" />
             <span>{t('booking.cardId', { id: cardId })}</span>
           </div>

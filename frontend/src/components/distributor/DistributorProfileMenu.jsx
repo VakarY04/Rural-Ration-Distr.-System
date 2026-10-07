@@ -48,28 +48,28 @@ export default function DistributorProfileMenu({ name, role, avatar, onNavigate,
         onClick={() => setOpen((v) => !v)}
         aria-haspopup="menu"
         aria-expanded={open}
-        className={`flex items-center gap-3 bg-white border border-slate-200 hover:border-slate-400 px-4 py-2.5 transition-colors cursor-pointer ${FOCUS}`}
+        className={`flex items-center gap-3 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 hover:border-slate-400 px-4 py-2.5 transition-colors cursor-pointer ${FOCUS}`}
       >
         <Avatar src={avatar} name={name || t('staffMenu.fallback')} size={32} />
         <div className="text-left min-w-0">
-          <p className="text-sm font-bold text-slate-900 leading-tight truncate">{name || t('staffMenu.fallback')}</p>
-          <p className="text-[10px] font-bold uppercase tracking-[0.14em] text-slate-500 break-words">
+          <p className="text-sm font-bold text-slate-900 dark:text-slate-100 leading-tight truncate">{name || t('staffMenu.fallback')}</p>
+          <p className="text-[10px] font-bold uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400 break-words">
             {role || t('staffMenu.fallback')}
           </p>
         </div>
-        <ChevronDown size={16} className={`text-slate-500 transition-transform ${open ? 'rotate-180' : ''}`} />
+        <ChevronDown size={16} className={`text-slate-500 dark:text-slate-400 transition-transform ${open ? 'rotate-180' : ''}`} />
       </button>
 
       {open && (
         <div
           role="menu"
-          className="absolute right-0 mt-2 w-48 bg-white border border-slate-200 rounded-xl shadow-lg shadow-slate-900/10 overflow-hidden z-50"
+          className="absolute right-0 mt-2 w-48 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl shadow-lg shadow-slate-900/10 overflow-hidden z-50"
         >
           <button
             type="button"
             role="menuitem"
             onClick={goToProfile}
-            className="w-full text-left px-4 py-3 text-sm font-semibold text-slate-900 hover:bg-slate-50 transition-colors cursor-pointer border-b border-slate-100 break-words"
+            className="w-full text-left px-4 py-3 text-sm font-semibold text-slate-900 dark:text-slate-100 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors cursor-pointer border-b border-slate-100 dark:border-slate-800 break-words"
           >
             {t('staffMenu.profile')}
           </button>
@@ -77,7 +77,7 @@ export default function DistributorProfileMenu({ name, role, avatar, onNavigate,
             type="button"
             role="menuitem"
             onClick={handleLogout}
-            className="w-full text-left px-4 py-3 text-sm font-semibold text-slate-900 hover:bg-slate-50 transition-colors cursor-pointer break-words"
+            className="w-full text-left px-4 py-3 text-sm font-semibold text-slate-900 dark:text-slate-100 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors cursor-pointer break-words"
           >
             {t('staffMenu.logout')}
           </button>

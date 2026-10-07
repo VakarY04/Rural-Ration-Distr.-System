@@ -78,7 +78,7 @@ export default function RegisterPage({ onNavigate }) {
       {success && (
         <Alert variant="success">
           {t('auth.register.success')}
-          <span className="block text-[10px] text-[#000080] font-medium animate-pulse pt-1">
+          <span className="block text-[10px] text-[#000080] dark:text-[#B9C8FF] font-medium animate-pulse pt-1">
             {t('auth.register.redirecting')}
           </span>
         </Alert>
@@ -90,7 +90,7 @@ export default function RegisterPage({ onNavigate }) {
             <div key={id}>
               <label htmlFor={id} className={swiss.label}>{label}</label>
               <div className="relative flex items-center">
-                <Icon className="absolute left-3.5 text-slate-500" size={16} />
+                <Icon className="absolute left-3.5 text-slate-500 dark:text-slate-400" size={16} />
                 <input
                   id={id}
                   type={type}
@@ -108,7 +108,7 @@ export default function RegisterPage({ onNavigate }) {
           <div>
             <label htmlFor="reg-password" className={swiss.label}>{t('auth.register.password')}</label>
             <div className="relative flex items-center">
-              <Lock className="absolute left-3.5 text-slate-500" size={16} />
+              <Lock className="absolute left-3.5 text-slate-500 dark:text-slate-400" size={16} />
               <input
                 id="reg-password"
                 type="password"
@@ -124,7 +124,7 @@ export default function RegisterPage({ onNavigate }) {
           <div>
             <label htmlFor="reg-confirm" className={swiss.label}>{t('auth.register.confirm')}</label>
             <div className="relative flex items-center">
-              <KeyRound className="absolute left-3.5 text-slate-500" size={16} />
+              <KeyRound className="absolute left-3.5 text-slate-500 dark:text-slate-400" size={16} />
               <input
                 id="reg-confirm"
                 type="password"

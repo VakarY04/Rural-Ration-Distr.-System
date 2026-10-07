@@ -31,19 +31,24 @@ export const STATUS = {
   infoHover: '#0B5ED7',
 };
 
+// Dark-mode surface system (class `dark` on <html>, user-persisted):
+// page → deep navy-slate, cards → slate-900, inputs → slate-800, hairlines →
+// slate-700, body copy → slate-100, navy brand text → periwinkle #B9C8FF
+// (≈10:1 on slate-900, keeps the gov identity after dark). Saffron/green
+// action fills stay identical so CTAs read the same in both themes.
 export const swiss = {
-  page: 'min-h-screen font-sans bg-[#F4F6F9] text-[#000080]',
-  panel: 'bg-white border border-slate-200/80 rounded-xl',
+  page: 'min-h-screen font-sans bg-[#F4F6F9] text-[#000080] dark:bg-slate-950 dark:text-slate-100',
+  panel: 'bg-white border border-slate-200/80 rounded-xl dark:bg-slate-900 dark:border-slate-700',
   input:
-    'w-full border border-slate-200 focus:border-[#000080] hover:border-slate-400 hover:shadow-md bg-slate-50 focus:bg-white hover:bg-white px-3 py-2 text-sm font-medium text-[#000080] outline-none transition-all duration-200 placeholder:text-slate-500',
+    'w-full border border-slate-200 focus:border-[#000080] hover:border-slate-400 hover:shadow-md bg-slate-50 focus:bg-white hover:bg-white px-3 py-2 text-sm font-medium text-[#000080] outline-none transition-all duration-200 placeholder:text-slate-500 dark:border-slate-700 dark:focus:border-[#B9C8FF] dark:hover:border-slate-500 dark:bg-slate-800 dark:focus:bg-slate-800 dark:hover:bg-slate-800 dark:text-slate-100 dark:placeholder:text-slate-400 dark:hover:shadow-none',
   btnPrimary:
     'bg-[#FF9933] hover:bg-[#e68a00] text-white text-xs font-semibold tracking-wide px-4 py-2.5 transition-colors cursor-pointer disabled:opacity-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#FF9933] inline-flex items-center justify-center gap-2',
   btnSecondary:
-    'border border-slate-300 hover:border-[#000080] text-[#000080] hover:text-white hover:bg-[#000080] text-xs font-semibold tracking-wide px-4 py-2.5 transition-colors cursor-pointer disabled:opacity-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#FF9933] inline-flex items-center justify-center gap-2 bg-white',
-  label: 'text-sm font-medium tracking-wide text-slate-500 block mb-1.5',
-  micro: 'text-xs font-medium tracking-wide text-slate-500',
-  sectionTitle: 'text-base md:text-xl font-medium tracking-tight text-[#000080]',
-  headline: 'text-2xl md:text-4xl font-bold tracking-tighter text-[#000080]',
+    'border border-slate-300 hover:border-[#000080] text-[#000080] hover:text-white hover:bg-[#000080] text-xs font-semibold tracking-wide px-4 py-2.5 transition-colors cursor-pointer disabled:opacity-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#FF9933] inline-flex items-center justify-center gap-2 bg-white dark:border-slate-600 dark:text-slate-100 dark:bg-slate-900 dark:hover:border-slate-200 dark:hover:bg-slate-200 dark:hover:text-slate-900',
+  label: 'text-sm font-medium tracking-wide text-slate-500 block mb-1.5 dark:text-slate-400',
+  micro: 'text-xs font-medium tracking-wide text-slate-500 dark:text-slate-400',
+  sectionTitle: 'text-base md:text-xl font-medium tracking-tight text-[#000080] dark:text-[#B9C8FF]',
+  headline: 'text-2xl md:text-4xl font-bold tracking-tighter text-[#000080] dark:text-[#B9C8FF]',
 };
 
 export function TricolorStrip({ className = 'h-1' }) {
@@ -68,13 +73,13 @@ export function SectionHead({ title, right }) {
 // both variants — they carry meaning, not body copy.
 export const swissUser = {
   ...swiss,
-  page: 'min-h-screen font-sans bg-[#F4F6F9] text-black',
+  page: 'min-h-screen font-sans bg-[#F4F6F9] text-black dark:bg-slate-950 dark:text-slate-100',
   input:
-    'w-full border border-slate-200 focus:border-black hover:border-slate-400 hover:shadow-md bg-slate-50 focus:bg-white hover:bg-white px-3 py-2 text-sm font-medium text-black outline-none transition-all duration-200 placeholder:text-slate-500',
+    'w-full border border-slate-200 focus:border-black hover:border-slate-400 hover:shadow-md bg-slate-50 focus:bg-white hover:bg-white px-3 py-2 text-sm font-medium text-black outline-none transition-all duration-200 placeholder:text-slate-500 dark:border-slate-700 dark:focus:border-slate-300 dark:hover:border-slate-500 dark:bg-slate-800 dark:focus:bg-slate-800 dark:hover:bg-slate-800 dark:text-slate-100 dark:placeholder:text-slate-400 dark:hover:shadow-none',
   btnSecondary:
-    'border border-slate-300 hover:border-black text-black hover:text-white hover:bg-black text-xs font-semibold tracking-wide px-4 py-2.5 transition-colors cursor-pointer disabled:opacity-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#FF9933] inline-flex items-center justify-center gap-2 bg-white',
-  sectionTitle: 'text-base md:text-xl font-medium tracking-tight text-black',
-  headline: 'text-2xl md:text-4xl font-bold tracking-tighter text-black',
+    'border border-slate-300 hover:border-black text-black hover:text-white hover:bg-black text-xs font-semibold tracking-wide px-4 py-2.5 transition-colors cursor-pointer disabled:opacity-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#FF9933] inline-flex items-center justify-center gap-2 bg-white dark:border-slate-600 dark:text-slate-100 dark:bg-slate-900 dark:hover:border-slate-200 dark:hover:bg-slate-200 dark:hover:text-slate-900',
+  sectionTitle: 'text-base md:text-xl font-medium tracking-tight text-black dark:text-slate-100',
+  headline: 'text-2xl md:text-4xl font-bold tracking-tighter text-black dark:text-slate-100',
 };
 
 export function SectionHeadUser({ title, right }) {

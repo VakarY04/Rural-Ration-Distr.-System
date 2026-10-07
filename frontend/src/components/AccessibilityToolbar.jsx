@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { GripVertical, RotateCcw, X } from 'lucide-react';
 import { loadA11y, applyA11y, resetA11y, TEXT_MAX_LEVEL, SPACING_MAX_LEVEL, LINE_MAX_LEVEL, SATURATE_MAX_LEVEL } from '../utils/a11y';
 import { useLanguage } from '../i18n/LanguageContext';
+import { useTheme } from '../context/ThemeContext';
 
 // Edge-docked accessibility widget (GIGW A). A small half-circle tab sits
 // attached to the left or right viewport edge; hover peeks it out, click
@@ -34,7 +35,7 @@ const clampY = (y) => Math.min(Math.max(y, TOP_MIN), Math.max(TOP_MIN, window.in
 // itself grow on every Bigger-text click. px keeps it permanently fixed.
 // Widget icon set — one consistent line style (24 grid, 1.8px stroke,
 // square caps, currentColor) matching the citizen nav icons.
-  function IconBase({ size = 26, children }) {
+  function IconBase({ size = 22, children }) {
   return (
     <svg
       width={size}
@@ -162,6 +163,48 @@ function DyslexiaIcon() {
     </IconBase>
   );
 }
+function BigCursorIcon() {
+  return (
+    <IconBase>
+      <path d="M7 3.5l11 12-4.8.7-2.4 5.3z" />
+      <line x1="14" y1="17" x2="18.5" y2="21.5" />
+      <line x1="16" y1="21.8" x2="20" y2="17.8" />
+    </IconBase>
+  );
+}
+function NoAnimIcon() {
+  return (
+    <IconBase>
+      <circle cx="12" cy="12" r="7" />
+      <line x1="7" y1="7" x2="9.5" y2="9.5" />
+      <line x1="17" y1="7" x2="14.5" y2="9.5" />
+      <line x1="9" y1="14.5" x2="15" y2="14.5" />
+      <line x1="6.5" y1="6.5" x2="17.5" y2="17.5" />
+    </IconBase>
+  );
+}
+function MoonIcon() {
+  return (
+    <IconBase>
+      <path d="M19.5 14.5A7.5 7.5 0 0 1 9.5 4.5a7.5 7.5 0 1 0 10 10z" />
+    </IconBase>
+  );
+}
+function SunIcon() {
+  return (
+    <IconBase>
+      <circle cx="12" cy="12" r="4" />
+      <line x1="12" y1="3.5" x2="12" y2="6" />
+      <line x1="12" y1="18" x2="12" y2="20.5" />
+      <line x1="3.5" y1="12" x2="6" y2="12" />
+      <line x1="18" y1="12" x2="20.5" y2="12" />
+      <line x1="6" y1="6" x2="7.8" y2="7.8" />
+      <line x1="16.2" y1="16.2" x2="18" y2="18" />
+      <line x1="6" y1="18" x2="7.8" y2="16.2" />
+      <line x1="16.2" y1="7.8" x2="18" y2="6" />
+    </IconBase>
+  );
+}
 // Standard accessibility stickman (head + outstretched arms + legs) for the
 // collapsed edge tab. Extra-bold strokes so it reads at small sizes; navy on
 // grey. Round caps suit the human figure.
@@ -191,6 +234,7 @@ function AccessStickman({ size = 24 }) {
 
 export default function AccessibilityToolbar({ className = '' }) {
   const { t, lang, setLang } = useLanguage();
+  const { dark, toggle: toggleTheme } = useTheme();
   const [prefs, setPrefs] = useState(loadA11y);
   const [dock, setDock] = useState(loadDock);
   const [open, setOpen] = useState(false);
@@ -241,15 +285,16 @@ export default function AccessibilityToolbar({ className = '' }) {
 
   // Fixed-size white buttons with black icons + black text; active shows a
   // blue border, level shows as blue pips. Hover fills the button inside
-  // with light blue (#DBEAFE).
+  // with light blue (#DBEAFE). Compact 92px height so all 14 buttons fit on
+  // screen at once with no panel scrolling on normal viewports.
   const gridBtn = (active = false) =>
-    `h-[120px] w-full flex flex-col items-center justify-center gap-[4px] px-[4px] py-[8px] rounded-[8px] bg-white border ${active ? 'border-[#0D6EFD]' : 'border-slate-200'} text-black text-[13px] font-bold leading-tight text-center transition-colors cursor-pointer hover:bg-[#DBEAFE] hover:border-[#0D6EFD] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-[4px] focus-visible:outline-slate-900 disabled:opacity-40 disabled:cursor-not-allowed`;
+    `h-[92px] w-full flex flex-col items-center justify-center gap-[2px] px-[4px] py-[6px] rounded-[8px] bg-white dark:bg-slate-900 border ${active ? 'border-[#0D6EFD]' : 'border-slate-200 dark:border-slate-600'} text-black dark:text-slate-100 text-[12px] font-bold leading-tight text-center transition-colors cursor-pointer hover:bg-[#DBEAFE] dark:hover:bg-slate-700 hover:border-[#0D6EFD] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-[4px] focus-visible:outline-slate-900 disabled:opacity-40 disabled:cursor-not-allowed`;
   const iconBadge = () =>
-    `w-[48px] h-[48px] rounded-[8px] text-black flex items-center justify-center shrink-0`;
+    `w-[40px] h-[40px] rounded-[8px] text-black dark:text-slate-100 flex items-center justify-center shrink-0`;
   const pipRow = (filled, total) => (
     <span aria-hidden="true" className="flex items-center gap-[4px]">
       {Array.from({ length: total }).map((_, i) => (
-        <span key={i} className={`w-[16px] h-[4px] rounded-full ${i < filled ? 'bg-[#0D6EFD]' : 'bg-slate-300'}`} />
+        <span key={i} className={`w-[16px] h-[4px] rounded-full ${i < filled ? 'bg-[#0D6EFD]' : 'bg-slate-300 dark:bg-slate-600'}`} />
       ))}
     </span>
   );
@@ -289,6 +334,27 @@ export default function AccessibilityToolbar({ className = '' }) {
   };
 
   const edgeStyle = onRight ? { right: 0 } : { left: 0 };
+  const panelRef = useRef(null);
+
+  // Keep every button reachable without scrolling: once the panel opens (or
+  // the viewport resizes under it), nudge the dock up just enough that the
+  // whole panel fits on screen. Only applies when it CAN fit — very short
+  // viewports keep the max-h + internal-scroll fallback below.
+  useEffect(() => {
+    if (!open || dragging) return undefined;
+    const fit = () => {
+      const el = panelRef.current;
+      if (!el) return;
+      const h = el.scrollHeight;
+      const space = window.innerHeight - TOP_MIN - 12;
+      if (h > space) return;
+      const maxTop = window.innerHeight - h - 12;
+      setDock((d) => (d.y > maxTop ? { ...d, y: Math.max(TOP_MIN, maxTop) } : d));
+    };
+    fit();
+    window.addEventListener('resize', fit);
+    return () => window.removeEventListener('resize', fit);
+  }, [open, dragging, dock.y]);
 
   return (
     <div
@@ -327,18 +393,19 @@ export default function AccessibilityToolbar({ className = '' }) {
       ) : (
         // Expanded panel pinned just inside the docked edge — grey card with
         // text selection locked so dragging never highlights.
-        // No section partitions: one uniform 3-column grid of all 12
+        // No section partitions: one uniform 3-column grid of all 15
         // controls. The navy header carries the full "Accessibility Options"
         // name. Every button carries icon + label per GIGW §6.2.
         <div
+          ref={panelRef}
           role="toolbar"
           aria-label={t('a11y.options')}
-          className={`w-[375px] rounded-[16px] bg-slate-200 text-slate-900 border border-slate-300 shadow-xl p-[14px] space-y-[8px] select-none max-h-[calc(100vh-24px)] overflow-y-auto ${
+          className={`w-[375px] rounded-[16px] bg-slate-200 dark:bg-slate-800 text-slate-900 dark:text-slate-100 border border-slate-300 dark:border-slate-600 shadow-xl p-[12px] space-y-[6px] select-none max-h-[calc(100vh-24px)] overflow-y-auto ${
             onRight ? 'mr-2' : 'ml-2'
           }`}
         >
           <div
-            className="flex items-center gap-[8px] px-[12px] py-[12px] rounded-[10px] bg-[#000080] text-white cursor-grab active:cursor-grabbing select-none touch-none"
+            className="flex items-center gap-[8px] px-[12px] py-[10px] rounded-[10px] bg-[#000080] text-white cursor-grab active:cursor-grabbing select-none touch-none"
             onPointerDown={beginDrag}
             title={t('a11y.options')}
           >
@@ -442,10 +509,31 @@ export default function AccessibilityToolbar({ className = '' }) {
               <span>{t('a11y.dyslexia')}</span>
               {pipRow(prefs.dyslexia ? 1 : 0, 1)}
             </button>
+            <button type="button" className={gridBtn(!!prefs.bigCursor)} title={t('a11y.bigCursor')}
+              aria-label={t('a11y.bigCursor')} aria-pressed={!!prefs.bigCursor}
+              onClick={() => set({ bigCursor: !prefs.bigCursor })}>
+              <span aria-hidden="true" className={iconBadge()}><BigCursorIcon /></span>
+              <span>{t('a11y.bigCursor')}</span>
+              {pipRow(prefs.bigCursor ? 1 : 0, 1)}
+            </button>
+            <button type="button" className={gridBtn(!!prefs.noAnim)} title={t('a11y.noAnim')}
+              aria-label={t('a11y.noAnim')} aria-pressed={!!prefs.noAnim}
+              onClick={() => set({ noAnim: !prefs.noAnim })}>
+              <span aria-hidden="true" className={iconBadge()}><NoAnimIcon /></span>
+              <span>{t('a11y.noAnim')}</span>
+              {pipRow(prefs.noAnim ? 1 : 0, 1)}
+            </button>
+            <button type="button" className={gridBtn(dark)} title={dark ? t('theme.switchLight') : t('theme.switchDark')}
+              aria-label={dark ? t('theme.switchLight') : t('theme.switchDark')} aria-pressed={dark}
+              onClick={toggleTheme}>
+              <span aria-hidden="true" className={iconBadge()}>{dark ? <SunIcon /> : <MoonIcon />}</span>
+              <span>{t('a11y.darkMode')}</span>
+              {pipRow(dark ? 1 : 0, 1)}
+            </button>
           </div>
           <button
             type="button"
-            className="w-full flex items-center justify-center gap-[8px] px-[12px] py-[12px] rounded-[10px] bg-white border border-slate-300 text-black text-[13px] font-bold transition-colors cursor-pointer hover:bg-[#DBEAFE] hover:border-[#0D6EFD] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-[4px] focus-visible:outline-slate-900"
+            className="w-full flex items-center justify-center gap-[8px] px-[12px] py-[10px] rounded-[10px] bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-600 text-black dark:text-slate-100 text-[13px] font-bold transition-colors cursor-pointer hover:bg-[#DBEAFE] dark:hover:bg-slate-700 hover:border-[#0D6EFD] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-[4px] focus-visible:outline-slate-900"
             title={t('a11y.reset')}
             aria-label={t('a11y.reset')}
             onClick={() => setPrefs(resetA11y())}

@@ -16,7 +16,7 @@ export default function FamiliesDetailsPage({ bookings, onView, canMarkCollected
       <header>
         <p className={swiss.micro}>{t('families.eyebrow')}</p>
         <h1 className={`${swiss.headline} flex items-center gap-2.5`}>
-          <span className="w-9 h-9 border border-slate-200 bg-slate-50 text-slate-600 flex items-center justify-center shrink-0" aria-hidden="true">
+            <span className="w-9 h-9 border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-600 dark:text-slate-300 flex items-center justify-center shrink-0" aria-hidden="true">
             <Users size={17} />
           </span>
           {t('families.title')}
@@ -26,7 +26,7 @@ export default function FamiliesDetailsPage({ bookings, onView, canMarkCollected
       <section aria-label={t('families.booked')} className="space-y-3">
         <div className="flex items-baseline justify-between">
           <h2 className={swiss.sectionTitle}>{t('families.booked')}</h2>
-          <span className="text-[10px] font-bold uppercase tracking-[0.14em] text-slate-500 tabular-nums">
+          <span className="text-[10px] font-bold uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400 tabular-nums">
             {t('families.recent', { count: bookings.length })}
           </span>
         </div>

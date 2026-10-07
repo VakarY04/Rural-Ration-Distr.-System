@@ -113,13 +113,13 @@ export default function DistributorProfilePage({ name, role, isAdmin, summary, o
       </header>
 
       {msg.error && (
-        <div className="flex items-start gap-2 text-sm font-medium text-[#DC3545] bg-[#DC3545]/10 border border-[#DC3545]/30 p-4">
+        <div className="flex items-start gap-2 text-sm font-medium text-[#DC3545] dark:text-red-400 bg-[#DC3545]/10 border border-[#DC3545]/30 p-4">
           <AlertCircle size={18} className="shrink-0 mt-0.5" />
           <span>{msg.error}</span>
         </div>
       )}
       {msg.success && (
-        <div className="flex items-start gap-2 text-sm font-medium text-[#198754] bg-[#198754]/10 border border-[#198754]/30 p-4">
+        <div className="flex items-start gap-2 text-sm font-medium text-[#198754] dark:text-emerald-400 bg-[#198754]/10 border border-[#198754]/30 p-4">
           <CheckCircle2 size={18} className="shrink-0 mt-0.5" />
           <span>{msg.success}</span>
         </div>
@@ -128,7 +128,7 @@ export default function DistributorProfilePage({ name, role, isAdmin, summary, o
       <form onSubmit={handleSave} className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">
         {/* Identity card — name + role + profile pic */}
         <section className={swiss.panel}>
-          <div className="border-b border-slate-100 p-5">
+          <div className="border-b border-slate-100 dark:border-slate-800 p-5">
             <h2 className={swiss.sectionTitle}>{t('staffProfile.identityTitle')}</h2>
           </div>
           <div className="p-5 space-y-4">
@@ -147,13 +147,13 @@ export default function DistributorProfilePage({ name, role, isAdmin, summary, o
               </button>
               <input ref={fileInputRef} type="file" accept="image/*" className="hidden" onChange={handleAvatarPick} />
               <div className="min-w-0">
-                <p className="text-sm font-extrabold text-slate-900 leading-tight truncate">{displayName || name}</p>
-                <p className="text-[11px] font-bold uppercase tracking-[0.14em] text-slate-500 mt-0.5">
+                <p className="text-sm font-extrabold text-slate-900 dark:text-slate-100 leading-tight truncate">{displayName || name}</p>
+                <p className="text-[11px] font-bold uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400 mt-0.5">
                   {t('staff.portalSuffix', { role: role || t('staff.fallback') })}
                 </p>
               </div>
             </div>
-            <p className="text-xs text-slate-500">{t('staffProfile.uploadHint')}</p>
+            <p className="text-xs text-slate-500 dark:text-slate-400">{t('staffProfile.uploadHint')}</p>
 
             <div>
               <label htmlFor="staffName" className={swiss.label}>{t('staffProfile.fullName')}</label>
@@ -171,15 +171,15 @@ export default function DistributorProfilePage({ name, role, isAdmin, summary, o
               <span className={swiss.label}>
                 <span className="flex items-center gap-1.5"><ShieldCheck size={12} /> {t('staffProfile.role')}</span>
               </span>
-              <input className={`${swiss.input} disabled:bg-slate-100 disabled:text-slate-500`} value={role || t('staff.fallback')} disabled />
-              <p className="text-[11px] text-slate-500 mt-1.5">{t('staffProfile.roleHint')}</p>
+              <input className={`${swiss.input} disabled:bg-slate-100 disabled:text-slate-500 dark:disabled:bg-slate-800 dark:disabled:text-slate-400`} value={role || t('staff.fallback')} disabled />
+              <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-1.5">{t('staffProfile.roleHint')}</p>
             </div>
           </div>
         </section>
 
         {/* Contact card — phone editable, email read-only */}
         <section className={swiss.panel}>
-          <div className="border-b border-slate-100 p-5">
+          <div className="border-b border-slate-100 dark:border-slate-800 p-5">
             <h2 className={swiss.sectionTitle}>{t('staffProfile.contactTitle')}</h2>
           </div>
           <div className="p-5 space-y-4">
@@ -194,21 +194,21 @@ export default function DistributorProfilePage({ name, role, isAdmin, summary, o
                 onChange={(e) => setPhone(e.target.value)}
                 placeholder={t('staffProfile.phonePh')}
               />
-              <p className="text-[11px] text-slate-500 mt-1.5">{t('staffProfile.phoneHint')}</p>
+              <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-1.5">{t('staffProfile.phoneHint')}</p>
             </div>
             <div>
               <span className={swiss.label}>{t('staffProfile.email')}</span>
-              <input className={`${swiss.input} disabled:bg-slate-100 disabled:text-slate-500`} value={email || t('staffProfile.notSet')} disabled />
-              <p className="text-[11px] text-slate-500 mt-1.5">{t('staffProfile.emailHint')}</p>
+              <input className={`${swiss.input} disabled:bg-slate-100 disabled:text-slate-500 dark:disabled:bg-slate-800 dark:disabled:text-slate-400`} value={email || t('staffProfile.notSet')} disabled />
+              <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-1.5">{t('staffProfile.emailHint')}</p>
             </div>
           </div>
         </section>
 
         {/* Home address card */}
         <section className={swiss.panel}>
-          <div className="border-b border-slate-100 p-5">
+          <div className="border-b border-slate-100 dark:border-slate-800 p-5">
             <h2 className={swiss.sectionTitle}>{t('staffProfile.addressTitle')}</h2>
-            <p className="text-[11px] text-slate-500 mt-1">{t('staffProfile.addressHint')}</p>
+            <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-1">{t('staffProfile.addressHint')}</p>
           </div>
           <div className="p-5 grid grid-cols-2 gap-3">
             <div className="col-span-2">

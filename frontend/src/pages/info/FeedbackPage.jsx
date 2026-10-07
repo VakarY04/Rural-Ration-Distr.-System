@@ -52,7 +52,7 @@ export default function FeedbackPage({ onNavigate }) {
     >
       {!loggedIn ? (
         <section className={`${swiss.panel} p-6 text-center space-y-3`}>
-          <p className="text-sm text-slate-600 break-words">{t('feedback.signInHint')}</p>
+          <p className="text-sm text-slate-600 dark:text-slate-300 break-words">{t('feedback.signInHint')}</p>
           <button
             type="button"
             onClick={() => onNavigate && onNavigate('admin-login')}
@@ -62,14 +62,14 @@ export default function FeedbackPage({ onNavigate }) {
           </button>
         </section>
       ) : ticket ? (
-        <div role="status" className="bg-[#198754]/10 border border-[#198754]/30 text-[#198754] p-5 text-sm font-semibold flex items-start gap-2.5 break-words min-w-0">
+        <div role="status" className="bg-[#198754]/10 border border-[#198754]/30 text-[#198754] dark:text-emerald-400 p-5 text-sm font-semibold flex items-start gap-2.5 break-words min-w-0">
           <CheckCircle2 size={18} className="shrink-0 mt-0.5" aria-hidden="true" />
           <span>{t('feedback.received', { ticket })}</span>
         </div>
       ) : (
         <form onSubmit={submit} className={`${swiss.panel} p-6 space-y-4`}>
           {error && (
-            <div role="alert" className="bg-[#DC3545]/10 border border-[#DC3545]/30 text-[#DC3545] p-3.5 text-xs font-semibold flex items-center gap-2">
+            <div role="alert" className="bg-[#DC3545]/10 border border-[#DC3545]/30 text-[#DC3545] dark:text-red-400 p-3.5 text-xs font-semibold flex items-center gap-2">
               <AlertCircle size={15} className="shrink-0" aria-hidden="true" />
               <span>{error}</span>
             </div>
@@ -93,7 +93,7 @@ export default function FeedbackPage({ onNavigate }) {
               placeholder={t('feedback.messagePh')}
               className={`${swiss.input} resize-none`}
             />
-            <p className="text-[11px] text-slate-500 mt-1 tabular-nums" aria-hidden="true">{message.length} / 2000</p>
+            <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-1 tabular-nums" aria-hidden="true">{message.length} / 2000</p>
           </div>
           <div>
             <label htmlFor="fb-contact" className={swiss.label}>{t('feedback.contact')}</label>

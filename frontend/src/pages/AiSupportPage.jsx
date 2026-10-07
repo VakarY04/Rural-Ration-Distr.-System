@@ -160,16 +160,16 @@ export default function AiSupportPage() {
       <section className={`${swiss.panel} p-6 md:p-8 space-y-6`}>
 
         {/* Header Bar */}
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-200 pb-5">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-200 dark:border-slate-700 pb-5">
           <div>
             <p className={`${swiss.micro} mb-1`}>{t('helpdesk.eyebrow')}</p>
-            <h1 className="text-2xl md:text-3xl font-extrabold tracking-tight text-slate-900">
+            <h1 className="text-2xl md:text-3xl font-extrabold tracking-tight text-slate-900 dark:text-slate-100">
               {t('helpdesk.title')}
             </h1>
-            <p className="text-[11px] text-slate-500 font-medium mt-0.5">{t('helpdesk.sub')}</p>
+            <p className="text-[11px] text-slate-500 dark:text-slate-400 font-medium mt-0.5">{t('helpdesk.sub')}</p>
           </div>
 
-          <div className="flex items-center gap-2 bg-white text-slate-900 border border-slate-300 px-3 py-1.5 text-xs font-bold tabular-nums w-fit shrink-0">
+          <div className="flex items-center gap-2 bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 border border-slate-300 dark:border-slate-600 px-3 py-1.5 text-xs font-bold tabular-nums w-fit shrink-0">
             <CreditCard size={15} className="text-orange-600" />
             <span>{t('helpdesk.cardId', { id: cardId || '122341' })}</span>
           </div>
@@ -177,8 +177,8 @@ export default function AiSupportPage() {
 
         {/* Error Alert */}
         {error && (
-          <div role="alert" className="bg-[#DC3545]/10 border-l-4 border-[#DC3545] text-[#DC3545] p-4 text-xs font-semibold flex items-center gap-2.5">
-            <AlertCircle size={17} className="shrink-0 text-[#DC3545]" />
+          <div role="alert" className="bg-[#DC3545]/10 border-l-4 border-[#DC3545] text-[#DC3545] dark:text-red-400 p-4 text-xs font-semibold flex items-center gap-2.5">
+            <AlertCircle size={17} className="shrink-0 text-[#DC3545] dark:text-red-400" />
             <span>{error}</span>
           </div>
         )}
@@ -196,16 +196,16 @@ export default function AiSupportPage() {
               value={issue}
               onChange={(e) => setIssue(e.target.value)}
               placeholder={t('helpdesk.placeholder')}
-              className={`w-full bg-slate-50 border border-slate-200 focus:border-slate-900 focus:bg-white px-4 py-4 pr-20 text-sm font-medium text-slate-900 outline-none transition-colors placeholder:text-slate-500 placeholder:font-normal resize-none ${FOCUS}`}
+              className={`w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:border-slate-900 dark:focus:border-slate-300 focus:bg-white dark:focus:bg-slate-800 px-4 py-4 pr-20 text-sm font-medium text-slate-900 dark:text-slate-100 outline-none transition-colors placeholder:text-slate-500 dark:placeholder:text-slate-400 placeholder:font-normal resize-none ${FOCUS}`}
             />
-            <div className="absolute right-4 bottom-3 text-[11px] font-bold text-slate-500 tabular-nums select-none" aria-hidden="true">
+            <div className="absolute right-4 bottom-3 text-[11px] font-bold text-slate-500 dark:text-slate-400 tabular-nums select-none" aria-hidden="true">
               {issue.length} / 1000
             </div>
           </div>
 
           {/* Multilingual Info Strip */}
-          <div className="border border-[#0D6EFD]/30 bg-[#0D6EFD]/10 px-4 py-3 text-xs font-medium text-slate-800 flex items-center gap-2.5">
-            <span aria-hidden="true" className="w-5 h-5 border border-[#0D6EFD] text-[#0D6EFD] flex items-center justify-center shrink-0 text-[11px] font-bold">
+          <div className="border border-[#0D6EFD]/30 bg-[#0D6EFD]/10 px-4 py-3 text-xs font-medium text-slate-800 dark:text-slate-200 flex items-center gap-2.5">
+            <span aria-hidden="true" className="w-5 h-5 border border-[#0D6EFD] text-[#0D6EFD] dark:text-blue-400 flex items-center justify-center shrink-0 text-[11px] font-bold">
               i
             </span>
             <span>{t('helpdesk.langNote')}</span>
@@ -233,10 +233,10 @@ export default function AiSupportPage() {
 
         {/* AI Analysis Result Display */}
         {analysis && (
-          <div role="status" className="border border-slate-200 bg-slate-50 p-6 space-y-4">
-            <div className="flex items-center justify-between border-b border-slate-200 pb-3 gap-2 flex-wrap">
-              <div className="flex items-center gap-2 text-slate-900 font-bold text-xs uppercase tracking-[0.08em]">
-                <CheckCircle2 size={16} className="text-[#198754]" />
+          <div role="status" className="border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 p-6 space-y-4">
+            <div className="flex items-center justify-between border-b border-slate-200 dark:border-slate-700 pb-3 gap-2 flex-wrap">
+              <div className="flex items-center gap-2 text-slate-900 dark:text-slate-100 font-bold text-xs uppercase tracking-[0.08em]">
+                <CheckCircle2 size={16} className="text-[#198754] dark:text-emerald-400" />
                 <span>{t('helpdesk.resultTitle')}</span>
               </div>
               <span className="bg-orange-600 text-white text-[10px] font-bold px-2 py-0.5 uppercase tracking-wider">
@@ -245,28 +245,28 @@ export default function AiSupportPage() {
             </div>
 
             {ticket && (
-              <p className="bg-[#198754]/10 border border-[#198754]/30 text-[#198754] text-xs font-bold px-3 py-2">
+              <p className="bg-[#198754]/10 border border-[#198754]/30 text-[#198754] dark:text-emerald-400 text-xs font-bold px-3 py-2">
                 {t('helpdesk.ticketFiled', { ticket })}
               </p>
             )}
 
             {analysis.response ? (
-              <div className="bg-white border border-slate-200 p-4 text-xs font-medium text-slate-800 whitespace-pre-wrap leading-relaxed">
+              <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 p-4 text-xs font-medium text-slate-800 dark:text-slate-200 whitespace-pre-wrap leading-relaxed">
                 {analysis.response}
               </div>
             ) : (
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-px bg-slate-200 border border-slate-200 text-xs">
-                <div className="bg-white p-3">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-px bg-slate-200 dark:bg-slate-700 border border-slate-200 dark:border-slate-700 text-xs">
+                <div className="bg-white dark:bg-slate-900 p-3">
                   <p className={swiss.micro}>{t('helpdesk.category')}</p>
-                  <p className="font-bold text-slate-900 mt-0.5">{analysis.category || t('helpdesk.categoryFallback')}</p>
+                  <p className="font-bold text-slate-900 dark:text-slate-100 mt-0.5">{analysis.category || t('helpdesk.categoryFallback')}</p>
                 </div>
-                <div className="bg-white p-3">
+                <div className="bg-white dark:bg-slate-900 p-3">
                   <p className={swiss.micro}>{t('helpdesk.summary')}</p>
-                  <p className="font-bold text-slate-900 mt-0.5">{analysis.summary || t('helpdesk.summaryFallback')}</p>
+                  <p className="font-bold text-slate-900 dark:text-slate-100 mt-0.5">{analysis.summary || t('helpdesk.summaryFallback')}</p>
                 </div>
-                <div className="bg-white p-3">
+                <div className="bg-white dark:bg-slate-900 p-3">
                   <p className={swiss.micro}>{t('helpdesk.action')}</p>
-                  <p className="font-bold text-[#198754] mt-0.5">{analysis.action || t('helpdesk.actionFallback')}</p>
+                  <p className="font-bold text-[#198754] dark:text-emerald-400 mt-0.5">{analysis.action || t('helpdesk.actionFallback')}</p>
                 </div>
               </div>
             )}
@@ -275,30 +275,30 @@ export default function AiSupportPage() {
 
         {/* Citizen tracking — own tickets with staff status + resolution */}
         <section className={`${swiss.panel} p-6 space-y-4`}>
-          <h2 className="text-sm font-extrabold tracking-tight text-slate-900">{t('helpdesk.trackTitle')}</h2>
+          <h2 className="text-sm font-extrabold tracking-tight text-slate-900 dark:text-slate-100">{t('helpdesk.trackTitle')}</h2>
           {mine.length === 0 ? (
-            <p className="text-xs text-slate-500 font-medium">{t('helpdesk.trackEmpty')}</p>
+            <p className="text-xs text-slate-500 dark:text-slate-400 font-medium">{t('helpdesk.trackEmpty')}</p>
           ) : (
-            <ol className="divide-y divide-slate-100 border border-slate-200">
+            <ol className="divide-y divide-slate-100 dark:divide-slate-800 border border-slate-200 dark:border-slate-700">
               {mine.map((g) => (
                 <li key={g.id} className="p-4 space-y-2">
                   <div className="flex items-center gap-2 flex-wrap">
-                    <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 border border-slate-300 text-slate-600">
+                    <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 border border-slate-300 dark:border-slate-600 text-slate-600 dark:text-slate-300">
                       #{String(g.id).slice(-6).toUpperCase()}
                     </span>
-                    <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 border border-slate-300 text-slate-600">
+                    <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 border border-slate-300 dark:border-slate-600 text-slate-600 dark:text-slate-300">
                       {ticketStatusLabel(g.status)}
                     </span>
-                    <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 border border-slate-300 text-slate-600">
+                    <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 border border-slate-300 dark:border-slate-600 text-slate-600 dark:text-slate-300">
                       {ticketCategoryLabel(g.category)}
                     </span>
                   </div>
-                  <p className="text-xs font-semibold text-slate-900 break-words">{g.issue}</p>
+                  <p className="text-xs font-semibold text-slate-900 dark:text-slate-100 break-words">{g.issue}</p>
                   {g.assignedTo && (
-                    <p className="text-[11px] text-slate-500">{t('helpdesk.assigned', { who: g.assignedTo })}</p>
+                    <p className="text-[11px] text-slate-500 dark:text-slate-400">{t('helpdesk.assigned', { who: g.assignedTo })}</p>
                   )}
                   {g.resolution && (
-                    <p className="text-xs bg-[#198754]/10 border border-[#198754]/30 text-[#198754] font-semibold px-3 py-2 break-words">
+                    <p className="text-xs bg-[#198754]/10 border border-[#198754]/30 text-[#198754] dark:text-emerald-400 font-semibold px-3 py-2 break-words">
                       {t('helpdesk.resolution')}: {g.resolution}
                     </p>
                   )}
@@ -312,12 +312,12 @@ export default function AiSupportPage() {
       {/* Bottom Help Desk Card */}
       <section className={`${swiss.panel} p-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4`}>
         <div className="flex items-center gap-3.5">
-          <div className="w-10 h-10 border border-slate-300 bg-slate-50 text-orange-600 flex items-center justify-center shrink-0">
+          <div className="w-10 h-10 border border-slate-300 dark:border-slate-600 bg-slate-50 dark:bg-slate-800 text-orange-600 flex items-center justify-center shrink-0">
             <HelpCircle size={20} className="stroke-[2.2]" />
           </div>
           <div>
-            <h3 className="text-sm font-extrabold tracking-tight text-slate-900">{t('helpdesk.stillNeed')}</h3>
-            <p className="text-xs text-slate-500 font-medium">
+            <h3 className="text-sm font-extrabold tracking-tight text-slate-900 dark:text-slate-100">{t('helpdesk.stillNeed')}</h3>
+            <p className="text-xs text-slate-500 dark:text-slate-400 font-medium">
               {t('helpdesk.stillBody')}
             </p>
           </div>
@@ -343,12 +343,12 @@ export default function AiSupportPage() {
           className="fixed inset-0 bg-slate-900/70 flex items-center justify-center p-4 z-50"
         >
           <div className={`${swiss.panel} max-w-md w-full p-6 space-y-5`}>
-            <div className="flex items-center justify-between border-b border-slate-200 pb-3">
+            <div className="flex items-center justify-between border-b border-slate-200 dark:border-slate-700 pb-3">
               <div className="flex items-center gap-2">
                 <div className="w-8 h-8 bg-slate-900 text-white flex items-center justify-center">
                   <PhoneCall size={16} />
                 </div>
-                <h4 className="text-base font-extrabold tracking-tight text-slate-900">{t('helpdesk.helplinesTitle')}</h4>
+                <h4 className="text-base font-extrabold tracking-tight text-slate-900 dark:text-slate-100">{t('helpdesk.helplinesTitle')}</h4>
               </div>
               <button
                 type="button"
@@ -356,23 +356,23 @@ export default function AiSupportPage() {
                 onClick={() => setShowHelplineModal(false)}
                 title={t('helpdesk.closeDir')}
                 aria-label={t('helpdesk.closeDir')}
-                className={`text-slate-500 hover:text-slate-900 hover:bg-slate-100 p-1.5 cursor-pointer transition-colors ${FOCUS}`}
+                className={`text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100 hover:bg-slate-100 dark:hover:bg-slate-800 p-1.5 cursor-pointer transition-colors ${FOCUS}`}
               >
                 <X size={18} />
               </button>
             </div>
 
             <div className="space-y-3 text-xs">
-              <div className="border border-slate-200 border-l-4 border-l-orange-600 bg-white p-4 space-y-1">
+              <div className="border border-slate-200 dark:border-slate-700 border-l-4 border-l-orange-600 bg-white dark:bg-slate-900 p-4 space-y-1">
                 <p className={swiss.micro}>{t('helpdesk.tollFree')}</p>
-                <p className="text-lg font-extrabold tracking-tight text-slate-900 tabular-nums">1967 / 1800-180-2087</p>
-                <p className="text-[11px] text-slate-500">{t('helpdesk.tollFreeNote')}</p>
+                <p className="text-lg font-extrabold tracking-tight text-slate-900 dark:text-slate-100 tabular-nums">1967 / 1800-180-2087</p>
+                <p className="text-[11px] text-slate-500 dark:text-slate-400">{t('helpdesk.tollFreeNote')}</p>
               </div>
 
-              <div className="bg-slate-50 border border-slate-200 p-4 space-y-1">
+              <div className="bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 p-4 space-y-1">
                 <p className={swiss.micro}>{t('helpdesk.directorate')}</p>
-                <p className="text-sm font-bold text-slate-900 tabular-nums">1800-425-9393</p>
-                <p className="text-[11px] text-slate-500">{t('helpdesk.directorateNote')}</p>
+                <p className="text-sm font-bold text-slate-900 dark:text-slate-100 tabular-nums">1800-425-9393</p>
+                <p className="text-[11px] text-slate-500 dark:text-slate-400">{t('helpdesk.directorateNote')}</p>
               </div>
             </div>
 

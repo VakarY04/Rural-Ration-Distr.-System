@@ -87,7 +87,7 @@ export default function AuthEmailForm({ role, accent = 'emerald', onSuccess, onF
         <button
           type="button"
           onClick={onForgotPassword}
-          className="block mx-auto text-[10px] font-bold uppercase tracking-[0.14em] text-slate-500 hover:text-orange-600 transition-colors cursor-pointer focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-orange-500 break-words"
+          className="block mx-auto text-[10px] font-bold uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400 hover:text-orange-600 transition-colors cursor-pointer focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-orange-500 break-words"
         >
           {t('auth.email.forgot')}
         </button>

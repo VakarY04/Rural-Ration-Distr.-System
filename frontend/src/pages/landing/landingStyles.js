@@ -19,19 +19,19 @@
 // be explicitly rounded to match, and must never extend past the card's clip.
 // ────────────────────────────────────────────────────────────────────────────
 export const cardBase =
-  'bg-white border border-slate-200/80 rounded-2xl p-10 flex flex-col justify-between transition-colors duration-300 group-hover:border-slate-400 text-left cursor-default relative overflow-hidden h-full';
+  'bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-700 rounded-2xl p-10 flex flex-col justify-between transition-colors duration-300 group-hover:border-slate-400 text-left cursor-default relative overflow-hidden h-full';
 
 export const badgeBase =
-  'bg-white/95 backdrop-blur-sm border border-slate-200/80 rounded-2xl px-5 py-4 flex items-center gap-4 h-full text-left transition-colors duration-300 group-hover:border-slate-400 cursor-default relative overflow-hidden';
+  'bg-white/95 dark:bg-slate-900/95 backdrop-blur-sm border border-slate-200/80 dark:border-slate-700 rounded-2xl px-5 py-4 flex items-center gap-4 h-full text-left transition-colors duration-300 group-hover:border-slate-400 cursor-default relative overflow-hidden';
 
 // Shared hover "shells" — MUST keep the radius / overflow / background noted in
 // the contract above so the rounded card and its hover shadow clip as one shape.
 export const portalCardShell =
-  'group origin-top flex flex-col rounded-2xl overflow-hidden bg-white transition-all duration-300 ease-out hover:-translate-y-2 hover:scale-[1.02] hover:shadow-xl hover:shadow-slate-400/40';
+  'group origin-top flex flex-col rounded-2xl overflow-hidden bg-white dark:bg-slate-900 transition-all duration-300 ease-out hover:-translate-y-2 hover:scale-[1.02] hover:shadow-xl hover:shadow-slate-400/40';
 export const heroBadgeShell =
-  'group flex flex-col rounded-2xl overflow-hidden bg-white/95 transition-all duration-300 ease-out hover:-translate-y-2 hover:scale-[1.02] hover:shadow-2xl hover:shadow-slate-300/60';
+  'group flex flex-col rounded-2xl overflow-hidden bg-white/95 dark:bg-slate-900/95 transition-all duration-300 ease-out hover:-translate-y-2 hover:scale-[1.02] hover:shadow-2xl hover:shadow-slate-300/60';
 export const bannerShell =
-  'rounded-2xl overflow-hidden bg-white hover:shadow-xl transition-all duration-300 max-w-4xl mx-auto';
+  'rounded-2xl overflow-hidden bg-white dark:bg-slate-900 hover:shadow-xl transition-all duration-300 max-w-4xl mx-auto';
 
 // DOM class hooks. These strings are shared by LandingPage (as element class
 // names) and useLandingAnimations (as GSAP ScrollTrigger query selectors) so the

@@ -14,14 +14,14 @@ export default function LanguageToggle({ className = '' }) {
       role="group"
       aria-label={t('lang.label')}
       title={t('lang.label')}
-      className={`inline-flex items-center rounded-full border border-slate-300 bg-white p-0.5 shadow-sm ${className}`}
+      className={`inline-flex items-center rounded-full border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-900 p-0.5 shadow-sm ${className}`}
     >
       <button
         type="button"
         onClick={() => setLang('en')}
         aria-pressed={!isHi}
         title={t('lang.english')}
-        className={`${base} rounded-full ${!isHi ? 'bg-slate-900 text-white' : 'text-slate-600 hover:text-slate-900'}`}
+        className={`${base} rounded-full ${!isHi ? 'bg-slate-900 text-white' : 'text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-slate-100'}`}
       >
         EN
       </button>
@@ -31,7 +31,7 @@ export default function LanguageToggle({ className = '' }) {
         aria-pressed={isHi}
         title={t('lang.hindi')}
         lang="hi"
-        className={`${base} rounded-full ${isHi ? 'bg-slate-900 text-white' : 'text-slate-600 hover:text-slate-900'}`}
+        className={`${base} rounded-full ${isHi ? 'bg-slate-900 text-white' : 'text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-slate-100'}`}
       >
         हिंदी
       </button>

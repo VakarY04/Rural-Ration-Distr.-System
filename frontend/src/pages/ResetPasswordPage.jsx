@@ -45,7 +45,7 @@ export default function ResetPasswordPage({ token, onResetSuccess }) {
   };
 
   return (
-    <div className="min-h-screen flex flex-col relative overflow-x-hidden font-sans text-[#000080]">
+    <div className="min-h-screen flex flex-col relative overflow-x-hidden font-sans text-[#000080] dark:text-slate-100">
       <div className="fixed inset-0 z-0 pointer-events-none" aria-hidden="true">
         <img src={heroBackdrop} alt="" loading="lazy" decoding="async" className="w-full h-full object-cover opacity-30" />
       </div>
@@ -57,10 +57,10 @@ export default function ResetPasswordPage({ token, onResetSuccess }) {
       <main className="relative z-10 flex-1 flex items-center justify-center p-6">
         <div className={`w-full max-w-md ${swiss.panel} p-8 space-y-5`}>
           <div className="flex flex-col items-center text-center space-y-2">
-            <img src={logoAsset} alt="E-Ration Brand Logo" width={56} height={56} decoding="async" className="w-14 h-14 object-contain bg-slate-50 p-1 rounded-2xl" />
+            <img src={logoAsset} alt="E-Ration Brand Logo" width={56} height={56} decoding="async" className="w-14 h-14 object-contain bg-slate-50 dark:bg-slate-800 p-1 rounded-2xl" />
             <div>
-              <h2 className="text-xl font-bold tracking-tighter text-slate-900 break-words min-w-0">{t('auth.reset.title')}</h2>
-              <p className="text-[11px] font-medium text-slate-500 mt-0.5">{t('auth.reset.subtitle')}</p>
+              <h2 className="text-xl font-bold tracking-tighter text-slate-900 dark:text-slate-100 break-words min-w-0">{t('auth.reset.title')}</h2>
+              <p className="text-[11px] font-medium text-slate-500 dark:text-slate-400 mt-0.5">{t('auth.reset.subtitle')}</p>
             </div>
           </div>
 
@@ -69,7 +69,7 @@ export default function ResetPasswordPage({ token, onResetSuccess }) {
           {success && (
             <Alert variant="success">
               {t('auth.reset.success')}
-              <span className="block text-[10px] text-slate-500 mt-0.5">{t('auth.reset.redirecting')}</span>
+              <span className="block text-[10px] text-slate-500 dark:text-slate-400 mt-0.5">{t('auth.reset.redirecting')}</span>
             </Alert>
           )}
 
@@ -78,7 +78,7 @@ export default function ResetPasswordPage({ token, onResetSuccess }) {
               <div>
                 <label htmlFor="reset-password" className={swiss.label}>{t('auth.reset.newPassword')}</label>
                 <div className="relative flex items-center">
-                  <Lock className="absolute left-3.5 text-slate-500" size={16} />
+                  <Lock className="absolute left-3.5 text-slate-500 dark:text-slate-400" size={16} />
                   <input
                     id="reset-password"
                     type={showPassword ? 'text' : 'password'}
@@ -93,7 +93,7 @@ export default function ResetPasswordPage({ token, onResetSuccess }) {
                     onClick={() => setShowPassword(!showPassword)}
                     title={showPassword ? t('auth.reset.hide') : t('auth.reset.show')}
                     aria-label={showPassword ? t('auth.reset.hide') : t('auth.reset.show')}
-                    className="absolute right-3.5 text-slate-500 hover:text-slate-900 cursor-pointer focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-orange-500"
+                    className="absolute right-3.5 text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100 cursor-pointer focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-orange-500"
                   >
                     {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
                   </button>
@@ -103,7 +103,7 @@ export default function ResetPasswordPage({ token, onResetSuccess }) {
               <div>
                 <label htmlFor="reset-confirm" className={swiss.label}>{t('auth.reset.confirm')}</label>
                 <div className="relative flex items-center">
-                  <Lock className="absolute left-3.5 text-slate-500" size={16} />
+                  <Lock className="absolute left-3.5 text-slate-500 dark:text-slate-400" size={16} />
                   <input
                     id="reset-confirm"
                     type={showPassword ? 'text' : 'password'}
@@ -122,8 +122,8 @@ export default function ResetPasswordPage({ token, onResetSuccess }) {
             </form>
           )}
 
-          <div className="flex items-center justify-center gap-2 pt-2 border-t border-slate-200">
-            <ShieldCheck size={13} className="text-[#198754]" />
+          <div className="flex items-center justify-center gap-2 pt-2 border-t border-slate-200 dark:border-slate-700">
+            <ShieldCheck size={13} className="text-[#198754] dark:text-emerald-400" />
             <span className={swiss.micro}>{t('auth.reset.secureNote')}</span>
           </div>
         </div>

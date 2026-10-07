@@ -16,7 +16,7 @@ export function AccountPanel({
   const { t } = useLanguage();
   return (
     <section className={swiss.panel}>
-      <div className="border-b border-slate-100 p-4">
+      <div className="border-b border-slate-100 dark:border-slate-800 p-4">
         <SectionHead title={t('profile.account.title')} />
       </div>
       <div className="p-4 space-y-4">
@@ -34,7 +34,7 @@ export function AccountPanel({
             </span>
           </button>
           <input ref={fileInputRef} type="file" accept="image/*" className="hidden" onChange={onAvatarPick} />
-          <p className="text-xs text-slate-500">{t('profile.account.uploadHint')}</p>
+          <p className="text-xs text-slate-500 dark:text-slate-400">{t('profile.account.uploadHint')}</p>
         </div>
 
         <div>
@@ -61,7 +61,7 @@ export function AccountPanel({
             onChange={onPhoneChange}
             placeholder={t('profile.account.phonePh')}
           />
-          <p className="text-[11px] text-slate-500 mt-1.5 flex items-center gap-1">
+          <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-1.5 flex items-center gap-1">
             <CheckCircle2 size={11} /> {t('profile.account.phoneHint')}
           </p>
         </div>
@@ -69,8 +69,8 @@ export function AccountPanel({
           <span className={swiss.label}>
             <span className="flex items-center gap-1.5"><Mail size={12} /> {t('profile.account.email')}</span>
           </span>
-          <input className={`${swiss.input} disabled:bg-slate-100 disabled:text-slate-500`} value={email || t('profile.account.notSet')} disabled />
-          <p className="text-[11px] text-slate-500 mt-1.5 flex items-center gap-1">
+          <input className={`${swiss.input} disabled:bg-slate-100 dark:disabled:bg-slate-800 disabled:text-slate-500 dark:disabled:text-slate-400`} value={email || t('profile.account.notSet')} disabled />
+          <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-1.5 flex items-center gap-1">
             <CheckCircle2 size={11} /> {t('profile.account.emailHint')}
           </p>
         </div>
@@ -83,7 +83,7 @@ export function RationCardPanel({ card, onCardChange, head, onHeadChange }) {
   const { t } = useLanguage();
   return (
     <section className={swiss.panel}>
-      <div className="border-b border-slate-100 p-4">
+      <div className="border-b border-slate-100 dark:border-slate-800 p-4">
         <SectionHead title={t('profile.card.title')} />
       </div>
       <div className="p-4 space-y-4">
@@ -109,9 +109,9 @@ export function AddressPanel({ address, setAddress }) {
 
   return (
     <section className={swiss.panel}>
-      <div className="border-b border-slate-100 p-4">
+      <div className="border-b border-slate-100 dark:border-slate-800 p-4">
         <SectionHead title={t('profile.address.title')} />
-        <p className="text-[11px] text-slate-500 mt-1">{t('profile.address.hint')}</p>
+        <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-1">{t('profile.address.hint')}</p>
       </div>
       <div className="p-4 grid grid-cols-2 gap-3">
         <div className="col-span-2">

@@ -58,11 +58,11 @@ export default function ReportsPanel() {
   const rows = data?.districts || [];
 
   return (
-    <section aria-label={t('reports.title')} className="border border-slate-200 bg-white rounded-2xl overflow-hidden">
-      <header className="flex items-start justify-between gap-4 px-5 pt-5 pb-4 border-b border-slate-100 flex-wrap">
+    <section aria-label={t('reports.title')} className="border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 rounded-2xl overflow-hidden">
+      <header className="flex items-start justify-between gap-4 px-5 pt-5 pb-4 border-b border-slate-100 dark:border-slate-800 flex-wrap">
         <div>
-          <h2 className="text-sm font-bold uppercase tracking-[0.1em] text-black break-words">{t('reports.title')}</h2>
-          <p className="text-xs text-slate-500 font-medium mt-1">{t('reports.subtitle')}</p>
+          <h2 className="text-sm font-bold uppercase tracking-[0.1em] text-black dark:text-slate-100 break-words">{t('reports.title')}</h2>
+          <p className="text-xs text-slate-500 dark:text-slate-400 font-medium mt-1">{t('reports.subtitle')}</p>
         </div>
         <button
           type="button"
@@ -77,60 +77,60 @@ export default function ReportsPanel() {
 
       <div className="p-5">
         {error && (
-          <p role="alert" className="mb-4 bg-[#DC3545]/10 border border-[#DC3545]/40 text-[#DC3545] text-xs font-semibold px-3 py-2">
+          <p role="alert" className="mb-4 bg-[#DC3545]/10 border border-[#DC3545]/40 text-[#DC3545] dark:text-red-400 text-xs font-semibold px-3 py-2">
             {error}
           </p>
         )}
         {loading ? (
-          <p className="py-10 text-center text-sm font-semibold text-slate-500">{t('common.loading')}</p>
+          <p className="py-10 text-center text-sm font-semibold text-slate-500 dark:text-slate-400">{t('common.loading')}</p>
         ) : rows.length === 0 ? (
           <div className="py-10 text-center">
             <Table2 size={22} className="mx-auto text-slate-300" aria-hidden="true" />
-            <p className="mt-2 text-sm font-semibold text-slate-900">{t('reports.empty')}</p>
+            <p className="mt-2 text-sm font-semibold text-slate-900 dark:text-slate-100">{t('reports.empty')}</p>
           </div>
         ) : (
           <>
             <div className="flex items-center gap-3 bg-[#138808]/10 border border-[#138808]/30 px-4 py-3 mb-4">
-              <span className="w-9 h-9 shrink-0 bg-[#138808]/15 border border-[#138808]/30 text-[#138808] flex items-center justify-center" aria-hidden="true">
+              <span className="w-9 h-9 shrink-0 bg-[#138808]/15 border border-[#138808]/30 text-[#138808] dark:text-green-400 flex items-center justify-center" aria-hidden="true">
                 <Users size={16} />
               </span>
               <div className="min-w-0">
-                <p className="text-[10px] font-bold uppercase tracking-[0.14em] text-[#138808]">{t('reports.familiesBookedOnline')}</p>
-                <p className="text-2xl font-extrabold tracking-tight tabular-nums text-slate-900 leading-none mt-1">{totals?.families ?? 0}</p>
+                <p className="text-[10px] font-bold uppercase tracking-[0.14em] text-[#138808] dark:text-green-400">{t('reports.familiesBookedOnline')}</p>
+                <p className="text-2xl font-extrabold tracking-tight tabular-nums text-slate-900 dark:text-slate-100 leading-none mt-1">{totals?.families ?? 0}</p>
               </div>
             </div>
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-px bg-slate-200 border border-slate-200 text-xs mb-4">
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-px bg-slate-200 dark:bg-slate-700 border border-slate-200 dark:border-slate-700 text-xs mb-4">
               {[
                 [t('reports.entitled'), totals?.entitledKg ?? 0],
                 [t('reports.allocated'), totals?.allocatedKg ?? 0],
                 [t('reports.collected'), totals?.collectedKg ?? 0],
                 [t('reports.rate'), `${totals?.collectionRate ?? 0}%`],
               ].map(([label, value]) => (
-                <div key={label} className="bg-white p-3">
-                  <p className="text-[10px] font-bold uppercase tracking-[0.14em] text-slate-500">{label}</p>
-                  <p className="text-lg font-extrabold tracking-tight text-slate-900 tabular-nums mt-0.5">{value}</p>
+                <div key={label} className="bg-white dark:bg-slate-900 p-3">
+                  <p className="text-[10px] font-bold uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400">{label}</p>
+                  <p className="text-lg font-extrabold tracking-tight text-slate-900 dark:text-slate-100 tabular-nums mt-0.5">{value}</p>
                 </div>
               ))}
             </div>
-            <div className="overflow-x-auto border border-slate-200">
+            <div className="overflow-x-auto border border-slate-200 dark:border-slate-700">
               <table className="w-full text-xs min-w-[720px]">
                 <thead>
-                  <tr className="bg-slate-50 text-left">
+                  <tr className="bg-slate-50 dark:bg-slate-800 text-left">
                     {[t('reports.villageDistrict'), t('reports.familyHead'), t('reports.entitled'), t('reports.allocated'), t('reports.collected'), t('reports.rate'), t('reports.bookings')].map((h) => (
-                      <th key={h} scope="col" className="px-3 py-2 font-bold uppercase tracking-wider text-slate-500 whitespace-nowrap">
+                      <th key={h} scope="col" className="px-3 py-2 font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 whitespace-nowrap">
                         {h}
                       </th>
                     ))}
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-slate-100">
+                <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
                   {rows.map((r, i) => (
-                    <tr key={`${r.district}-${r.head}-${i}`} className="hover:bg-slate-50/60">
+                    <tr key={`${r.district}-${r.head}-${i}`} className="hover:bg-slate-50/60 dark:hover:bg-slate-800">
                       <td className="px-3 py-2 break-words">
-                        <span className="block font-bold text-slate-900">{r.village}</span>
-                        <span className="block text-[11px] text-slate-500">{r.district}</span>
+                        <span className="block font-bold text-slate-900 dark:text-slate-100">{r.village}</span>
+                        <span className="block text-[11px] text-slate-500 dark:text-slate-400">{r.district}</span>
                       </td>
-                      <td className="px-3 py-2 font-bold text-slate-900 break-words">{r.head}</td>
+                      <td className="px-3 py-2 font-bold text-slate-900 dark:text-slate-100 break-words">{r.head}</td>
                       <td className="px-3 py-2 tabular-nums">{r.entitledKg}</td>
                       <td className="px-3 py-2 tabular-nums">{r.allocatedKg}</td>
                       <td className="px-3 py-2 tabular-nums">{r.collectedKg}</td>
@@ -139,7 +139,7 @@ export default function ReportsPanel() {
                         <span className="inline-flex items-center gap-1.5" title={r.collectedBookings > 0 ? t('reports.collectedTick') : undefined}>
                           {r.bookings}
                           {r.collectedBookings > 0 && (
-                            <Check size={13} strokeWidth={3} className="text-[#198754] shrink-0" aria-hidden="true" />
+                            <Check size={13} strokeWidth={3} className="text-[#198754] dark:text-emerald-400 shrink-0" aria-hidden="true" />
                           )}
                         </span>
                       </td>

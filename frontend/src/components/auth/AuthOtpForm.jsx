@@ -109,7 +109,7 @@ export default function AuthOtpForm({ role, accent = 'emerald', onSuccess }) {
         type="button"
         onClick={() => handleSendOtp(true)}
         disabled={cooldown > 0}
-        className="w-full flex items-center justify-center gap-1.5 text-[10px] font-bold uppercase tracking-[0.14em] text-slate-500 hover:text-slate-900 transition-colors cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-orange-500 break-words"
+        className="w-full flex items-center justify-center gap-1.5 text-[10px] font-bold uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100 transition-colors cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-orange-500 break-words"
       >
         <RefreshCw size={12} />
         <span>{cooldown > 0 ? t('auth.otp.resendIn', { seconds: cooldown }) : t('auth.otp.resend')}</span>
@@ -153,7 +153,7 @@ export default function AuthOtpForm({ role, accent = 'emerald', onSuccess }) {
         )}
       </button>
 
-      <p className="flex items-center justify-center gap-1.5 text-[10px] font-bold uppercase tracking-[0.14em] text-slate-500 break-words">
+      <p className="flex items-center justify-center gap-1.5 text-[10px] font-bold uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400 break-words">
         <KeyRound size={11} />
         <span>{t('auth.otp.hint')}</span>
       </p>

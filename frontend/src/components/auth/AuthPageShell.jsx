@@ -47,17 +47,17 @@ export function AuthPageShell({
           className={`w-full max-w-md ${swiss.panel} p-8 space-y-6 transition-all duration-300 ${cardClassName}`}
         >
           <div className="flex flex-col items-center text-center space-y-2">
-            <img src={logoAsset} alt="E-Ration Logo" width={56} height={56} decoding="async" className="w-14 h-14 object-contain bg-slate-50 p-1 rounded-2xl" />
+            <img src={logoAsset} alt="E-Ration Logo" width={56} height={56} decoding="async" className="w-14 h-14 object-contain bg-slate-50 dark:bg-slate-800 p-1 rounded-2xl" />
             <div>
-              <h2 className="text-xl font-extrabold tracking-tighter text-[#000080]">{title}</h2>
-              <p className="text-[11px] font-medium text-slate-500 mt-0.5">{subtitle}</p>
+              <h2 className="text-xl font-extrabold tracking-tighter text-[#000080] dark:text-[#B9C8FF]">{title}</h2>
+              <p className="text-[11px] font-medium text-slate-500 dark:text-slate-400 mt-0.5">{subtitle}</p>
             </div>
           </div>
 
           {children}
 
-          <div className="flex items-center justify-center gap-2 pt-2 border-t border-slate-200">
-            <ShieldCheck size={13} className="text-[#138808]" />
+          <div className="flex items-center justify-center gap-2 pt-2 border-t border-slate-200 dark:border-slate-700">
+            <ShieldCheck size={13} className="text-[#138808] dark:text-green-400" />
             <span className={swiss.micro}>{resolvedFooter}</span>
           </div>
         </div>
