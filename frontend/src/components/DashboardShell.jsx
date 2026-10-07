@@ -13,7 +13,6 @@ import { Avatar } from './ui/avatar';
 import { swissUser as swiss, TricolorStrip } from './ui/swiss';
 import SkipLink from './SkipLink';
 import AccessibilityToolbar from './AccessibilityToolbar';
-import LanguageToggle from './LanguageToggle';
 import SiteFooter from './SiteFooter';
 import { useLanguage } from '../i18n/LanguageContext';
 
@@ -146,9 +145,6 @@ export default function DashboardShell({ children, currentSubPage, onSubPageChan
             {navCollapsed ? <PanelLeftOpen size={14} /> : <PanelLeftClose size={14} />}
             <span>{navCollapsed ? t('nav.expand') : t('nav.collapse')}</span>
           </button>
-          <div className="flex items-center gap-2 flex-wrap">
-            <LanguageToggle />
-          </div>
           <AccessibilityToolbar />
         </div>
         {account?.rationCardNumber && (

@@ -134,7 +134,7 @@ a.sr-only:focus-visible {
   position: absolute;
   top: 8px;
   left: 8px;
-  z-index: 100;
+  z-index: 2100;
   width: auto;
   height: auto;
   padding: 8px 16px;
@@ -167,6 +167,175 @@ a.sr-only:focus-visible {
 }
 .a11y-hide-images img:not(.leaflet-tile) {
   display: none !important;
+}
+
+/* Text-spacing levels (accessibility toolbar, second control row). Additive
+   letter + word spacing inherited through <body> so prose, labels and inputs
+   all loosen together without touching layout structure. */
+html.a11y-spacing-1 body {
+  letter-spacing: 0.06em;
+  word-spacing: 0.12em;
+}
+html.a11y-spacing-2 body {
+  letter-spacing: 0.12em;
+  word-spacing: 0.22em;
+}
+html.a11y-spacing-3 body {
+  letter-spacing: 0.18em;
+  word-spacing: 0.32em;
+}
+
+/* The accessibility widget itself is exempt from spacing levels (like it is
+   from font-size scaling): fixed-size buttons must never shift when the user
+   loosens the page's text. `normal` beats inheritance for the whole subtree. */
+html.a11y-spacing-1 .a11y-widget,
+html.a11y-spacing-2 .a11y-widget,
+html.a11y-spacing-3 .a11y-widget {
+  letter-spacing: normal;
+  word-spacing: normal;
+}
+
+/* Line-spacing levels (accessibility toolbar, display section second row).
+   Four levels total: 0 = normal (1.5), 1–3 loosen body copy line-height so
+   dense paragraphs breathe. Mirrors GIGW "Line Height" control on
+   guidelines.india.gov.in. Inherited through <body>. */
+html.a11y-line-1 body {
+  line-height: 1.75;
+}
+html.a11y-line-2 body {
+  line-height: 2;
+}
+html.a11y-line-3 body {
+  line-height: 2.3;
+}
+html.a11y-line-1 .a11y-widget,
+html.a11y-line-2 .a11y-widget,
+html.a11y-line-3 .a11y-widget {
+  line-height: normal;
+}
+
+/* ADHD reading mask (myScheme behaviour, UX4G govt widget spec).
+   When <html> carries .a11y-adhd, AdhdReadingMask.jsx renders one fixed
+   full-viewport layer: everything is dimmed except a clear horizontal band
+   around the cursor, spanning the full width from the left edge to the
+   right edge. Values below are verbatim from the government widget
+   (cdn.ux4g.gov.in/tools/accessibility-widget.css — same widget as
+   myScheme.gov.in): clear window ±80px around --y (160px tall), 6px guide
+   bars (#6f339d top, #11298b bottom), rgba(0,0,0,0.7) shade, multiply
+   blend. The layer never intercepts input (pointer-events none) and sits
+   above everything (z-index 9999999, verbatim from the UX4G widget) so
+   high-stacking content such as the Leaflet route map (panes z 400,
+   controls z 1000) is dimmed exactly like the rest of the page — the same
+   as on myScheme. Controls stay clickable through the layer, and since
+   the clear band follows the cursor, whatever the user moves to is
+   always in the clear. */
+.a11y-reading-mask {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100vh;
+  height: 100dvh;
+  pointer-events: none;
+  z-index: 9999999;
+  mix-blend-mode: multiply;
+  transition: background-position 0.05s;
+  background-image: linear-gradient(
+    to bottom,
+    hsla(0, 0%, 0%, 0.7) 0%,
+    rgba(0, 0, 0, 0.7) calc(var(--y, 50%) - 80px),
+    transparent calc(var(--y, 50%) - 80px),
+    transparent calc(var(--y, 50%) + 80px),
+    rgba(0, 0, 0, 0.7) calc(var(--y, 50%) + 80px),
+    rgba(0, 0, 0, 0.7) 100%
+  );
+  filter: saturate(0.5);
+}
+.a11y-reading-mask::before,
+.a11y-reading-mask::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  width: 100%;
+  height: 6px;
+  pointer-events: none;
+}
+.a11y-reading-mask::before {
+  top: calc(var(--y, 50%) - 80px);
+  background-color: #6f339d;
+}
+.a11y-reading-mask::after {
+  top: calc(var(--y, 50%) + 80px);
+  background-color: #11298b;
+}
+/* Strong focus ring stays on in ADHD mode so keyboard users keep their
+   place inside the clear band. */
+html.a11y-adhd :focus-visible {
+  outline: 3px solid #000080 !important;
+  outline-offset: 3px !important;
+}
+@media print {
+  .a11y-reading-mask {
+    display: none !important;
+  }
+}
+
+/* Saturation levels (accessibility toolbar, display section third row).
+   Verbatim UX4G government widget values (cdn.ux4g.gov.in — same widget as
+   myScheme.gov.in): low 0.5, high 3, desaturate 0. Four states cycle
+   normal → low → high → desaturate → normal. */
+html.a11y-saturate-low {
+  filter: saturate(0.5);
+}
+html.a11y-saturate-high {
+  filter: saturate(3);
+}
+html.a11y-saturate-desaturate {
+  filter: saturate(0);
+}
+
+/* Invert colours (third row). Same as the UX4G widget: full-page invert on
+   <html> with a white base. Combos below keep invert working together with
+   any saturation level (a single `filter` would otherwise let one win). */
+html.a11y-invert {
+  filter: invert(1);
+  background: #ffffff;
+}
+html.a11y-invert.a11y-saturate-low {
+  filter: invert(1) saturate(0.5);
+}
+html.a11y-invert.a11y-saturate-high {
+  filter: invert(1) saturate(3);
+}
+html.a11y-invert.a11y-saturate-desaturate {
+  filter: invert(1) saturate(0);
+}
+
+/* Dyslexia-friendly mode (third row). Same as the UX4G widget: the
+   Open-Dyslexic face for page content, while the accessibility widget
+   itself stays in Noto Sans so its fixed-size panel never shifts. */
+@font-face {
+  font-family: 'Open-Dyslexic';
+  src: url('https://cdn.ux4g.gov.in/fonts/open-dyslexic.woff') format('woff');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+html.a11y-dyslexia body * {
+  font-family: 'Open-Dyslexic', 'Noto Sans', 'Noto Sans Devanagari', ui-sans-serif, system-ui, sans-serif !important;
+}
+html.a11y-dyslexia .a11y-widget,
+html.a11y-dyslexia .a11y-widget * {
+  font-family: 'Noto Sans', 'Noto Sans Devanagari', ui-sans-serif, system-ui, sans-serif !important;
+}
+
+@media print {
+  html.a11y-invert,
+  html.a11y-saturate-low,
+  html.a11y-saturate-high,
+  html.a11y-saturate-desaturate {
+    filter: none;
+  }
 }
 
 /* On-Scroll Typography Animation Styles */

@@ -6,7 +6,6 @@ import HoverSplitBackdrop from './HoverSplitBackdrop';
 import { swiss } from '../ui/swiss';
 import SkipLink from '../SkipLink';
 import AccessibilityToolbar from '../AccessibilityToolbar';
-import LanguageToggle from '../LanguageToggle';
 import { useLanguage } from '../../i18n/LanguageContext';
 
 // Shared full-page shell for the single centred-card auth screens
@@ -38,7 +37,6 @@ export function AuthPageShell({
       </div>
 
       <div className="absolute top-4 right-4 z-20 flex items-center gap-2">
-        <LanguageToggle />
         <AccessibilityToolbar />
       </div>
 

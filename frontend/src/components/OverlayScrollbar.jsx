@@ -115,7 +115,7 @@ export default function OverlayScrollbar() {
   }, []);
 
   return (
-    <div aria-hidden="true" className="pointer-events-none fixed inset-y-0 right-0 z-[70] w-[10px]">
+    <div aria-hidden="true" className="pointer-events-none fixed inset-y-0 right-0 z-[1500] w-[10px]">
       <div
         ref={thumbRef}
         className={`overlay-scroll-thumb pointer-events-auto mx-auto w-[6px] cursor-pointer touch-none rounded-full bg-slate-500/70 transition-opacity duration-150 hover:bg-slate-700 ${
