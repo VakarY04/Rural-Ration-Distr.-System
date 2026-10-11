@@ -17,9 +17,10 @@ export const forgotPassword = async (req, res) => {
       return res.status(404).json({ message: "No account found with this email address." });
     }
 
-    // Generate a secure, unique reset token valid for 1 hour
+    // Generate a secure, unique reset token valid for 1 hour. Phase 6.2:
+    // store only its SHA-256 hash so a DB read never leaks a live token.
     const resetToken = crypto.randomBytes(32).toString('hex');
-    user.resetPasswordToken = resetToken;
+    user.resetPasswordToken = crypto.createHash('sha256').update(resetToken).digest('hex');
     user.resetPasswordExpire = Date.now() + 3600000; // 1 Hour from now
     await user.save();
 
@@ -34,7 +35,8 @@ export const forgotPassword = async (req, res) => {
       },
     });
 
-    const resetUrl = `http://localhost:5173/reset-password/${resetToken}`;
+    const frontendBase = (process.env.FRONTEND_URL || 'http://localhost:5173').replace(/\/$/, '');
+    const resetUrl = `${frontendBase}/reset-password/${resetToken}`;
 
     const mailOptions = {
       from: `"E-Ration" <${process.env.EMAIL_USER}>`,
@@ -68,16 +70,26 @@ export const forgotPassword = async (req, res) => {
   }
 };
 
-// Reset Password Execution Controller
+// Reset Password Execution Controller (single-use: token cleared on success)
 export const resetPassword = async (req, res) => {
   const { token } = req.params;
   const { password } = req.body;
 
   try {
-    const user = await User.findOne({
-      resetPasswordToken: token,
+    // Phase 6.2 — compare hashes; the raw token only ever travels by email.
+    const tokenHash = crypto.createHash('sha256').update(String(token || '')).digest('hex');
+    let user = await User.findOne({
+      resetPasswordToken: tokenHash,
       resetPasswordExpire: { $gt: Date.now() }
     });
+    // One-hour migration window: tokens issued before the hashing change
+    // were stored raw. Accept them once, then they are cleared below.
+    if (!user) {
+      user = await User.findOne({
+        resetPasswordToken: String(token || ''),
+        resetPasswordExpire: { $gt: Date.now() }
+      });
+    }
 
     if (!user) {
       return res.status(400).json({ message: "Authorization verification failed, token compromised or expired." });

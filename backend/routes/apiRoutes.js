@@ -21,6 +21,12 @@ import { getReports, exportReports } from '../controllers/reportController.js';
 import { requireStaff, requireAdmin } from '../middleware/staffMiddleware.js';
 import { protect } from '../middleware/authMiddleware.js';
 import { dbGate } from '../middleware/dbGate.js';
+import {
+  loginLimiter,
+  otpSendLimiter,
+  otpVerifyLimiter,
+  passwordResetLimiter,
+} from '../middleware/rateLimit.js';
 import { register, login, sendOtp, verifyOtp, getMe, updateMe, deleteMe } from '../controllers/authController.js';
 import { forgotPassword, resetPassword } from '../controllers/passwordController.js';
 import { submitFeedback } from '../controllers/feedbackController.js';
@@ -31,13 +37,13 @@ const router = express.Router();
 // reconnecting instead of buffering queries into timeouts.
 router.use(dbGate);
 
-// Auth Endpoints
-router.post('/auth/register', register);
-router.post('/auth/login', login);
-router.post('/auth/send-otp', sendOtp);
-router.post('/auth/verify-otp', verifyOtp);
-router.post('/auth/forgot-password', forgotPassword);
-router.post('/auth/reset-password/:token', resetPassword);
+// Auth Endpoints (Phase 6.2 — rate-limited against brute force)
+router.post('/auth/register', loginLimiter, register);
+router.post('/auth/login', loginLimiter, login);
+router.post('/auth/send-otp', otpSendLimiter, sendOtp);
+router.post('/auth/verify-otp', otpVerifyLimiter, verifyOtp);
+router.post('/auth/forgot-password', passwordResetLimiter, forgotPassword);
+router.post('/auth/reset-password/:token', passwordResetLimiter, resetPassword);
 router.get('/auth/me', protect, getMe);
 router.put('/auth/me', protect, updateMe);
 router.delete('/auth/me', protect, deleteMe);

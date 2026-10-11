@@ -26,9 +26,14 @@ export const portalAccessError = (user, requestedRole) => {
   return `This account is not registered for the ${requestedRole} portal.`;
 };
 
-// Signs the standard 30-day JWT session token for any account type.
-export const signSessionToken = (userId) =>
-  jwt.sign({ id: userId }, process.env.JWT_SECRET, { expiresIn: '30d' });
+// Signs the standard short-lived JWT session token (Phase 6.2 — 12h, down
+// from 30d, so a leaked token has a small blast radius; verified
+// server-side in authMiddleware).
+export const signSessionToken = (userId) => {
+  const secret = process.env.JWT_SECRET;
+  if (!secret) throw new Error('JWT_SECRET is not configured.');
+  return jwt.sign({ id: userId }, secret, { expiresIn: '12h' });
+};
 
 // Builds the public profile payload returned by every auth endpoint.
 export const sessionPayload = (user) => ({
