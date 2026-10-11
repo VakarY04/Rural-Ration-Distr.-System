@@ -2,6 +2,9 @@ import mongoose from 'mongoose';
 import dns from 'dns';
 import { User } from '../models/User.js';
 import { Family } from '../models/Family.js';
+import { Booking } from '../models/Booking.js';
+import { DistributionSettings } from '../models/DistributionSettings.js';
+import { Grievance } from '../models/Grievance.js';
 
 // Atlas SRV lookups (_mongodb._tcp) fail on some networks, VPNs and ISP
 // DNS resolvers. Pinning public resolvers + forcing IPv4 sockets makes the
@@ -22,9 +25,15 @@ const connectOnce = async () =>
 
 // Sync indexes once the first connection succeeds. Drops stale indexes left
 // over from earlier schema versions and rebuilds them correctly.
+// Phase 5 fix: EVERY model is synced — Booking's unique {user,date} /
+// {card,date} guards were code-defined but never built in databases created
+// before Phase 5.1 shipped, so parallel double-POSTs could create two rows.
 const syncIndexes = async () => {
   await User.syncIndexes();
   await Family.syncIndexes();
+  await Booking.syncIndexes();
+  await DistributionSettings.syncIndexes();
+  await Grievance.syncIndexes();
   console.log('[MongoDB] Indexes synced with current schema.');
 };
 
