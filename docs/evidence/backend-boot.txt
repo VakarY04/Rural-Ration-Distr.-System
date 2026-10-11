@@ -1,0 +1,4 @@
+◇ injected env (9) from .env // tip: ⌁ auth for agents [www.vestauth.com]
+[Server] Live in development environment configuration running on port 5001
+[MongoDB] Connected safely to host: ac-ouq5wfu-shard-00-01.rtfurxp.mongodb.net
+[MongoDB] Indexes synced with current schema.

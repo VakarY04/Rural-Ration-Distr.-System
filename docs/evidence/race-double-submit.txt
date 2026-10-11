@@ -1,0 +1,8 @@
+﻿
+target: date=2026-10-28 slot="09:00 AM - 11:00 AM"
+race results: 201: | 409:ALREADY_BOOKED
+ledger rows: 1
+PASS ΓÇö zero double-bookings under parallel requests
+cleanup: 200
+
+

@@ -6,10 +6,12 @@ to this file; nothing here is hand-typed — each file is tool output.
 
 | File | What it proves |
 |---|---|
-| `build-frontend.log` | `vite build` passes; route chunks split (main ~474 KB, Leaflet/map + console lazy) |
-| `backend-boot.log` | Backend boots clean: live line, Mongo connect, all-model index sync |
-| `race-double-submit.log` | Phase 5: two parallel identical booking POSTs → exactly one 201 + one 409 `ALREADY_BOOKED`, ledger = 1 row, probe self-cleaned |
-| `staff-provisioning.log` | Staff APIs: roster, provision → immediate login (no restart), duplicate → 409, distributor → 403, self-remove → 400, remove → login blocked |
+| `build-frontend.txt` | `vite build` passes; route chunks split (main ~474 KB, Leaflet/map + console lazy) |
+| `backend-boot.txt` | Backend boots clean: live line, Mongo connect, all-model index sync |
+| `race-double-submit.txt` | Phase 5: two parallel identical booking POSTs → exactly one 201 + one 409 `ALREADY_BOOKED`, ledger = 1 row, probe self-cleaned |
+| `staff-provisioning.txt` | Staff APIs: roster, provision → immediate login (no restart), duplicate → 409, distributor → 403, self-remove → 400, remove → login blocked |
+| `i18n-audit.txt` | All 32 strings used by the new UI present in both EN + HI dictionaries |
+| `a11y-static.txt` | Structural checks: table scopes, labels, live regions, focus rings, 320px scroll, lazy boundaries |
 | `lighthouse-landing.json` | Raw Lighthouse mobile (simulated 4G) report, production build |
 | `lighthouse-metrics.txt` | Headline numbers from that report |
 
