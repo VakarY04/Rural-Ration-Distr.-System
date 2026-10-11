@@ -552,6 +552,8 @@ export const en = {
   'help.title': 'Help',
   'help.intro': "Short guides for the tasks citizens do most. If something here doesn't match what you see, send Feedback so it can be corrected.",
   'help.urgent': 'Urgent or unresolved? Call the toll-free helpline 1967 any time.',
+  'help.security.title': 'Report a security problem',
+  'help.security.body': 'Found a vulnerability, a data leak, or account abuse? Email {email} with "SECURITY" in the subject and what you saw. Do not share passwords or OTPs — they are never needed to report an issue.',
 
   'feedback.cat.suggestion': 'Suggestion',
   'feedback.cat.issue': 'Issue',

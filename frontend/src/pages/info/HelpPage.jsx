@@ -1,10 +1,15 @@
-import { CalendarCheck, Users, Bot, PhoneCall } from 'lucide-react';
+import { CalendarCheck, Users, Bot, PhoneCall, ShieldAlert } from 'lucide-react';
 import { useLanguage } from '../../i18n/LanguageContext';
 import { swiss } from '../../components/ui/swiss';
+import { siteMeta } from '../../config/siteMeta';
 import InfoShell from './InfoShell';
 
 export default function HelpPage({ onNavigate }) {
   const { t } = useLanguage();
+  // Security-contact paragraph: interpolated email renders as a mailto link
+  // so the incident contact is one tap away (Phase 6.5).
+  const secBody = t('help.security.body', { email: siteMeta.ownerEmail });
+  const [secBefore, secAfter = ''] = secBody.split(siteMeta.ownerEmail);
   const GUIDES = [
     {
       icon: Users,
@@ -51,6 +56,22 @@ export default function HelpPage({ onNavigate }) {
         <p className="text-sm text-slate-600 dark:text-slate-300 break-words min-w-0">
           {t('help.urgent')}
         </p>
+      </section>
+      <section className={`${swiss.panel} p-5 flex items-start gap-3`}>
+        <ShieldAlert size={18} className="text-red-600 shrink-0 mt-0.5" aria-hidden="true" />
+        <div className="min-w-0">
+          <h2 className="text-base font-bold text-slate-900 dark:text-slate-100 break-words">{t('help.security.title')}</h2>
+          <p className="mt-1 text-sm text-slate-600 dark:text-slate-300 leading-relaxed break-words">
+            {secBefore}
+            <a
+              href={`mailto:${siteMeta.ownerEmail}?subject=${encodeURIComponent('SECURITY: vulnerability report')}`}
+              className="font-semibold text-blue-700 dark:text-blue-400 underline underline-offset-2 break-all"
+            >
+              {siteMeta.ownerEmail}
+            </a>
+            {secAfter}
+          </p>
+        </div>
       </section>
     </InfoShell>
   );

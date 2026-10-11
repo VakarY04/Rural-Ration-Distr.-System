@@ -10,7 +10,8 @@
     "prod": "node server.js",
     "seed:distributor": "node scripts/createDistributor.js",
     "prune:bookings": "node scripts/pruneOrphanBookings.js",
-    "archive:bookings": "node scripts/archivePastBookings.js"
+    "archive:bookings": "node scripts/archivePastBookings.js",
+    "backup:db": "node scripts/backupDatabase.js"
   },
   "keywords": [],
   "author": "",

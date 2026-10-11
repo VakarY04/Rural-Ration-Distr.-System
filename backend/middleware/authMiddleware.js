@@ -23,7 +23,14 @@ export const protect = async (req, res, next) => {
       req.user = await User.findById(decoded.id).select('-password');
       return next();
     } catch (error) {
-      console.error('Auth Middleware Token Error:', error);
+      // Phase 6.5 log hygiene: stale/rotated-secret tokens are routine client
+      // states (e.g. after a JWT_SECRET rotation), not server faults — one
+      // line, no stack. Full traces stay for unexpected verify failures.
+      if (error?.name === 'JsonWebTokenError' || error?.name === 'TokenExpiredError') {
+        console.warn(`Auth rejected (${error.name}) for ${req.method} ${req.path}.`);
+      } else {
+        console.error('Auth Middleware Token Error:', error);
+      }
       return res.status(401).json({ message: 'Not authorized, token failed.' });
     }
   }

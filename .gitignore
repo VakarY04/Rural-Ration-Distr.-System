@@ -24,6 +24,9 @@ build/
 dist-ssr/
 *.local
 
+# Local DB backups (hold password hashes + PII — never commit)
+backups/
+
 # Logs
 logs
 *.log
