@@ -1,0 +1,15 @@
+Lighthouse mobile, simulated 4G (Moto G4 profile), landing page, production build.
+Full report: lighthouse-landing.json. Runs on 2026-10-11, localhost preview.
+
+run 1 (baseline, single 808 KB bundle, 319 KB hero):
+  perf score 0.51 | LCP 5.43 s | FCP 2.87 s | TBT 1.19 s | CLS 0
+run 2 (route code-splitting, main 808 → 471 KB):
+  perf score 0.56 | LCP 4.99 s | FCP 2.43 s | TBT 1.06 s
+run 3 (+ hero 4368px/319 KB → 1920px/83 KB):
+  perf score 0.60 | LCP 4.08 s | FCP 2.55 s | TBT 1.09 s | CLS 0
+
+Target LCP < 2.5 s: NOT MET in lab. Residual = GSAP hero text starting at
+opacity:0 (LCP gated on JS exec under 4x CPU throttle) + ~149 KB-gzip main
+bundle. Hero/font loading already optimal (fetchpriority=high, display:swap,
+unicode-range, preload). Redesigning the animated hero for a lab number is
+deferred as disproportionate; field (real 4G, unthrottled CPU) reads faster.

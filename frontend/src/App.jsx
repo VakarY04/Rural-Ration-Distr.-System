@@ -1,19 +1,25 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Suspense, lazy } from 'react';
 import LandingPage from './pages/LandingPage';
-import RegisterPage from './pages/RegisterPage';
-import ForgotPasswordPage from './pages/ForgotPasswordPage';
-import ResetPasswordPage from './pages/ResetPasswordPage';
-import AdminLoginPage from './pages/AdminLoginPage';
-import DistributorConsolePage from './pages/DistributorConsolePage';
-import DashboardShell from './components/DashboardShell';
+// Phase 5 perf: every route except the landing page loads lazily so the
+// first-visit bundle stays small (LCP < 2.5s on 4G). Landing stays eager —
+// lazy-loading the entry route would add a round trip before first paint.
+const RegisterPage = lazy(() => import('./pages/RegisterPage'));
+const ForgotPasswordPage = lazy(() => import('./pages/ForgotPasswordPage'));
+const ResetPasswordPage = lazy(() => import('./pages/ResetPasswordPage'));
+const AdminLoginPage = lazy(() => import('./pages/AdminLoginPage'));
+const DistributorConsolePage = lazy(() => import('./pages/DistributorConsolePage'));
+const DashboardShell = lazy(() => import('./components/DashboardShell'));
+const DashboardHome = lazy(() => import('./pages/DashboardHome'));
+const ProfilePage = lazy(() => import('./pages/ProfilePage'));
+const BookingPage = lazy(() => import('./pages/BookingPage'));
+const AiSupportPage = lazy(() => import('./pages/AiSupportPage'));
+const InfoPage = lazy(() => import('./pages/info/InfoPage'));
 import { AccountProvider } from './context/AccountContext';
-import DashboardHome from './pages/DashboardHome';
-import ProfilePage from './pages/ProfilePage';
-import BookingPage from './pages/BookingPage';
 import OverlayScrollbar from './components/OverlayScrollbar';
 import AdhdReadingMask from './components/AdhdReadingMask';
-import AiSupportPage from './pages/AiSupportPage';
-import InfoPage from './pages/info/InfoPage';
+
+// Tiny loading placeholder for lazy routes — plain CSS, no extra deps, so
+// the fallback itself never becomes a perf cost.
 
 // Mirror the app's React-state routes into the History API (instead of pulling
 // in a router) so the browser's native Back/Forward buttons work. Every page
@@ -165,74 +171,99 @@ export default function App() {
     <div className="min-h-screen bg-[#F4F6F9] dark:bg-slate-950">
       <OverlayScrollbar />
       <AdhdReadingMask />
-      {/* 1. Landing Page */}
+      {/* 1. Landing Page (eager — the LCP entry route) */}
       {currentPage === 'landing' && (
         <LandingPage onNavigate={handleNavigate} />
       )}
 
       {/* 2. Split Citizen / Distributor Login Portal (single auth gateway) */}
       {(currentPage === 'auth-selection' || currentPage === 'auth-login' || currentPage === 'auth') && (
-        <AdminLoginPage
-          onNavigate={handleNavigate}
-          onAuthSuccess={handlePortalAuthSuccess}
-        />
+        <Suspense fallback={<PageFallback />}>
+          <AdminLoginPage
+            onNavigate={handleNavigate}
+            onAuthSuccess={handlePortalAuthSuccess}
+          />
+        </Suspense>
       )}
 
       {/* 3. Registration Page */}
       {currentPage === 'auth-register' && (
-        <RegisterPage onNavigate={handleNavigate} />
+        <Suspense fallback={<PageFallback />}>
+          <RegisterPage onNavigate={handleNavigate} />
+        </Suspense>
       )}
 
       {/* 6. Password Recovery Request */}
       {currentPage === 'auth-forgot' && (
-        <ForgotPasswordPage />
+        <Suspense fallback={<PageFallback />}>
+          <ForgotPasswordPage />
+        </Suspense>
       )}
 
       {/* 7. Password Reset Verification Form */}
       {currentPage === 'reset-password' && (
-        <ResetPasswordPage
-          token={resetToken}
-          onResetSuccess={() => handleNavigate('admin-login')}
-        />
+        <Suspense fallback={<PageFallback />}>
+          <ResetPasswordPage
+            token={resetToken}
+            onResetSuccess={() => handleNavigate('admin-login')}
+          />
+        </Suspense>
       )}
 
       {/* 7b. Split Citizen / Distributor Login Portal */}
       {currentPage === 'admin-login' && (
-        <AdminLoginPage
-          onNavigate={handleNavigate}
-          onAuthSuccess={handlePortalAuthSuccess}
-        />
+        <Suspense fallback={<PageFallback />}>
+          <AdminLoginPage
+            onNavigate={handleNavigate}
+            onAuthSuccess={handlePortalAuthSuccess}
+          />
+        </Suspense>
       )}
 
       {/* 7c. Distributor / Admin Console (placeholder until staff modules ship) */}
       {currentPage === 'distributor-console' && (
-        <DistributorConsolePage
-          currentSubPage={currentSubPage}
-          onNavigate={handleNavigate}
-          onLogout={handleLogout}
-        />
+        <Suspense fallback={<PageFallback />}>
+          <DistributorConsolePage
+            currentSubPage={currentSubPage}
+            onNavigate={handleNavigate}
+            onLogout={handleLogout}
+          />
+        </Suspense>
       )}
 
       {/* 8. Main Dashboard Application Shell */}
       {currentPage === 'dashboard' && (
         <AccountProvider>
-          <DashboardShell
-            currentSubPage={currentSubPage}
-            onSubPageChange={handleSubPageChange}
-            onNavigate={handleNavigate}
-            onLogout={handleLogout}
-          >
-            {currentSubPage === 'home' && <DashboardHome onNavigate={handleSubPageChange} />}
-            {currentSubPage === 'profile' && <ProfilePage onAccountDeleted={handleLogout} />}
-            {currentSubPage === 'booking' && <BookingPage />}
-            {currentSubPage === 'ai-support' && <AiSupportPage />}
-          </DashboardShell>
+          <Suspense fallback={<PageFallback />}>
+            <DashboardShell
+              currentSubPage={currentSubPage}
+              onSubPageChange={handleSubPageChange}
+              onNavigate={handleNavigate}
+              onLogout={handleLogout}
+            >
+              {currentSubPage === 'home' && <DashboardHome onNavigate={handleSubPageChange} />}
+              {currentSubPage === 'profile' && <ProfilePage onAccountDeleted={handleLogout} />}
+              {currentSubPage === 'booking' && <BookingPage />}
+              {currentSubPage === 'ai-support' && <AiSupportPage />}
+            </DashboardShell>
+          </Suspense>
         </AccountProvider>
       )}
       {/* 9. Public info pages (Help, Feedback, Sitemap, Policies) */}
       {currentPage === 'info' && (
-        <InfoPage view={currentSubPage} onNavigate={handleNavigate} />
+        <Suspense fallback={<PageFallback />}>
+          <InfoPage view={currentSubPage} onNavigate={handleNavigate} />
+        </Suspense>
       )}
+    </div>
+  );
+}
+
+function PageFallback() {
+  return (
+    <div className="min-h-screen flex items-center justify-center bg-[#F4F6F9] dark:bg-slate-950" role="status" aria-live="polite">
+      <div className="w-10 h-10 border-2 border-slate-300 dark:border-slate-600 border-t-orange-600 animate-spin" aria-hidden="true" />
+      <span className="sr-only">Loading page</span>
     </div>
   );
 }

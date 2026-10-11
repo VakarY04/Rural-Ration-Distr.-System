@@ -11,6 +11,7 @@ import FamilyDetailsDialog from '../components/distributor/FamilyDetailsDialog';
 import FamiliesDetailsPage from './FamiliesDetailsPage';
 import RationDetailsPage from './RationDetailsPage';
 import ComplaintsPage from './ComplaintsPage';
+import StaffPanel from '../components/distributor/StaffPanel';
 import DistributorProfilePage from './DistributorProfilePage';
 import SiteFooter from '../components/SiteFooter';
 import SkipLink from '../components/SkipLink';
@@ -134,6 +135,8 @@ export default function DistributorConsolePage({ currentSubPage = 'home', onNavi
     { id: 'home', label: t('console.navHome') },
     // Complaints is admin-only — distributors have no complaints UI.
     ...(isAdmin ? [{ id: 'complaints', label: t('console.navComplaints') }] : []),
+    // Staff provisioning is admin-only (7.1 matrix).
+    ...(isAdmin ? [{ id: 'staff', label: t('console.navStaff') }] : []),
     { id: 'profile', label: t('console.navProfile') },
   ];
   const isNavActive = (id) =>
@@ -259,6 +262,10 @@ export default function DistributorConsolePage({ currentSubPage = 'home', onNavi
 
         {!loading && summary && currentSubPage === 'complaints' && isAdmin && (
           <ComplaintsPage />
+        )}
+
+        {!loading && summary && currentSubPage === 'staff' && isAdmin && (
+          <StaffPanel />
         )}
 
         {!loading && currentSubPage === 'profile' && (

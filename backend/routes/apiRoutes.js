@@ -18,6 +18,7 @@ import {
   updateGrievance,
 } from '../controllers/grievanceController.js';
 import { getReports, exportReports } from '../controllers/reportController.js';
+import { listStaff, provisionStaff, deprovisionStaff } from '../controllers/staffController.js';
 import { requireStaff, requireAdmin } from '../middleware/staffMiddleware.js';
 import { protect } from '../middleware/authMiddleware.js';
 import { dbGate } from '../middleware/dbGate.js';
@@ -90,6 +91,13 @@ router.patch('/grievances/:id', protect, requireStaff, updateGrievance);
 // Staff only; JSON for the console panel + CSV for download.
 router.get('/reports', protect, requireStaff, getReports);
 router.get('/reports/export', protect, requireStaff, exportReports);
+
+// Staff provisioning (admin only) — roster, provision, deprovision.
+// Registry entries are the staff gateway's source of truth; deprovisioned
+// accounts stop passing the gateway immediately.
+router.get('/staff', protect, requireAdmin, listStaff);
+router.post('/staff', protect, requireAdmin, provisionStaff);
+router.delete('/staff/:email', protect, requireAdmin, deprovisionStaff);
 
 // Citizen feedback inbox (stored always, emailed to owner when SMTP is set)
 router.post('/feedback', protect, submitFeedback);
