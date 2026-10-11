@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { RefreshCw, Inbox } from 'lucide-react';
 import { api } from '../../services/api';
 import { useLanguage } from '../../i18n/LanguageContext';
+import { useArrowNav } from '../../hooks/useArrowNav';
 
 const FOCUS =
   'focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-orange-500';
@@ -48,6 +49,10 @@ export default function GrievanceQueue() {
   const [error, setError] = useState('');
   const [drafts, setDrafts] = useState({});
   const [savingId, setSavingId] = useState('');
+  // Arrows move across status filters (Left/Right) and between rows via
+  // their Save buttons (Up/Down). Selects/inputs keep native arrow behavior.
+  const filterRef = useArrowNav('horizontal');
+  const rowsRef = useArrowNav('vertical');
 
   const load = useCallback(() => {
     setError('');
@@ -118,11 +123,12 @@ export default function GrievanceQueue() {
           <h2 className="text-sm font-bold uppercase tracking-[0.1em] text-black dark:text-slate-100 break-words">{t('grievance.title')}</h2>
           <p className="text-xs text-slate-500 dark:text-slate-400 font-medium mt-1">{t('grievance.subtitle')}</p>
         </div>
-        <div className="flex items-center gap-2 flex-wrap" role="group" aria-label={t('grievance.title')}>
+        <div ref={filterRef} className="flex items-center gap-2 flex-wrap" role="group" aria-label={t('grievance.title')}>
           {filters.map((f) => (
             <button
               key={f.value || 'all'}
               type="button"
+              data-arrow-item
               onClick={() => setFilter(f.value)}
               aria-pressed={filter === f.value}
               className={`text-[11px] font-bold uppercase tracking-wider px-3 py-1.5 border transition-colors cursor-pointer ${FOCUS} ${filter === f.value ? 'bg-slate-900 text-white border-slate-900' : 'border-slate-300 dark:border-slate-600 text-slate-600 dark:text-slate-300 hover:border-slate-500'}`}
@@ -132,6 +138,7 @@ export default function GrievanceQueue() {
           ))}
           <button
             type="button"
+            data-arrow-item
             onClick={() => { setLoading(true); load().finally(() => setLoading(false)); }}
             className={`ml-auto inline-flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100 cursor-pointer ${FOCUS}`}
           >
@@ -155,7 +162,7 @@ export default function GrievanceQueue() {
             <p className="mt-2 text-sm font-semibold text-slate-900 dark:text-slate-100">{t('grievance.empty')}</p>
           </div>
         ) : (
-          <ol className="divide-y divide-slate-100 dark:divide-slate-800">
+          <ol ref={rowsRef} className="divide-y divide-slate-100 dark:divide-slate-800">
             {items.map((g) => {
               const d = draftFor(g);
               const saving = savingId === g.id;
@@ -218,6 +225,7 @@ export default function GrievanceQueue() {
                   <div>
                     <button
                       type="button"
+                      data-arrow-item
                       onClick={() => save(g)}
                       disabled={saving}
                       className={`bg-slate-900 hover:bg-orange-600 text-white text-[11px] font-bold uppercase tracking-wider px-4 py-2 transition-colors cursor-pointer disabled:opacity-50 ${FOCUS}`}

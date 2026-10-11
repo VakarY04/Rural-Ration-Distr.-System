@@ -119,7 +119,7 @@ export function QuotaPanel({ totalMembers, estimatedGrainsKg }) {
           <p className={swiss.micro}>{t('profile.quota.grains')}</p>
           <p className="mt-2 text-4xl font-extrabold tracking-tight tabular-nums text-slate-900 dark:text-slate-100">
             {estimatedGrainsKg}
-            <span className="text-lg font-bold text-slate-500 dark:text-slate-400 ml-1">kg</span>
+            <span className="text-lg font-bold text-slate-500 dark:text-slate-400 ml-1">{t('common.kgUnit')}</span>
           </p>
         </div>
       </div>

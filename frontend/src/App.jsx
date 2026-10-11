@@ -1,5 +1,6 @@
 import { useState, useEffect, Suspense, lazy } from 'react';
 import LandingPage from './pages/LandingPage';
+import { useLanguage } from './i18n/LanguageContext';
 // Phase 5 perf: every route except the landing page loads lazily so the
 // first-visit bundle stays small (LCP < 2.5s on 4G). Landing stays eager —
 // lazy-loading the entry route would add a round trip before first paint.
@@ -260,10 +261,11 @@ export default function App() {
 }
 
 function PageFallback() {
+  const { t } = useLanguage();
   return (
     <div className="min-h-screen flex items-center justify-center bg-[#F4F6F9] dark:bg-slate-950" role="status" aria-live="polite">
       <div className="w-10 h-10 border-2 border-slate-300 dark:border-slate-600 border-t-orange-600 animate-spin" aria-hidden="true" />
-      <span className="sr-only">Loading page</span>
+      <span className="sr-only">{t('common.loadingPage')}</span>
     </div>
   );
 }

@@ -87,18 +87,26 @@ export const getStaffFamilyDetails = async (req, res) => {
 // current editable delivery details + ration items + slot windows.
 export const getDistributorSummary = async (req, res) => {
   try {
-    const settings = await getDistributionSettings();
+    // Perf: settings + bookings are independent — fetch together. Users and
+    // grievance stats fan out in a second wave; families last (needs both).
+    // Sequential chains made this endpoint ~500ms on Atlas free tier.
+    const [settings, allBookings] = await Promise.all([
+      getDistributionSettings(),
+      Booking.find().lean(),
+    ]);
 
     // Load every booking and drop any whose owning account no longer exists
     // (e.g. a User was deleted straight from MongoDB). Bookings created by the
     // allocation engine carry no `user` field, so those are always retained.
-    const allBookings = await Booking.find().lean();
     const userIds = [
       ...new Set(allBookings.map((b) => b.user).filter(Boolean).map((id) => id.toString())),
     ];
-    const existingUsers = userIds.length
-      ? await User.find({ _id: { $in: userIds } }).select('_id').lean()
-      : [];
+    const [existingUsers, grievanceCounts] = await Promise.all([
+      userIds.length
+        ? User.find({ _id: { $in: userIds } }).select('_id').lean()
+        : [],
+      Grievance.aggregate([{ $group: { _id: '$status', n: { $sum: 1 } } }]).catch(() => []),
+    ]);
     const existingUserIds = new Set(existingUsers.map((u) => u._id.toString()));
     const bookings = allBookings.filter(
       (b) => !b.user || existingUserIds.has(b.user.toString())
@@ -165,17 +173,12 @@ export const getDistributorSummary = async (req, res) => {
 
     // 7.3 — grievance headline counts for the console (failure-isolated: a
     // grievance-collection hiccup must never break the whole summary).
-    let grievanceStats = { Open: 0, 'In Review': 0, Resolved: 0, total: 0 };
-    try {
-      const counts = await Grievance.aggregate([
-        { $group: { _id: '$status', n: { $sum: 1 } } },
-      ]);
-      for (const c of counts) {
-        if (grievanceStats[c._id] !== undefined) grievanceStats[c._id] = c.n;
-        grievanceStats.total += c.n;
-      }
-    } catch {
-      grievanceStats = { Open: 0, 'In Review': 0, Resolved: 0, total: 0 };
+    // Counts arrive from the second-wave aggregate above; unknown statuses
+    // are ignored so a future status can never corrupt the known buckets.
+    const grievanceStats = { Open: 0, 'In Review': 0, Resolved: 0, total: 0 };
+    for (const c of grievanceCounts) {
+      if (grievanceStats[c._id] !== undefined) grievanceStats[c._id] = c.n;
+      grievanceStats.total += c.n;
     }
 
     return res.status(200).json({

@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { Users, UserPlus, Trash2 } from 'lucide-react';
 import { api } from '../../services/api';
 import { swissUser as swiss } from '../ui/swiss';
+import { useArrowNav } from '../../hooks/useArrowNav';
 import { useLanguage } from '../../i18n/LanguageContext';
 
 const FOCUS =
@@ -25,6 +26,8 @@ export default function StaffPanel() {
   const [saving, setSaving] = useState(false);
   const [confirmEmail, setConfirmEmail] = useState('');
   const [removing, setRemoving] = useState('');
+  // Arrows move between rows via their action buttons (Up/Down/Home/End).
+  const rowsRef = useArrowNav('vertical');
 
   const load = useCallback(() => {
     setError('');
@@ -115,7 +118,7 @@ export default function StaffPanel() {
             {staff.length === 0 ? (
               <p className="p-6 text-sm text-slate-500 dark:text-slate-400">{t('roster.empty')}</p>
             ) : (
-              <div className="overflow-x-auto">
+              <div ref={rowsRef} className="overflow-x-auto">
                 <table className="w-full text-sm min-w-[560px]">
                   <thead>
                     <tr className="text-left text-[11px] uppercase tracking-wider text-slate-500 dark:text-slate-400 border-b border-slate-200 dark:border-slate-700">
@@ -145,6 +148,7 @@ export default function StaffPanel() {
                               <span className="text-xs text-slate-600 dark:text-slate-300">{t('roster.confirmRemove', { email: s.email })}</span>
                               <button
                                 type="button"
+                                data-arrow-item
                                 disabled={removing === s.email}
                                 onClick={() => remove(s.email)}
                                 className={`bg-[#DC3545] text-white text-[11px] font-bold uppercase tracking-wider px-3 py-1.5 cursor-pointer disabled:opacity-50 ${FOCUS}`}
@@ -153,6 +157,7 @@ export default function StaffPanel() {
                               </button>
                               <button
                                 type="button"
+                                data-arrow-item
                                 onClick={() => setConfirmEmail('')}
                                 className={`border border-slate-300 dark:border-slate-600 text-[11px] font-bold uppercase tracking-wider px-3 py-1.5 cursor-pointer ${FOCUS}`}
                               >
@@ -162,6 +167,7 @@ export default function StaffPanel() {
                           ) : (
                             <button
                               type="button"
+                              data-arrow-item
                               onClick={() => setConfirmEmail(s.email)}
                               aria-label={`${t('roster.deprovision')} ${s.email}`}
                               title={`${t('roster.deprovision')} ${s.email}`}

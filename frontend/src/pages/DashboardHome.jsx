@@ -134,7 +134,7 @@ export default function DashboardHome({ onNavigate }) {
             <p className={swiss.micro}>{t('dashboard.monthlyQuota')}</p>
             <p className="mt-2 text-3xl md:text-5xl font-extrabold tracking-tight tabular-nums text-slate-900 dark:text-slate-100 break-words">
               {ration.totalKg}
-              <span className="text-lg font-bold text-slate-500 dark:text-slate-400 ml-1">kg</span>
+              <span className="text-lg font-bold text-slate-500 dark:text-slate-400 ml-1">{t('common.kgUnit')}</span>
             </p>
             <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">{t('dashboard.totalEntitlement')}</p>
           </div>

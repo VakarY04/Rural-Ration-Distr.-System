@@ -153,7 +153,7 @@ export default function FamilyDetailsDialog({ details, loading, error, onClose }
                 </h3>
                 <p className="text-3xl font-extrabold tracking-tight tabular-nums text-slate-900 dark:text-slate-100">
                   {details.ration?.totalKg}
-                  <span className="text-lg font-bold text-slate-500 dark:text-slate-400 ml-1">kg</span>
+                  <span className="text-lg font-bold text-slate-500 dark:text-slate-400 ml-1">{t('common.kgUnit')}</span>
                 </p>
                 {(details.ration?.items || []).map((item) => (
                   <p key={item.key || item.label} className="text-sm text-slate-700 dark:text-slate-200">

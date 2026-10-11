@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Search, ArrowRight, Lock } from 'lucide-react';
 import { swiss } from '../../components/ui/swiss';
 import { useLanguage } from '../../i18n/LanguageContext';
+import { useArrowNav } from '../../hooks/useArrowNav';
 import InfoShell from './InfoShell';
 
 // Combined Search + Sitemap: one filter box over the full route index, so
@@ -39,6 +40,9 @@ export default function SitemapPage({ onNavigate }) {
     else if (route.startsWith('info:')) onNavigate('info', { subPage: route.split(':')[1] });
     else onNavigate(route);
   };
+  // Arrow keys move between result rows (Up/Down/Home/End); Enter opens.
+  // Keystrokes inside the search box are untouched (arrows edit text there).
+  const listRef = useArrowNav('vertical');
 
   return (
     <InfoShell
@@ -62,7 +66,7 @@ export default function SitemapPage({ onNavigate }) {
       {rows.length === 0 ? (
         <p className="text-sm text-slate-500 dark:text-slate-400 break-words">{t('sitemap.noMatch', { query })}</p>
       ) : (
-        <ol className="border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 divide-y divide-slate-100 dark:divide-slate-700" aria-label={t('sitemap.listLabel')}>
+        <ol ref={listRef} className="border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 divide-y divide-slate-100 dark:divide-slate-700" aria-label={t('sitemap.listLabel')}>
           {rows.map((r) => (
             <li key={r.route} className="flex items-center gap-3 px-4 py-3">
               <div className="flex-1 min-w-0">
@@ -80,6 +84,7 @@ export default function SitemapPage({ onNavigate }) {
               ) : (
                 <button
                   type="button"
+                  data-arrow-item
                   onClick={open(r.route)}
                   title={t('sitemap.openTitle', { label: r.label })}
                   className="shrink-0 inline-flex items-center gap-1 text-xs font-semibold text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-slate-100 transition-colors cursor-pointer focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-orange-500"

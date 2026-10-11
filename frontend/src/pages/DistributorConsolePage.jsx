@@ -16,6 +16,7 @@ import DistributorProfilePage from './DistributorProfilePage';
 import SiteFooter from '../components/SiteFooter';
 import SkipLink from '../components/SkipLink';
 import AccessibilityToolbar from '../components/AccessibilityToolbar';
+import { useArrowNav } from '../hooks/useArrowNav';
 import { useLanguage } from '../i18n/LanguageContext';
 
 const FOCUS =
@@ -141,6 +142,8 @@ export default function DistributorConsolePage({ currentSubPage = 'home', onNavi
   ];
   const isNavActive = (id) =>
     id === 'home' ? currentSubPage === 'home' || !currentSubPage : currentSubPage === id;
+  // Arrow keys move between console tabs (Left/Right/Home/End); Enter opens.
+  const navRef = useArrowNav('horizontal');
 
   return (
     <div className="min-h-screen font-sans text-black dark:text-slate-100 dark:bg-slate-950 flex flex-col">
@@ -169,13 +172,14 @@ export default function DistributorConsolePage({ currentSubPage = 'home', onNavi
             </button>
 
             <div className="flex-1 flex items-center justify-center">
-              <nav className="flex items-center justify-center gap-1 sm:gap-2 flex-wrap" aria-label={t('console.navLabel')}>
+              <nav ref={navRef} className="flex items-center justify-center gap-1 sm:gap-2 flex-wrap" aria-label={t('console.navLabel')}>
                 {NAV.map((item) => {
                   const active = isNavActive(item.id);
                   return (
                     <button
                       key={item.id}
                       type="button"
+                      data-arrow-item
                       onClick={() => onNavigate('distributor-console', { subPage: item.id })}
                       aria-current={active ? 'page' : undefined}
                       className={`text-[11px] font-bold uppercase tracking-wider px-3 py-2 transition-colors cursor-pointer rounded ${FOCUS} ${

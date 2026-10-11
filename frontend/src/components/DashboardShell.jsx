@@ -15,6 +15,7 @@ import SkipLink from './SkipLink';
 import AccessibilityToolbar from './AccessibilityToolbar';
 import SiteFooter from './SiteFooter';
 import { useLanguage } from '../i18n/LanguageContext';
+import { useArrowNav } from '../hooks/useArrowNav';
 
 const FOCUS = 'gov-nav-focus';
 
@@ -42,6 +43,8 @@ export default function DashboardShell({ children, currentSubPage, onSubPageChan
     { id: 'booking', label: t('nav.rationBookings'), Icon: RationBookingsIcon },
     { id: 'ai-support', label: t('nav.aiHelpDesk'), Icon: AiHelpDeskIcon },
   ];
+  // Arrow keys move between sidebar sections (Up/Down/Home/End); Enter opens.
+  const navRef = useArrowNav('vertical');
 
   // Govt palette for the citizen nav: clean white base (black idle text
   // ≈21:1), hover = India Green #138808 (white text ≈4.5:1), selected = Navy
@@ -70,12 +73,13 @@ export default function DashboardShell({ children, currentSubPage, onSubPageChan
             <TricolorStrip className="h-[3px]" />
           </div>
 
-          <nav className="space-y-1" aria-label={t('nav.workspaceLabel')}>
+          <nav ref={navRef} className="space-y-1" aria-label={t('nav.workspaceLabel')}>
             {navItems.map((item) => {
               const active = currentSubPage === item.id;
               return (
                 <button
                   key={item.id}
+                  data-arrow-item
                   onClick={() => onSubPageChange(item.id)}
                   aria-current={active ? 'page' : undefined}
                   title={navCollapsed ? item.label : undefined}

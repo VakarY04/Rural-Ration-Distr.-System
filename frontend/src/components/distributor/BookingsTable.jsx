@@ -9,6 +9,7 @@
 // ration" action that marks the booking Collected.
 import { MapPin, Eye, CheckCircle2, Undo2, Loader2 } from 'lucide-react';
 import { useLanguage } from '../../i18n/LanguageContext';
+import { useArrowNav } from '../../hooks/useArrowNav';
 
 function statusStyle(status) {
   if (status === 'Collected') return 'border-[#198754]/40 bg-[#198754]/10 text-[#198754] dark:text-emerald-400';
@@ -18,6 +19,9 @@ function statusStyle(status) {
 
 export default function BookingsTable({ bookings, onView, canMarkCollected = false, markingId = '', onMarkCollected, onUnmarkCollected }) {
   const { t } = useLanguage();
+  // Arrow keys move between rows via their View buttons (Up/Down/Home/End);
+  // row actions stay one Tab away. Enter opens the family record.
+  const listRef = useArrowNav('vertical');
   // Backend stores booking status in English — map to the active language so
   // Hindi mode never shows a raw English status word.
   const bookingStatusLabel = (status) => {
@@ -45,7 +49,7 @@ export default function BookingsTable({ bookings, onView, canMarkCollected = fal
   }
 
   return (
-    <ol className="border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 divide-y divide-slate-100 dark:divide-slate-800" aria-label={t('queue.label')}>
+    <ol ref={listRef} className="border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 divide-y divide-slate-100 dark:divide-slate-800" aria-label={t('queue.label')}>
       {unique.map((b, i) => {
         const collected = b.status === 'Collected';
         const marking = markingId !== '' && markingId === b.id;
@@ -68,6 +72,7 @@ export default function BookingsTable({ bookings, onView, canMarkCollected = fal
             )}
             <button
               type="button"
+              data-arrow-item
               onClick={() => onView?.(b)}
               title={t('queue.viewTitle')}
               className="shrink-0 text-xs font-semibold tracking-wide px-3 py-1.5 rounded border border-slate-300 dark:border-slate-600 text-slate-600 dark:text-slate-300 hover:bg-slate-900 hover:text-white transition-colors cursor-pointer focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-orange-500 inline-flex items-center gap-1.5"

@@ -727,6 +727,7 @@ export const en = {
   'common.back': 'Back',
   'common.retry': 'Retry',
   'common.loading': 'Loading console data…',
-  'common.loadFailed': "Couldn't load the console right now.",
+  'common.loadingPage': 'Loading page…',
+  'common.kgUnit': 'kg',  'common.loadFailed': "Couldn't load the console right now.",
 };
 export default en;

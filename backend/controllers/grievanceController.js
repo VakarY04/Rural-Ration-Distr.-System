@@ -138,13 +138,14 @@ export const getMyGrievances = async (req, res) => {
 
 // GET /grievances?status=Open|In Review|Resolved — staff queue (single-centre:
 // distributors + admins share it; per-shop scoping lands with multi-shop).
+// List + counts run together: sequential chains cost ~500ms on Atlas free tier.
 export const getGrievanceQueue = async (req, res) => {
   try {
     const { status } = req.query || {};
     const filter = ['Open', 'In Review', 'Resolved'].includes(status) ? { status } : {};
-    const list = await Grievance.find(filter).sort({ createdAt: -1 }).limit(100).lean();
-    const counts = await Grievance.aggregate([
-      { $group: { _id: '$status', n: { $sum: 1 } } },
+    const [list, counts] = await Promise.all([
+      Grievance.find(filter).sort({ createdAt: -1 }).limit(100).lean(),
+      Grievance.aggregate([{ $group: { _id: '$status', n: { $sum: 1 } } }]).catch(() => []),
     ]);
     const stats = { Open: 0, 'In Review': 0, Resolved: 0, total: 0 };
     for (const c of counts) {

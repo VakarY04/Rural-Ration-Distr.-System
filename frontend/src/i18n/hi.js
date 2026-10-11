@@ -725,6 +725,8 @@ export const hi = {
   'common.back': 'वापस',
   'common.retry': 'पुनः प्रयास करें',
   'common.loading': 'कंसोल डेटा लोड हो रहा है…',
+  'common.loadingPage': 'पेज लोड हो रहा है…',
+  'common.kgUnit': 'किग्रा',
   'common.loadFailed': 'अभी कंसोल लोड नहीं हो सका।',
 };
 export default hi;

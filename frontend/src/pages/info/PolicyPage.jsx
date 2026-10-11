@@ -4,6 +4,7 @@ import { POLICIES, POLICY_KEYS } from './policies';
 import { useLanguage } from '../../i18n/LanguageContext';
 import { siteMeta } from '../../config/siteMeta';
 
+import { useArrowNav } from '../../hooks/useArrowNav';
 // Renders one policy document by key, with a switcher for the rest.
 // Document text lives in policies.js — this file is only presentation.
 // Localization happens at render via t(`policy.${doc}.*`) with siteMeta vars;
@@ -21,6 +22,8 @@ export default function PolicyPage({ doc = 'terms', onNavigate }) {
     const val = t(key, v);
     return val === key ? fallback : val;
   };
+  // Arrow keys move between policy documents (Left/Right/Home/End).
+  const switcherRef = useArrowNav('horizontal');
   const activeFallback = POLICIES[activeKey];
   const title = pick(`policy.${activeKey}.title`, activeFallback.title);
   const intro = pick(`policy.${activeKey}.intro`, activeFallback.intro);
@@ -39,11 +42,12 @@ export default function PolicyPage({ doc = 'terms', onNavigate }) {
       intro={intro}
       onNavigate={onNavigate}
     >
-      <nav aria-label={t('policy.navLabel')} className="flex flex-wrap gap-2">
+      <nav ref={switcherRef} aria-label={t('policy.navLabel')} className="flex flex-wrap gap-2">
         {POLICY_KEYS.map((key) => (
           <button
             key={key}
             type="button"
+            data-arrow-item
             onClick={() => onNavigate && onNavigate('info', { subPage: `policy-${key}` })}
             aria-current={key === activeKey ? 'page' : undefined}
             className={`px-3 py-1.5 text-xs font-semibold border transition-colors cursor-pointer focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-orange-500 break-words ${
